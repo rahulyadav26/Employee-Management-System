@@ -24,9 +24,12 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     Department department;
 
     @Override
-    public ResponseEntity<Department> addDepartment(Department department) {
+    public ResponseEntity<Department> addDepartment(long companyId,Department department) {
         try{
             List<Department> departmentList = departmentRepo.findAll();
+            if(companyId!=department.getComp_id()){
+                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             this.department.setComp_id(department.getComp_id());
             this.department.setCompleted_project(department.getCompleted_project());
             this.department.setEmployee_count(department.getEmployee_count());
@@ -56,10 +59,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateDeptHead(long id,DeptHeadUpdate deptHeadUpdate) {
+    public ResponseEntity<String> updateDeptHead(long companyId,long id,DeptHeadUpdate deptHeadUpdate) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || department.getComp_id()!=companyId){
                 return new ResponseEntity<>("No such department exists",HttpStatus.OK);
             }
             department.setHead_id(deptHeadUpdate.getId());
@@ -74,10 +77,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateDeptEmpCount(long id, EmpCountUpdate empCountUpdate) {
+    public ResponseEntity<String> updateDeptEmpCount(long companyId,long id, EmpCountUpdate empCountUpdate) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || companyId!=department.getComp_id()){
                 return new ResponseEntity<>("No such department exists",HttpStatus.OK);
             }
             department.setEmployee_count(empCountUpdate.getEmp_count());
@@ -91,10 +94,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateDeptOngoingProj(long id, OngoingProjectUpdate ongoingProjectUpdate) {
+    public ResponseEntity<String> updateDeptOngoingProj(long companyId,long id, OngoingProjectUpdate ongoingProjectUpdate) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || companyId!=department.getComp_id()){
                 return new ResponseEntity<>("No such department Exists",HttpStatus.OK);
             }
             department.setOngoing_project(ongoingProjectUpdate.getOngoing_project());
@@ -108,10 +111,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateDeptCompletedProj(long id, CompletedProjectUpdate completedProjectUpdate) {
+    public ResponseEntity<String> updateDeptCompletedProj(long companyId,long id, CompletedProjectUpdate completedProjectUpdate) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || companyId!=department.getComp_id()){
                 return new ResponseEntity<>("No such department Exists",HttpStatus.OK);
             }
             long count = completedProjectUpdate.getCompleted_project()-department.getCompleted_project();
@@ -127,10 +130,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> deleteDepartment(long id) {
+    public ResponseEntity<String> deleteDepartment(long companyId,long id) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || companyId!=department.getComp_id()){
                 return new ResponseEntity<>("No such department Exists",HttpStatus.OK);
             }
             departmentRepo.deleteById(id);
@@ -143,10 +146,10 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
     }
 
     @Override
-    public ResponseEntity<Department> getDepartment(long id) {
+    public ResponseEntity<Department> getDepartment(long companyId,long id) {
         try{
             department = departmentRepo.findById(id).orElse(null);
-            if(department==null){
+            if(department==null || department.getComp_id()!=companyId){
                 return new ResponseEntity<>(null,HttpStatus.OK);
             }
             return new ResponseEntity<>(department,HttpStatus.OK);

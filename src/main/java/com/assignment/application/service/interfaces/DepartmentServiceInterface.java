@@ -13,20 +13,20 @@ import java.util.List;
 @Component
 public interface DepartmentServiceInterface {
 
-    ResponseEntity<Department> addDepartment(Department department);
+    ResponseEntity<Department> addDepartment(long companyId,Department department);
 
     ResponseEntity<List<Department>> getDepartments();
 
-    ResponseEntity<Department> getDepartment(long id);
+    ResponseEntity<Department> getDepartment(long companyId,long id);
 
-    ResponseEntity<String> updateDeptHead(long id,DeptHeadUpdate deptHeadUpdate);
+    ResponseEntity<String> updateDeptHead(long companyId,long id,DeptHeadUpdate deptHeadUpdate);
 
-    ResponseEntity<String> updateDeptEmpCount(long id, EmpCountUpdate empCountUpdate);
+    ResponseEntity<String> updateDeptEmpCount(long companyId,long id, EmpCountUpdate empCountUpdate);
 
-    ResponseEntity<String> updateDeptOngoingProj(long id, OngoingProjectUpdate ongoingProjectUpdate);
+    ResponseEntity<String> updateDeptOngoingProj(long companyId,long id, OngoingProjectUpdate ongoingProjectUpdate);
 
-    ResponseEntity<String> updateDeptCompletedProj(long id, CompletedProjectUpdate completedProjectUpdate);
+    ResponseEntity<String> updateDeptCompletedProj(long companyId,long id, CompletedProjectUpdate completedProjectUpdate);
 
-    ResponseEntity<String> deleteDepartment(long id);
+    ResponseEntity<String> deleteDepartment(long companyId,long id);
 
 }
