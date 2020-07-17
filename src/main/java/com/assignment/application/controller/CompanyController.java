@@ -2,7 +2,7 @@ package com.assignment.application.controller;
 
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.repo.CompanyServiceInterface;
+import com.assignment.application.service.interfaces.CompanyServiceInterface;
 import com.assignment.application.update.EmployeeUpdate;
 import com.assignment.application.update.IndustryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +33,13 @@ public class CompanyController {
     }
 
     @RequestMapping(value="/{id}/industry-type" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateIndustryType(@RequestBody IndustryUpdate industryUpdate){
-        return companyServiceInterface.updateIndustryType(industryUpdate);
+    public ResponseEntity<String> updateIndustryType(@PathVariable("id") long id,@RequestBody IndustryUpdate industryUpdate){
+        return companyServiceInterface.updateIndustryType(id,industryUpdate);
     }
 
     @RequestMapping(value="/{id}/employee-count" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateEmployeeCount(@RequestBody EmployeeUpdate employeeUpdate){
-        return companyServiceInterface.updateEmployeeCount(employeeUpdate);
+    public ResponseEntity<String> updateEmployeeCount(@PathVariable("id") long id,@RequestBody EmployeeUpdate employeeUpdate){
+        return companyServiceInterface.updateEmployeeCount(id,employeeUpdate);
     }
 
     @RequestMapping(value="/{id}" , method = RequestMethod.DELETE)

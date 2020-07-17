@@ -1,4 +1,4 @@
-package com.assignment.application.repo;
+package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Company;
 import com.assignment.application.update.EmployeeUpdate;
@@ -16,9 +16,9 @@ public interface CompanyServiceInterface {
 
     ResponseEntity<List<Company>> getCompanyList();
 
-    ResponseEntity<String> updateIndustryType(IndustryUpdate industryUpdate);
+    ResponseEntity<String> updateIndustryType(long id,IndustryUpdate industryUpdate);
 
-    ResponseEntity<String> updateEmployeeCount(EmployeeUpdate employeeUpdate);
+    ResponseEntity<String> updateEmployeeCount(long id,EmployeeUpdate employeeUpdate);
 
     ResponseEntity<String> deleteCompany(long id);
 

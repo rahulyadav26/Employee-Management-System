@@ -3,7 +3,7 @@ package com.assignment.application.service;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.repo.CompanyServiceInterface;
+import com.assignment.application.service.interfaces.CompanyServiceInterface;
 import com.assignment.application.update.EmployeeUpdate;
 import com.assignment.application.update.IndustryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +53,9 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateIndustryType(IndustryUpdate industryUpdate) {
+    public ResponseEntity<String> updateIndustryType(long id,IndustryUpdate industryUpdate) {
         try{
-            companyNew = companyRepo.findById(industryUpdate.getId()).orElse(null);
+            companyNew = companyRepo.findById(id).orElse(null);
             if(companyNew!=null){
                 companyNew.setIndustry_type(industryUpdate.getIndustryType());
                 companyRepo.save(companyNew);
@@ -72,9 +72,9 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateEmployeeCount(EmployeeUpdate employeeUpdate) {
+    public ResponseEntity<String> updateEmployeeCount(long id,EmployeeUpdate employeeUpdate) {
         try{
-            companyNew = companyRepo.findById(employeeUpdate.getId()).orElse(null);
+            companyNew = companyRepo.findById(id).orElse(null);
             if(companyNew!=null){
                 companyNew.setEmployee_count(employeeUpdate.getEmployeeCount());
                 companyRepo.save(companyNew);
