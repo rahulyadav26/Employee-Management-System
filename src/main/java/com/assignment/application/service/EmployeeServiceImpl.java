@@ -102,4 +102,20 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
             return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Override
+    public ResponseEntity<String> deleteEmployee(long companyId, String emp_id) {
+        try{
+            employee = employeeRepo.getEmployee(emp_id);
+            if(companyId!=employee.getComp_id()){
+                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
+            }
+            employeeRepo.delete(employee);
+            return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Error while deleting",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -21,4 +21,6 @@ public interface EmployeeServiceInterface {
 
     ResponseEntity<String> updatePosition(String emp_id, long companyId, PositionUpdate positionUpdate);
 
+    ResponseEntity<String> deleteEmployee(long companyId,String emp_id);
+
 }

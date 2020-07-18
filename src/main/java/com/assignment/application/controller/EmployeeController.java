@@ -46,4 +46,10 @@ public class EmployeeController {
         return employeeServiceInterface.updatePosition(emp_id,companyId,positionUpdate);
     }
 
+    @RequestMapping(value="{company_id}/{emp_id}" , method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteEmployee(@PathVariable("company_id") long companyId,
+                                                 @PathVariable("emp_id") String empId){
+        return employeeServiceInterface.deleteEmployee(companyId,empId);
+    }
+
 }

@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DeptHeadUpdate {
 
     @JsonProperty(value="head_id")
-    long id;
+    String id;
     @JsonProperty(value="head")
     String name;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
