@@ -24,13 +24,13 @@ public class Company {
     @Column(name="founder")
     String founder;
     @Column(name="founder_id")
-    long founder_id;
+    String founder_id;
 
     public Company(){
 
     }
 
-    public Company(String name, String industry_type, long employee_count, String head_office, String founder, long founder_id) {
+    public Company(String name, String industry_type, long employee_count, String head_office, String founder, String founder_id) {
         this.name = name;
         this.industry_type = industry_type;
         this.employee_count = employee_count;
@@ -87,11 +87,11 @@ public class Company {
         this.founder = founder;
     }
 
-    public long getFounder_id() {
+    public String getFounder_id() {
         return founder_id;
     }
 
-    public void setFounder_id(long founder_id) {
+    public void setFounder_id(String founder_id) {
         this.founder_id = founder_id;
     }
 }
