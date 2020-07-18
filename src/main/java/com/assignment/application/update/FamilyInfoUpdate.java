@@ -3,7 +3,7 @@ package com.assignment.application.update;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(value = "true")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FamilyInfoUpdate {
 
     @JsonProperty(value = "type")
