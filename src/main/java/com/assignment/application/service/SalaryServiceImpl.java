@@ -28,7 +28,6 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
     @Override
     public ResponseEntity<Salary> addSalary(long compId, String empId, Salary salary) {
         try{
-            System.out.println(salary.getComp_id() + " " + compId + " " + empId + " " +salary.getEmp_id());
             if(!salary.getEmp_id().equals(empId) || salary.getComp_id()!=compId){
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -80,7 +79,6 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
                 else{
                     //update by percentage
                     for(int i=0;i<salaryList.size();i++){
-                        System.out.println(salaryUpdate.getValue());
                         double val = (salaryUpdate.getValue()/(double)100)*salaryList.get(i).getSalary();
                         salaryList.get(i).setSalary(salaryList.get(i).getSalary()+val);
                     }
@@ -90,7 +88,6 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
             else{
                 //dept of a company
                 Department department = departmentRepo.getDeptByCompId(compId,salaryUpdate.getDept_name());
-                System.out.println(compId + " " + salaryUpdate.getDept_name());
                 List<Salary> salaryList = salaryRepo.salaryListCompDept(compId,department.getId());
                 if(salaryUpdate.getSubType().equals("0")){
                     //update by amount
@@ -100,9 +97,7 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
                 }
                 else{
                     //update by percentage
-                    System.out.println(salaryUpdate.getValue());
                     for(int i=0;i<salaryList.size();i++){
-                        System.out.println(salaryList.get(i).getSalary());
                         double val = (salaryUpdate.getValue()/(double)100)*salaryList.get(i).getSalary();
                         salaryList.get(i).setSalary(salaryList.get(i).getSalary()+val);
                     }
