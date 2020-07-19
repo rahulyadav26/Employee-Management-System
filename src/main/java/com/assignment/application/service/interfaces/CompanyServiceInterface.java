@@ -1,6 +1,7 @@
 package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.update.EmployeeUpdate;
 import com.assignment.application.update.IndustryUpdate;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,8 @@ public interface CompanyServiceInterface {
     ResponseEntity<Company> createNewCompany(Company company);
 
     ResponseEntity<List<Company>> getCompanyList();
+
+    ResponseEntity<List<Object>> getCompleteCompInfo(String compName);
 
     ResponseEntity<String> updateIndustryType(long id,IndustryUpdate industryUpdate);
 
