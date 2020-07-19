@@ -24,14 +24,12 @@ public class Department {
     long completed_project;
     @Column(name="head")
     String head;
-    @Column(name="head_id")
-    String head_id;
 
     public Department(){
 
     }
 
-    public Department(long id, String name, long comp_id, long employee_count, long ongoing_project, long completed_project, String head, String head_id) {
+    public Department(long id, String name, long comp_id, long employee_count, long ongoing_project, long completed_project, String head) {
         this.id = id;
         this.name = name;
         this.comp_id = comp_id;
@@ -39,7 +37,6 @@ public class Department {
         this.ongoing_project = ongoing_project;
         this.completed_project = completed_project;
         this.head = head;
-        this.head_id = head_id;
     }
 
     public long getId() {
@@ -98,11 +95,4 @@ public class Department {
         this.head = head;
     }
 
-    public String getHead_id() {
-        return head_id;
-    }
-
-    public void setHead_id(String head_id) {
-        this.head_id = head_id;
-    }
 }

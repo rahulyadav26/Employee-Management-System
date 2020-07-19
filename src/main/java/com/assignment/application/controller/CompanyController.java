@@ -1,6 +1,7 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceInterface;
 import com.assignment.application.update.EmployeeUpdate;
@@ -30,6 +31,11 @@ public class CompanyController {
     @RequestMapping(value="" , method = RequestMethod.GET)
     public ResponseEntity<List<Company>> getCompanyList(){
         return companyServiceInterface.getCompanyList();
+    }
+
+    @RequestMapping(value="/{comp_name}/complete-info" , method = RequestMethod.GET)
+    public ResponseEntity<List<Object>> getCompleteCompInfo(@PathVariable("comp_name")String compName){
+        return companyServiceInterface.getCompleteCompInfo(compName);
     }
 
     @RequestMapping(value="/{id}/industry-type" , method = RequestMethod.PATCH)

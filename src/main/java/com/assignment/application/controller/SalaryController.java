@@ -2,6 +2,7 @@ package com.assignment.application.controller;
 
 
 import com.assignment.application.entity.Salary;
+import com.assignment.application.service.interfaces.SalaryServiceInterface;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

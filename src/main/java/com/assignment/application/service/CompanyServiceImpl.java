@@ -2,16 +2,22 @@ package com.assignment.application.service;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceInterface;
 import com.assignment.application.update.EmployeeUpdate;
 import com.assignment.application.update.IndustryUpdate;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.jws.WebParam;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CompanyServiceImpl implements CompanyServiceInterface {
@@ -24,12 +30,14 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
     @Override
     public ResponseEntity<Company> createNewCompany(Company company) {
         try {
+            if(companyRepo.getCompany(company.getId())!=null || companyRepo.getCompanyByName(company.getName().toUpperCase())!=null){
+                return new ResponseEntity<>(null,HttpStatus.OK);
+            }
             companyNew.setId(company.getId());
             companyNew.setName(company.getName());
             companyNew.setIndustry_type(company.getIndustry_type());
             companyNew.setEmployee_count(company.getEmployee_count());
             companyNew.setFounder(company.getFounder());
-            companyNew.setFounder_id(company.getFounder_id());
             companyNew.setHead_office(company.getHead_office());
             companyRepo.save(companyNew);
             return new ResponseEntity<>(company,HttpStatus.OK);
@@ -45,6 +53,22 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
         try {
             List<Company> companyList = companyRepo.findAll();
             return new ResponseEntity<>(companyList,HttpStatus.OK);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<Object>> getCompleteCompInfo(String compName) {
+        try{
+            companyNew = companyRepo.getCompanyByName(compName.toUpperCase());
+            if(companyNew==null){
+                return new ResponseEntity<>(null,HttpStatus.OK);
+            }
+            List<Object> objectList = companyRepo.getCompDataSet(companyNew.getId());
+            return new ResponseEntity<>(objectList,HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();

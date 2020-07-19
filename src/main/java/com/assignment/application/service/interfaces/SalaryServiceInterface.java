@@ -1,4 +1,4 @@
-package com.assignment.application.controller;
+package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Salary;
 import com.assignment.application.update.SalaryUpdate;

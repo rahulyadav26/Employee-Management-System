@@ -34,7 +34,6 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
             this.department.setCompleted_project(department.getCompleted_project());
             this.department.setEmployee_count(department.getEmployee_count());
             this.department.setHead(department.getHead());
-            this.department.setHead_id(department.getHead_id());
             this.department.setId(department.getId());
             this.department.setName(department.getName());
             this.department.setOngoing_project(department.getOngoing_project());
@@ -65,7 +64,6 @@ public class DepartmentServiceImpl implements DepartmentServiceInterface {
             if(department==null || department.getComp_id()!=companyId){
                 return new ResponseEntity<>("No such department exists",HttpStatus.OK);
             }
-            department.setHead_id(deptHeadUpdate.getId());
             department.setHead(deptHeadUpdate.getName());
             departmentRepo.save(department);
             return new ResponseEntity<>("Update Successful",HttpStatus.OK);
