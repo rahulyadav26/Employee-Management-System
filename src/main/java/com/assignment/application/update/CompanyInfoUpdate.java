@@ -4,24 +4,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CompanyInfoUpdate {
 
-    @JsonProperty("field_to_update")
-    private String fieldToUpdate;
-    @JsonProperty("updated_value")
-    private String updatedValue;
+    @JsonProperty("industry_type")
+    private String industryType;
+    @JsonProperty("employee_count")
+    private String employeeCount;
 
-    public String getFieldToUpdate() {
-        return fieldToUpdate;
+    public String getIndustryType() {
+        return industryType;
     }
 
-    public String getUpdatedValue() {
-        return updatedValue;
+    public void setIndustryType(String industryType) {
+        this.industryType = industryType;
     }
 
-    public void setFieldToUpdate(String fieldToUpdate) {
-        this.fieldToUpdate = fieldToUpdate;
+    public String getEmployeeCount() {
+        return employeeCount;
     }
 
-    public void setUpdatedValue(String updatedValue) {
-        this.updatedValue = updatedValue;
+    public void setEmployeeCount(String employeeCount) {
+        this.employeeCount = employeeCount;
     }
 }

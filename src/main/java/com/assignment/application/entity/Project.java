@@ -13,53 +13,53 @@ import javax.persistence.Table;
 public class Project {
     @Id
     @Column(name="id")
-    long id;
+    private Long id;
     @Column(name="dept_id")
-    long dept_id;
+    private Long departmentId;
     @Column(name="comp_id")
-    long comp_id;
+    private Long companyId;
     @Column(name="description")
-    String description;
+    private String description;
     @Column(name="team_lead")
-    String team_lead;
+    private String teamLead;
     @Column(name="team_lead_id")
-    String team_lead_id;
+    private String teamLeadId;
 
     public Project(){
 
     }
 
-    public Project(long id, long dept_id, long comp_id, String description, String team_lead, String team_lead_id) {
+    public Project(Long id, Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
         this.id = id;
-        this.dept_id = dept_id;
-        this.comp_id = comp_id;
+        this.departmentId = departmentId;
+        this.companyId = companyId;
         this.description = description;
-        this.team_lead = team_lead;
-        this.team_lead_id = team_lead_id;
+        this.teamLead = teamLead;
+        this.teamLeadId = teamLeadId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getDept_id() {
-        return dept_id;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDept_id(long dept_id) {
-        this.dept_id = dept_id;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
-    public long getComp_id() {
-        return comp_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setComp_id(long comp_id) {
-        this.comp_id = comp_id;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public String getDescription() {
@@ -70,19 +70,19 @@ public class Project {
         this.description = description;
     }
 
-    public String getTeam_lead() {
-        return team_lead;
+    public String getTeamLead() {
+        return teamLead;
     }
 
-    public void setTeam_lead(String team_lead) {
-        this.team_lead = team_lead;
+    public void setTeamLead(String teamLead) {
+        this.teamLead = teamLead;
     }
 
-    public String getTeam_lead_id() {
-        return team_lead_id;
+    public String getTeamLeadId() {
+        return teamLeadId;
     }
 
-    public void setTeam_lead_id(String team_lead_id) {
-        this.team_lead_id = team_lead_id;
+    public void setTeamLeadId(String teamLeadId) {
+        this.teamLeadId = teamLeadId;
     }
 }
