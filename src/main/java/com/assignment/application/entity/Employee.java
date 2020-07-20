@@ -7,58 +7,57 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Component
 @Entity
 @Table(name="employee")
 public class Employee {
 
     @Id
     @Column(name="id")
-    long id;
+    private Long id;
     @Column(name="name")
-    String name;
+    private String name;
     @Column(name="dob")
-    String dob;
+    private String dob;
     @Column(name="permanent_add")
-    String permanent_add;
+    private String permanentAdd;
     @Column(name="current_add")
-    String current_add;
+    private String currentAdd;
     @Column(name="phone_number")
-    String phone_number;
+    private String phoneNumber;
     @Column(name="position")
-    String position;
+    private String position;
     @Column(name="dept_id")
-    long dept_id;
+    private Long departmentId;
     @Column(name="project_id")
-    long project_id;
+    private Long projectId;
     @Column(name="comp_id")
-    long comp_id;
+    private Long companyId;
     @Column(name="emp_id")
-    String emp_id;
+    private String employeeId;
 
     public Employee(){
 
     }
 
-    public Employee(long id, String name, String dob, String permanent_add, String current_add, String phone_number, String position, long dept_id, long project_id, long comp_id,String emp_id) {
+    public Employee(Long id, String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
         this.id = id;
         this.name = name;
         this.dob = dob;
-        this.permanent_add = permanent_add;
-        this.current_add = current_add;
-        this.phone_number = phone_number;
+        this.permanentAdd = permanentAdd;
+        this.currentAdd = currentAdd;
+        this.phoneNumber = phoneNumber;
         this.position = position;
-        this.dept_id = dept_id;
-        this.project_id = project_id;
-        this.comp_id = comp_id;
-        this.emp_id = emp_id;
+        this.departmentId = departmentId;
+        this.projectId = projectId;
+        this.companyId = companyId;
+        this.employeeId = employeeId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -78,28 +77,28 @@ public class Employee {
         this.dob = dob;
     }
 
-    public String getPermanent_add() {
-        return permanent_add;
+    public String getPermanentAdd() {
+        return permanentAdd;
     }
 
-    public void setPermanent_add(String permanent_add) {
-        this.permanent_add = permanent_add;
+    public void setPermanentAdd(String permanentAdd) {
+        this.permanentAdd = permanentAdd;
     }
 
-    public String getCurrent_add() {
-        return current_add;
+    public String getCurrentAdd() {
+        return currentAdd;
     }
 
-    public void setCurrent_add(String current_add) {
-        this.current_add = current_add;
+    public void setCurrentAdd(String currentAdd) {
+        this.currentAdd = currentAdd;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPosition() {
@@ -110,35 +109,35 @@ public class Employee {
         this.position = position;
     }
 
-    public long getDept_id() {
-        return dept_id;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDept_id(long dept_id) {
-        this.dept_id = dept_id;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
-    public long getProject_id() {
-        return project_id;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setProject_id(long project_id) {
-        this.project_id = project_id;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
-    public long getComp_id() {
-        return comp_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setComp_id(long comp_id) {
-        this.comp_id = comp_id;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public String getEmp_id() {
-        return emp_id;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmp_id(String emp_id) {
-        this.emp_id = emp_id;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 }

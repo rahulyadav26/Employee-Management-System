@@ -1,46 +1,43 @@
 package com.assignment.application.entity;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name="company_info")
-@Component
-public class Company {
+public class Company{
 
     @Id
     @Column(name="id")
-    long id;
+    private Long id;
     @Column(name="name")
-    String name;
+    private String name;
     @Column(name="industry_type")
-    String industry_type;
+    private String industryType;
     @Column(name="employee_count")
-    long employee_count;
+    private Long employeeCount;
     @Column(name="head_office")
-    String head_office;
+    private String headOffice;
     @Column(name="founder")
-    String founder;
+    private String founder;
 
     public Company(){
 
     }
 
-    public Company(String name, String industry_type, long employee_count, String head_office, String founder) {
+    public Company(Long id, String name, String industryType, Long employeeCount, String headOffice, String founder) {
+        this.id = id;
         this.name = name;
-        this.industry_type = industry_type;
-        this.employee_count = employee_count;
-        this.head_office = head_office;
+        this.industryType = industryType;
+        this.employeeCount = employeeCount;
+        this.headOffice = headOffice;
         this.founder = founder;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -52,28 +49,31 @@ public class Company {
         this.name = name;
     }
 
-    public String getIndustry_type() {
-        return industry_type;
+    @Column(name="industry_type")
+    public String getIndustryType() {
+        return industryType;
     }
 
-    public void setIndustry_type(String industry_type) {
-        this.industry_type = industry_type;
+    public void setIndustryType(String industryType) {
+        this.industryType = industryType;
     }
 
-    public long getEmployee_count() {
-        return employee_count;
+    @Column(name="employee_count")
+    public Long getEmployeeCount() {
+        return employeeCount;
     }
 
-    public void setEmployee_count(long employee_count) {
-        this.employee_count = employee_count;
+    public void setEmployeeCount(Long employeeCount) {
+        this.employeeCount = employeeCount;
     }
 
-    public String getHead_office() {
-        return head_office;
+    @Column(name="head_office")
+    public String getHeadOffice() {
+        return headOffice;
     }
 
-    public void setHead_office(String head_office) {
-        this.head_office = head_office;
+    public void setHeadOffice(String headOffice) {
+        this.headOffice = headOffice;
     }
 
     public String getFounder() {
@@ -83,5 +83,4 @@ public class Company {
     public void setFounder(String founder) {
         this.founder = founder;
     }
-
 }

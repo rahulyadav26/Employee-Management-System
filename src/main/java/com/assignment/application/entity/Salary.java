@@ -1,100 +1,98 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Component
 @Entity
 @Table(name="salary")
 public class Salary {
 
     @Id
     @Column(name="id")
-    long id;
+    private Long id;
     @Column(name="emp_id")
-    String emp_id;
+    private String employeeId;
     @Column(name="emp_name")
-    String emp_name;
+    private String employeeName;
     @Column(name="salary")
-    double salary;
+    private Double salary;
     @Column(name="acc_no")
-    String acc_no;
+    private String accountNo;
     @Column(name="comp_id")
-    long comp_id;
+    private Long companyId;
     @Column(name="dept_id")
-    long dept_id;
+    private Long departmentId;
 
     public Salary(){
 
     }
 
-    public Salary(long id, String emp_id, String emp_name, double salary, String acc_no, long comp_id, long dept_id) {
+    public Salary(Long id, String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
         this.id = id;
-        this.emp_id = emp_id;
-        this.emp_name = emp_name;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
         this.salary = salary;
-        this.acc_no = acc_no;
-        this.comp_id = comp_id;
-        this.dept_id = dept_id;
+        this.accountNo = accountNo;
+        this.companyId = companyId;
+        this.departmentId = departmentId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getEmp_id() {
-        return emp_id;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmp_id(String emp_id) {
-        this.emp_id = emp_id;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public String getEmp_name() {
-        return emp_name;
+    public String getEmployeeName() {
+        return employeeName;
     }
 
-    public void setEmp_name(String emp_name) {
-        this.emp_name = emp_name;
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 
-    public String getAcc_no() {
-        return acc_no;
+    public String getAccountNo() {
+        return accountNo;
     }
 
-    public void setAcc_no(String acc_no) {
-        this.acc_no = acc_no;
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
     }
 
-    public long getComp_id() {
-        return comp_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setComp_id(long comp_id) {
-        this.comp_id = comp_id;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public long getDept_id() {
-        return dept_id;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDept_id(long dept_id) {
-        this.dept_id = dept_id;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 }

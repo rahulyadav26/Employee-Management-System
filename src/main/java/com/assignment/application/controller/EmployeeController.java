@@ -1,9 +1,8 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.entity.Employee;
-import com.assignment.application.service.interfaces.EmployeeServiceInterface;
-import com.assignment.application.update.employee.AddressUpdate;
-import com.assignment.application.update.employee.PositionUpdate;
+import com.assignment.application.service.interfaces.EmployeeServiceI;
+import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,42 +13,34 @@ import java.util.List;
 public class EmployeeController {
 
     @Autowired
-    private EmployeeServiceInterface employeeServiceInterface;
+    private EmployeeServiceI employeeServiceI;
 
-    @RequestMapping(value="/{company_id}/employee" , method = RequestMethod.POST)
-    public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") long companyId,@RequestBody Employee employee){
-        return employeeServiceInterface.addEmployee(companyId,employee);
+    @PostMapping(value="/{company_id}/employee")
+    public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,@RequestBody Employee employee){
+        return employeeServiceI.addEmployee(companyId,employee);
     }
 
-    @RequestMapping(value="{company_id}/employee" , method = RequestMethod.GET)
-    public ResponseEntity<List<Employee>> getEmployeesOfComp(@PathVariable("company_id") long companyId){
-        return employeeServiceInterface.getEmployeesOfComp(companyId);
+    @GetMapping(value="{company_id}/employee")
+    public ResponseEntity<List<Employee>> getEmployeesOfComp(@PathVariable("company_id") Long companyId){
+        return employeeServiceI.getEmployeesOfComp(companyId);
     }
 
-    @RequestMapping(value="/employee" , method = RequestMethod.GET)
+    @GetMapping(value="/employee")
     public ResponseEntity<List<Employee>> getEmployees(){
-        return employeeServiceInterface.getEmployees();
+        return employeeServiceI.getEmployees();
     }
 
-    @RequestMapping(value="/{company_id}/{emp_id}/address-update" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateCurrAddress(@PathVariable("emp_id") String emp_id,
-                                                    @PathVariable("company_id") long companyId,
-                                                    @RequestBody AddressUpdate addressUpdate){
-        return employeeServiceInterface.updateAddress(emp_id,companyId,addressUpdate);
+    @PatchMapping(value="/{company_id}/{emp_id}/update-employee-info")
+    public ResponseEntity<String> updateEmployeeInfo(@PathVariable("emp_id") String employeeId,
+                                                    @PathVariable("company_id") Long companyId,
+                                                    @RequestBody EmployeeInfoUpdate employeeInfoUpdate){
+        return employeeServiceI.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate);
     }
 
-    @RequestMapping(value="/{company_id}/{emp_id}/position-update" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updatePosition(@PathVariable("emp_id") String emp_id,
-                                                 @PathVariable("company_id") long companyId,
-                                                 @RequestBody PositionUpdate positionUpdate){
-        System.out.println(emp_id + " " + companyId + " " + positionUpdate.getPosition());
-        return employeeServiceInterface.updatePosition(emp_id,companyId,positionUpdate);
-    }
-
-    @RequestMapping(value="{company_id}/{emp_id}" , method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteEmployee(@PathVariable("company_id") long companyId,
+    @DeleteMapping(value="{company_id}/{emp_id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable("company_id") Long companyId,
                                                  @PathVariable("emp_id") String empId){
-        return employeeServiceInterface.deleteEmployee(companyId,empId);
+        return employeeServiceI.deleteEmployee(companyId,empId);
     }
 
 }
