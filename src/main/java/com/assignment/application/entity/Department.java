@@ -1,27 +1,24 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 
-@Component
 @Entity
 @Table(name="department")
 public class Department {
 
     @Id
     @Column(name="id")
-    long id;
+    private Long id;
     @Column(name="name")
-    String name;
+    private String name;
     @Column(name="comp_id")
-    long comp_id;
+    private Long companyId;
     @Column(name="employee_count")
-    long employee_count;
+    private Long employeeCount;
     @Column(name="ongoing_project")
-    long ongoing_project;
+    private Long ongoingProject;
     @Column(name="completed_project")
-    long completed_project;
+    private Long completedProject;
     @Column(name="head")
     String head;
 
@@ -29,21 +26,21 @@ public class Department {
 
     }
 
-    public Department(long id, String name, long comp_id, long employee_count, long ongoing_project, long completed_project, String head) {
+    public Department(Long id, String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
         this.id = id;
         this.name = name;
-        this.comp_id = comp_id;
-        this.employee_count = employee_count;
-        this.ongoing_project = ongoing_project;
-        this.completed_project = completed_project;
+        this.companyId = companyId;
+        this.employeeCount = employeeCount;
+        this.ongoingProject = ongoingProject;
+        this.completedProject = completedProject;
         this.head = head;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,36 +52,36 @@ public class Department {
         this.name = name;
     }
 
-    public long getComp_id() {
-        return comp_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setComp_id(long comp_id) {
-        this.comp_id = comp_id;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public long getEmployee_count() {
-        return employee_count;
+    public Long getEmployeeCount() {
+        return employeeCount;
     }
 
-    public void setEmployee_count(long employee_count) {
-        this.employee_count = employee_count;
+    public void setEmployeeCount(Long employeeCount) {
+        this.employeeCount = employeeCount;
     }
 
-    public long getOngoing_project() {
-        return ongoing_project;
+    public Long getOngoingProject() {
+        return ongoingProject;
     }
 
-    public void setOngoing_project(long ongoing_project) {
-        this.ongoing_project = ongoing_project;
+    public void setOngoingProject(Long ongoingProject) {
+        this.ongoingProject = ongoingProject;
     }
 
-    public long getCompleted_project() {
-        return completed_project;
+    public Long getCompletedProject() {
+        return completedProject;
     }
 
-    public void setCompleted_project(long completed_project) {
-        this.completed_project = completed_project;
+    public void setCompletedProject(Long completedProject) {
+        this.completedProject = completedProject;
     }
 
     public String getHead() {
@@ -94,5 +91,4 @@ public class Department {
     public void setHead(String head) {
         this.head = head;
     }
-
 }

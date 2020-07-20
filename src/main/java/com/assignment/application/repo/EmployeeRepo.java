@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface EmployeeRepo extends JpaRepository<Employee,Long> {
 
-    @Query("Select emp from Employee emp where emp.comp_id = ?1")
-    List<Employee> getAllEmpByCompId(long comp_id);
+    @Query(value = "Select emp from Employee emp where emp.companyId = ?1")
+    List<Employee> getAllEmpByCompId(Long companyId);
 
-    @Query("Select emp from Employee emp where emp.emp_id = ?1")
-    Employee getEmployee(String emp_id);
+    @Query(value = "Select emp from Employee emp where emp.employeeId = ?1")
+    Employee getEmployee(String employeeId);
 
 }

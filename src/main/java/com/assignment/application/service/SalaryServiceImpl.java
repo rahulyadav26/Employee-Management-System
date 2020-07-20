@@ -20,19 +20,15 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
     private SalaryRepo salaryRepo;
 
     @Autowired
-    private Salary salary;
-
-    @Autowired
     private DepartmentRepo departmentRepo;
 
     @Override
-    public ResponseEntity<Salary> addSalary(long compId, String empId, Salary salary) {
+    public ResponseEntity<Salary> addSalary(Long companyID, String employeeID, Salary salary) {
         try{
-            if(!salary.getEmp_id().equals(empId) || salary.getComp_id()!=compId){
+            if(!salary.getEmployeeId().equals(employeeID) || salary.getCompanyId()!=companyID ||salary.getId()==0){
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
-            this.salary = salaryRepo.save(salary);
-            return new ResponseEntity<>(salary,HttpStatus.OK);
+            return new ResponseEntity<>(salaryRepo.save(salary),HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -41,9 +37,9 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
     }
 
     @Override
-    public ResponseEntity<Salary> getSalary(long compId, String empId) {
+    public ResponseEntity<Salary> getSalary(Long companyId, String employeeId) {
         try{
-            salary = salaryRepo.getSalaryById(empId);
+            Salary salary = salaryRepo.getSalaryById(employeeId);
             return new ResponseEntity<>(salary,HttpStatus.OK);
         }
         catch (Exception e){
@@ -65,11 +61,11 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateSalary(long compId, SalaryUpdate salaryUpdate) {
+    public ResponseEntity<String> updateSalary(Long companyId, SalaryUpdate salaryUpdate) {
         try{
             if(salaryUpdate.getType().equals("0")){
                 //whole company
-                List<Salary> salaryList = salaryRepo.salaryListComp(compId);
+                List<Salary> salaryList = salaryRepo.salaryListComp(companyId);
                 if(salaryUpdate.getSubType().equals("0")){
                     //update by amount
                     for(int i=0;i<salaryList.size();i++){
@@ -87,8 +83,8 @@ public class SalaryServiceImpl implements SalaryServiceInterface {
             }
             else{
                 //dept of a company
-                Department department = departmentRepo.getDeptByCompId(compId,salaryUpdate.getDept_name());
-                List<Salary> salaryList = salaryRepo.salaryListCompDept(compId,department.getId());
+                Department department = departmentRepo.getDeptByCompId(companyId,salaryUpdate.getDept_name());
+                List<Salary> salaryList = salaryRepo.salaryListCompDept(companyId,department.getId());
                 if(salaryUpdate.getSubType().equals("0")){
                     //update by amount
                     for(int i=0;i<salaryList.size();i++){

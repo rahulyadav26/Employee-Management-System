@@ -1,45 +1,31 @@
 package com.assignment.application.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.service.interfaces.CompanyServiceInterface;
-import com.assignment.application.update.EmployeeUpdate;
-import com.assignment.application.update.IndustryUpdate;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
+import com.assignment.application.service.interfaces.CompanyServiceI;
+import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.jws.WebParam;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
-public class CompanyServiceImpl implements CompanyServiceInterface {
+public class CompanyServiceImpl implements CompanyServiceI {
 
     @Autowired
     private CompanyRepo companyRepo;
-    @Autowired
-    private Company companyNew;
 
     @Override
     public ResponseEntity<Company> createNewCompany(Company company) {
         try {
-            if(companyRepo.getCompany(company.getId())!=null || companyRepo.getCompanyByName(company.getName().toUpperCase())!=null){
+            if(companyRepo.getCompany(company.getId())!=null
+                    || companyRepo.getCompanyByName(company.getName().toUpperCase())!=null
+                    || company.getId()==0){
                 return new ResponseEntity<>(null,HttpStatus.OK);
             }
-            companyNew.setId(company.getId());
-            companyNew.setName(company.getName());
-            companyNew.setIndustry_type(company.getIndustry_type());
-            companyNew.setEmployee_count(company.getEmployee_count());
-            companyNew.setFounder(company.getFounder());
-            companyNew.setHead_office(company.getHead_office());
-            companyRepo.save(companyNew);
+            companyRepo.save(company);
             return new ResponseEntity<>(company,HttpStatus.OK);
         }
         catch (Exception e){
@@ -47,6 +33,7 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Override
     public ResponseEntity<List<Company>> getCompanyList() {
@@ -60,15 +47,16 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
         }
     }
 
+
     @Override
     public ResponseEntity<List<Object>> getCompleteCompInfo(String compName) {
         try{
-            companyNew = companyRepo.getCompanyByName(compName.toUpperCase());
-            if(companyNew==null){
+            Company company = companyRepo.getCompanyByName(compName.toUpperCase());
+            if(company==null){
                 return new ResponseEntity<>(null,HttpStatus.OK);
             }
-            List<Object> objectList = companyRepo.getCompDataSet(companyNew.getId());
-            return new ResponseEntity<>(objectList,HttpStatus.OK);
+            List<Object> objectList = companyRepo.getCompDataSet(company.getId());
+            return new ResponseEntity<List<Object>>(objectList,HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -77,12 +65,20 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateIndustryType(long id,IndustryUpdate industryUpdate) {
+    public ResponseEntity<String> updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
         try{
-            companyNew = companyRepo.findById(id).orElse(null);
-            if(companyNew!=null){
-                companyNew.setIndustry_type(industryUpdate.getIndustryType());
-                companyRepo.save(companyNew);
+            Company company = companyRepo.findById(id).orElse(null);
+            if(company!=null){
+                if(companyInfoUpdate.getFieldToUpdate().equalsIgnoreCase("Industry")){
+                    company.setIndustryType(companyInfoUpdate.getUpdatedValue());
+                }
+                else if(companyInfoUpdate.getFieldToUpdate().equalsIgnoreCase("Employee Count")){
+                    company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getUpdatedValue()));
+                }
+                else{
+                    return new ResponseEntity<>("Invalid Request",HttpStatus.OK);
+                }
+                companyRepo.save(company);
                 return new ResponseEntity<>("Update Successful",HttpStatus.OK);
             }
             else{
@@ -96,30 +92,11 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateEmployeeCount(long id,EmployeeUpdate employeeUpdate) {
+    public ResponseEntity<String> deleteCompany(Long id) {
         try{
-            companyNew = companyRepo.findById(id).orElse(null);
-            if(companyNew!=null){
-                companyNew.setEmployee_count(employeeUpdate.getEmployeeCount());
-                companyRepo.save(companyNew);
-                return new ResponseEntity<>("Update Successful",HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>("No such company exists",HttpStatus.OK);
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<String> deleteCompany(long id) {
-        try{
-            companyNew = companyRepo.findById(id).orElse(null);
-            if(companyNew!=null){
-                companyRepo.delete(companyNew);
+            Company company = companyRepo.findById(id).orElse(null);
+            if(company!=null){
+                companyRepo.delete(company);
                 return new ResponseEntity<>("Company deleted",HttpStatus.OK);
             }
             else{

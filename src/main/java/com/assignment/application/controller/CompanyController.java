@@ -1,15 +1,10 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteCompInfo;
-import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.service.interfaces.CompanyServiceInterface;
-import com.assignment.application.update.EmployeeUpdate;
-import com.assignment.application.update.IndustryUpdate;
+import com.assignment.application.service.interfaces.CompanyServiceI;
+import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,37 +15,33 @@ import java.util.List;
 public class CompanyController {
 
     @Autowired
-    private CompanyServiceInterface companyServiceInterface;
+    private CompanyServiceI companyServiceI;
 
 
-    @RequestMapping(value = "" , method = RequestMethod.POST)
+    @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company){
-        return companyServiceInterface.createNewCompany(company);
+        return companyServiceI.createNewCompany(company);
     }
 
-    @RequestMapping(value="" , method = RequestMethod.GET)
+    @GetMapping(value="")
     public ResponseEntity<List<Company>> getCompanyList(){
-        return companyServiceInterface.getCompanyList();
+        return companyServiceI.getCompanyList();
     }
 
-    @RequestMapping(value="/{comp_name}/complete-info" , method = RequestMethod.GET)
+
+    @GetMapping(value="/{comp_name}/complete-info")
     public ResponseEntity<List<Object>> getCompleteCompInfo(@PathVariable("comp_name")String compName){
-        return companyServiceInterface.getCompleteCompInfo(compName);
+        return companyServiceI.getCompleteCompInfo(compName);
     }
 
-    @RequestMapping(value="/{id}/industry-type" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateIndustryType(@PathVariable("id") long id,@RequestBody IndustryUpdate industryUpdate){
-        return companyServiceInterface.updateIndustryType(id,industryUpdate);
+    @PatchMapping(value="/{id}/company-update")
+    public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") long id,@RequestBody CompanyInfoUpdate companyInfoUpdate){
+        return companyServiceI.updateCompanyInfo(id,companyInfoUpdate);
     }
 
-    @RequestMapping(value="/{id}/employee-count" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateEmployeeCount(@PathVariable("id") long id,@RequestBody EmployeeUpdate employeeUpdate){
-        return companyServiceInterface.updateEmployeeCount(id,employeeUpdate);
-    }
-
-    @RequestMapping(value="/{id}" , method = RequestMethod.DELETE)
+    @DeleteMapping(value="/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id){
-        return companyServiceInterface.deleteCompany(id);
+        return companyServiceI.deleteCompany(id);
     }
 
 }

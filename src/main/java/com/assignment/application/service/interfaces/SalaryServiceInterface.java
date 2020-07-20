@@ -10,12 +10,12 @@ import java.util.List;
 @Component
 public interface SalaryServiceInterface {
 
-    ResponseEntity<Salary> addSalary(long compId,String empId,Salary salary);
+    ResponseEntity<Salary> addSalary(Long companyId,String employeeId,Salary salary);
 
-    ResponseEntity<Salary> getSalary(long compId,String empId);
+    ResponseEntity<Salary> getSalary(Long companyId,String employeeId);
 
     ResponseEntity<List<Salary>> getSalaryList();
 
-    ResponseEntity<String> updateSalary(long compId, SalaryUpdate salaryUpdate);
+    ResponseEntity<String> updateSalary(Long companyId, SalaryUpdate salaryUpdate);
 
 }

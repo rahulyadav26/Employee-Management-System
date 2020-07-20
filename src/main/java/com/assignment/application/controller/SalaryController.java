@@ -16,28 +16,28 @@ public class SalaryController {
     @Autowired
     SalaryServiceInterface salaryServiceInterface;
 
-    @RequestMapping(value="{comp_id}/{emp_id}/salary" , method = RequestMethod.POST)
-    public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") long compId,
-                                                @PathVariable("emp_id") String empId,
+    @PostMapping(value="{comp_id}/{emp_id}/salary" )
+    public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
+                                                @PathVariable("emp_id") String employeeId,
                                                 @RequestBody Salary salary){
-        return salaryServiceInterface.addSalary(compId,empId,salary);
+        return salaryServiceInterface.addSalary(companyId,employeeId,salary);
     }
 
-    @RequestMapping(value="{comp_id}/{emp_id}/salary" , method = RequestMethod.GET)
-    public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") long compId,
+    @GetMapping(value="{comp_id}/{emp_id}/salary" )
+    public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String empId){
-        return salaryServiceInterface.getSalary(compId,empId);
+        return salaryServiceInterface.getSalary(companyId,empId);
     }
 
-    @RequestMapping(value = "/salary" , method = RequestMethod.GET)
+    @GetMapping(value = "/salary")
     public ResponseEntity<List<Salary>> getSalaryList(){
         return salaryServiceInterface.getSalaryList();
     }
 
-    @RequestMapping(value = "{comp_id}/salary-update" , method = RequestMethod.PATCH)
-    public ResponseEntity<String> updateSalary(@PathVariable("comp_id") long compId,
+    @PatchMapping(value = "{comp_id}/salary-update")
+    public ResponseEntity<String> updateSalary(@PathVariable("comp_id") Long companyId,
                                                @RequestBody SalaryUpdate salaryUpdate){
-        return salaryServiceInterface.updateSalary(compId,salaryUpdate);
+        return salaryServiceInterface.updateSalary(companyId,salaryUpdate);
     }
 
 }

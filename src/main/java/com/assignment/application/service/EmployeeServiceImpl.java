@@ -1,35 +1,29 @@
 package com.assignment.application.service;
 
-import com.assignment.application.update.employee.AddressUpdate;
+import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.EmployeeRepo;
-import com.assignment.application.service.interfaces.EmployeeServiceInterface;
-import com.assignment.application.update.employee.PositionUpdate;
+import com.assignment.application.service.interfaces.EmployeeServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Component
-public class EmployeeServiceImpl implements EmployeeServiceInterface {
-
-    @Autowired
-    private Employee employee;
+public class EmployeeServiceImpl implements EmployeeServiceI {
 
     @Autowired
     private EmployeeRepo employeeRepo;
 
     @Override
-    public ResponseEntity<Employee> addEmployee(long id, Employee employee) {
+    public ResponseEntity<Employee> addEmployee(Long id, Employee employee) {
         try{
-            if(employee.getComp_id()!=id){
+            if(employee.getCompanyId()!=id || employee.getId()==0){
                 return new ResponseEntity<>(null,HttpStatus.OK);
             }
-            this.employee = employeeRepo.save(employee);
-            return new ResponseEntity<>(this.employee,HttpStatus.OK);
+            return new ResponseEntity<>(employeeRepo.save(employee),HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -38,9 +32,9 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     }
 
     @Override
-    public ResponseEntity<List<Employee>> getEmployeesOfComp(long company_id) {
+    public ResponseEntity<List<Employee>> getEmployeesOfComp(Long companyId) {
         try{
-            List<Employee> employeeList = employeeRepo.getAllEmpByCompId(company_id);
+            List<Employee> employeeList = employeeRepo.getAllEmpByCompId(companyId);
             return new ResponseEntity<>(employeeList,HttpStatus.OK);
         }
         catch (Exception e){
@@ -62,40 +56,23 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> updateAddress(String emp_id, long companyId, AddressUpdate addressUpdate) {
+    public ResponseEntity<String> updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         try{
-            employee = employeeRepo.getEmployee(emp_id);
-            if(employee.getComp_id()!=companyId){
+            Employee employee = employeeRepo.getEmployee(employeeId);
+            if(employee.getCompanyId()!=companyId){
                 return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
             }
-            if(addressUpdate.getType().equals("permanent")){
-                employee.setPermanent_add(addressUpdate.getAddress());
-                employeeRepo.save(employee);
-                return new ResponseEntity<>("Updated Permanent Address",HttpStatus.OK);
+            if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
+                employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
             }
-            else{
-                employee.setCurrent_add(addressUpdate.getAddress());
-                employeeRepo.save(employee);
-                return new ResponseEntity<>("Updated Current Address",HttpStatus.OK);
+            if(!employeeInfoUpdate.getPermanentAddress().isEmpty()){
+                employee.setPermanentAdd(employeeInfoUpdate.getPermanentAddress());
             }
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<String> updatePosition(String emp_id, long companyId, PositionUpdate positionUpdate) {
-        try{
-            employee = employeeRepo.getEmployee(emp_id);
-            if(employee.getComp_id()!=companyId){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
+            if(!employeeInfoUpdate.getPosition().isEmpty()){
+                employee.setPosition(employeeInfoUpdate.getPosition());
             }
-            employee.setPosition(positionUpdate.getPosition());
             employeeRepo.save(employee);
-            return new ResponseEntity<>("Update Successful",HttpStatus.OK);
+            return new ResponseEntity<>("Updated Permanent Address",HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -104,10 +81,10 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> deleteEmployee(long companyId, String emp_id) {
+    public ResponseEntity<String> deleteEmployee(Long companyId, String employeeId) {
         try{
-            employee = employeeRepo.getEmployee(emp_id);
-            if(companyId!=employee.getComp_id()){
+            Employee employee = employeeRepo.getEmployee(employeeId);
+            if(companyId!=employee.getCompanyId()){
                 return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
             }
             employeeRepo.delete(employee);

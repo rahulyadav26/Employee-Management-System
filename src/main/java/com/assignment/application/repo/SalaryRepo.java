@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface SalaryRepo extends JpaRepository<Salary,Long> {
 
-    @Query("Select sal from Salary sal where sal.emp_id=?1")
+    @Query("Select sal from Salary sal where sal.employeeId=?1")
     Salary getSalaryById(String empId);
 
-    @Query("Select sal from Salary sal where sal.comp_id=?1")
-    List<Salary> salaryListComp(long compId);
+    @Query("Select sal from Salary sal where sal.companyId=?1")
+    List<Salary> salaryListComp(Long compId);
 
-    @Query("Select sal from Salary sal where sal.comp_id=?1 and sal.dept_id=?2")
-    List<Salary> salaryListCompDept(long compId,long deptId);
+    @Query("Select sal from Salary sal where sal.companyId=?1 and sal.departmentId=?2")
+    List<Salary> salaryListCompDept(Long compId,Long deptId);
 }
