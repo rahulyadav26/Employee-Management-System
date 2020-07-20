@@ -2,7 +2,7 @@ package com.assignment.application.service;
 
 import com.assignment.application.entity.Project;
 import com.assignment.application.repo.ProjectRepo;
-import com.assignment.application.service.interfaces.ProjectServiceInterface;
+import com.assignment.application.service.interfaces.ProjectServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,22 +11,19 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ProjectServiceImpl implements ProjectServiceInterface {
+public class ProjectServiceImpl implements ProjectServiceI {
 
     @Autowired
     private ProjectRepo projectRepo;
 
-    @Autowired
-    private Project project;
 
     @Override
-    public ResponseEntity<Project> addCompProject(long compId, Project project) {
+    public ResponseEntity<Project> addCompProject(Long companyId, Project project) {
         try{
-            if(project.getComp_id()!=compId){
+            if(project.getCompanyId()!=companyId || project.getId()==0){
                 return new ResponseEntity<>(null,HttpStatus.OK);
             }
-            this.project = projectRepo.save(project);
-            return new ResponseEntity<>(this.project,HttpStatus.OK);
+            return new ResponseEntity<>(projectRepo.save(project),HttpStatus.OK);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -35,12 +32,11 @@ public class ProjectServiceImpl implements ProjectServiceInterface {
     }
 
     @Override
-    public ResponseEntity<String> deleteProject(long projectId,long compId) {
+    public ResponseEntity<String> deleteProject(Long projectId,Long compId) {
         try{
 
-            project = projectRepo.findById(projectId).orElse(null);
-            System.out.println(project.getComp_id() + " " + compId);
-            if(project.getComp_id()!=compId){
+            Project project = projectRepo.findById(projectId).orElse(null);
+            if(project.getCompanyId()!=compId){
                 return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
             }
             projectRepo.deleteById(projectId);
@@ -53,7 +49,7 @@ public class ProjectServiceImpl implements ProjectServiceInterface {
     }
 
     @Override
-    public ResponseEntity<List<Project>> getProject(long compId) {
+    public ResponseEntity<List<Project>> getProject(Long compId) {
         try{
             List<Project> projectList = projectRepo.getProjectListById(compId);
             return new ResponseEntity<>(projectList,HttpStatus.OK);

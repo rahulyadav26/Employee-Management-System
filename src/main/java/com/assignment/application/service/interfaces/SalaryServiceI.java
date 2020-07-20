@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public interface SalaryServiceInterface {
+public interface SalaryServiceI {
 
     ResponseEntity<Salary> addSalary(Long companyId,String employeeId,Salary salary);
 

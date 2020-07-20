@@ -69,14 +69,11 @@ public class CompanyServiceImpl implements CompanyServiceI {
         try{
             Company company = companyRepo.findById(id).orElse(null);
             if(company!=null){
-                if(companyInfoUpdate.getFieldToUpdate().equalsIgnoreCase("Industry")){
-                    company.setIndustryType(companyInfoUpdate.getUpdatedValue());
+                if(!companyInfoUpdate.getIndustryType().isEmpty()){
+                    company.setIndustryType(companyInfoUpdate.getIndustryType());
                 }
-                else if(companyInfoUpdate.getFieldToUpdate().equalsIgnoreCase("Employee Count")){
-                    company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getUpdatedValue()));
-                }
-                else{
-                    return new ResponseEntity<>("Invalid Request",HttpStatus.OK);
+                if(!companyInfoUpdate.getEmployeeCount().isEmpty()){
+                    company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
                 }
                 companyRepo.save(company);
                 return new ResponseEntity<>("Update Successful",HttpStatus.OK);

@@ -8,12 +8,12 @@ import java.util.List;
 
 
 @Component
-public interface ProjectServiceInterface {
+public interface ProjectServiceI {
 
-    ResponseEntity<Project> addCompProject(long compId,Project project);
+    ResponseEntity<Project> addCompProject(Long companyId,Project project);
 
-    ResponseEntity<String> deleteProject(long projectId,long compId);
+    ResponseEntity<String> deleteProject(Long projectId,Long companyId);
 
-    ResponseEntity<List<Project>> getProject(long compId);
+    ResponseEntity<List<Project>> getProject(Long companyId);
 
 }

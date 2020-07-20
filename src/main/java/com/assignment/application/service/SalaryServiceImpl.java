@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.service.interfaces.SalaryServiceInterface;
+import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.update.SalaryUpdate;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class SalaryServiceImpl implements SalaryServiceInterface {
+public class SalaryServiceImpl implements SalaryServiceI {
 
     @Autowired
     private SalaryRepo salaryRepo;
