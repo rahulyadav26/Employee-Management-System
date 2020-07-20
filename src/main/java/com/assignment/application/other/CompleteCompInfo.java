@@ -1,4 +1,4 @@
-package com.assignment.application.entity;
+package com.assignment.application.other;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;

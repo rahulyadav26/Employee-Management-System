@@ -1,6 +1,7 @@
 package com.assignment.application.service;
 
 import com.assignment.application.entity.Company;
+import com.assignment.application.other.CachingInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -16,6 +17,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
 
     @Autowired
     private CompanyRepo companyRepo;
+
+    @Autowired
+    private CachingInfo cachingInfo;
 
     @Override
     public ResponseEntity<Company> createNewCompany(Company company) {
@@ -47,16 +51,15 @@ public class CompanyServiceImpl implements CompanyServiceI {
         }
     }
 
-
     @Override
     public ResponseEntity<List<Object>> getCompleteCompInfo(String compName) {
         try{
             Company company = companyRepo.getCompanyByName(compName.toUpperCase());
             if(company==null){
-                return new ResponseEntity<>(null,HttpStatus.OK);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
-            List<Object> objectList = companyRepo.getCompDataSet(company.getId());
-            return new ResponseEntity<List<Object>>(objectList,HttpStatus.OK);
+            List<Object> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getName().toLowerCase(),company.getId());
+            return new ResponseEntity<List<Object>>(companyInfoList,HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();

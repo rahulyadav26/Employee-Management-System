@@ -35,7 +35,7 @@ public class CompanyController {
     }
 
     @PatchMapping(value="/{id}/company-update")
-    public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") long id,@RequestBody CompanyInfoUpdate companyInfoUpdate){
+    public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") Long id,@RequestBody CompanyInfoUpdate companyInfoUpdate){
         return companyServiceI.updateCompanyInfo(id,companyInfoUpdate);
     }
 
