@@ -1,5 +1,8 @@
 package com.assignment.application.service;
 
+import com.assignment.application.entity.Company;
+import com.assignment.application.other.CachingInfo;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.EmployeeRepo;
@@ -17,12 +20,21 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private EmployeeRepo employeeRepo;
 
+    @Autowired
+    private CachingInfo cachingInfo;
+
+    @Autowired
+    private CompanyRepo companyRepo;
+
+
     @Override
-    public ResponseEntity<Employee> addEmployee(Long id, Employee employee) {
+    public ResponseEntity<Employee> addEmployee(Long companyId, Employee employee) {
         try{
-            if(employee.getCompanyId()!=id || employee.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.OK);
+            Company company = companyRepo.getCompany(companyId);
+            if(employee.getCompanyId()!=companyId || employee.getId()==0){
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
+            Employee employeeTemp = cachingInfo.addEmployee(companyId,employee,company.getName());
             return new ResponseEntity<>(employeeRepo.save(employee),HttpStatus.OK);
         }
         catch (Exception e){
@@ -34,7 +46,8 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public ResponseEntity<List<Employee>> getEmployeesOfComp(Long companyId) {
         try{
-            List<Employee> employeeList = employeeRepo.getAllEmpByCompId(companyId);
+            Company company = companyRepo.getCompany(companyId);
+            List<Employee> employeeList = cachingInfo.getEmployeeOfComp(company.getName().toLowerCase(),company.getId());
             return new ResponseEntity<>(employeeList,HttpStatus.OK);
         }
         catch (Exception e){
@@ -58,21 +71,13 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public ResponseEntity<String> updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         try{
-            Employee employee = employeeRepo.getEmployee(employeeId);
-            if(employee.getCompanyId()!=companyId){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
+            Company company = companyRepo.getCompany(companyId);
+            if(cachingInfo.updateEmployeeInfo(employeeId,companyId,employeeInfoUpdate,company.getName().toLowerCase()).equalsIgnoreCase("Invalid Credentials")){
+                return new ResponseEntity<>("Invalid Credentials",HttpStatus.BAD_REQUEST);
             }
-            if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
-                employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
+            else{
+                return new ResponseEntity<>("Update Successful",HttpStatus.OK);
             }
-            if(!employeeInfoUpdate.getPermanentAddress().isEmpty()){
-                employee.setPermanentAdd(employeeInfoUpdate.getPermanentAddress());
-            }
-            if(!employeeInfoUpdate.getPosition().isEmpty()){
-                employee.setPosition(employeeInfoUpdate.getPosition());
-            }
-            employeeRepo.save(employee);
-            return new ResponseEntity<>("Updated Permanent Address",HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();

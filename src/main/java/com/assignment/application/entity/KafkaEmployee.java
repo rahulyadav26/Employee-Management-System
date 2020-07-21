@@ -1,46 +1,48 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.kafka.common.protocol.types.Field;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
-@Entity
-@Table(name="employee")
-public class Employee implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class KafkaEmployee implements Serializable {
 
-    @Id
-    @Column(name="id")
+    @JsonProperty(value = "id")
     private Long id;
-    @Column(name="name")
+    @JsonProperty(value = "name")
     private String name;
-    @Column(name="dob")
+    @JsonProperty(value = "dob")
     private String dob;
-    @Column(name="permanent_add")
+    @JsonProperty(value = "permanent_add")
     private String permanentAdd;
-    @Column(name="current_add")
+    @JsonProperty(value = "current_add")
     private String currentAdd;
-    @Column(name="phone_number")
+    @JsonProperty(value = "phone_number")
     private String phoneNumber;
-    @Column(name="position")
+    @JsonProperty(value = "position")
     private String position;
-    @Column(name="dept_id")
+    @JsonProperty(value = "department_id")
     private Long departmentId;
-    @Column(name="project_id")
+    @JsonProperty(value = "project_id")
     private Long projectId;
-    @Column(name="comp_id")
+    @JsonProperty(value = "company_id")
     private Long companyId;
-    @Column(name="emp_id")
+    @JsonProperty(value = "employee_id")
     private String employeeId;
+    @JsonProperty(value = "salary")
+    private Double salary;
+    @JsonProperty(value = "acc_no")
+    private String accNo;
 
-    public Employee(){
+    public KafkaEmployee(){
 
     }
 
-    public Employee(Long id, String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
+    public KafkaEmployee(Long id, String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId, Double salary, String accNo) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -52,6 +54,8 @@ public class Employee implements Serializable {
         this.projectId = projectId;
         this.companyId = companyId;
         this.employeeId = employeeId;
+        this.salary = salary;
+        this.accNo = accNo;
     }
 
     public Long getId() {
@@ -140,5 +144,21 @@ public class Employee implements Serializable {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+
+    public String getAccNo() {
+        return accNo;
+    }
+
+    public void setAccNo(String accNo) {
+        this.accNo = accNo;
     }
 }

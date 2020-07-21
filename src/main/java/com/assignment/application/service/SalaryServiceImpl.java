@@ -1,5 +1,8 @@
 package com.assignment.application.service;
 
+import com.assignment.application.entity.Company;
+import com.assignment.application.other.CachingInfo;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.DepartmentRepo;
@@ -21,6 +24,12 @@ public class SalaryServiceImpl implements SalaryServiceI {
 
     @Autowired
     private DepartmentRepo departmentRepo;
+
+    @Autowired
+    private CompanyRepo companyRepo;
+
+    @Autowired
+    private CachingInfo cachingInfo;
 
     @Override
     public ResponseEntity<Salary> addSalary(Long companyID, String employeeID, Salary salary) {
@@ -63,6 +72,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     @Override
     public ResponseEntity<String> updateSalary(Long companyId, SalaryUpdate salaryUpdate) {
         try{
+            Company company = companyRepo.getCompany(companyId);
             if(salaryUpdate.getType().equals("0")){
                 //whole company
                 List<Salary> salaryList = salaryRepo.salaryListComp(companyId);
@@ -79,7 +89,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
                         salaryList.get(i).setSalary(salaryList.get(i).getSalary()+val);
                     }
                 }
-                salaryRepo.saveAll(salaryList);
+                cachingInfo.updateSalary(salaryList,company.getName());
             }
             else{
                 //dept of a company
@@ -98,7 +108,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
                         salaryList.get(i).setSalary(salaryList.get(i).getSalary()+val);
                     }
                 }
-                salaryRepo.saveAll(salaryList);
+                cachingInfo.updateSalary(salaryList,company.getName());
             }
             return new ResponseEntity<>("Salary Updated",HttpStatus.OK);
         }

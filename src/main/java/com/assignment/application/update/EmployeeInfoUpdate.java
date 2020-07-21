@@ -13,7 +13,10 @@ public class EmployeeInfoUpdate {
     private String permanentAddress;
 
     @JsonProperty(value = "position")
-    String position;
+    private String position;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
     public String getCurrentAddress() {
         return currentAddress;
@@ -37,5 +40,13 @@ public class EmployeeInfoUpdate {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

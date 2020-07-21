@@ -1,10 +1,7 @@
 package com.assignment.application.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="salary")
@@ -12,6 +9,7 @@ public class Salary {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="emp_id")
     private String employeeId;
@@ -32,6 +30,15 @@ public class Salary {
 
     public Salary(Long id, String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
         this.id = id;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.salary = salary;
+        this.accountNo = accountNo;
+        this.companyId = companyId;
+        this.departmentId = departmentId;
+    }
+
+    public Salary(String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.salary = salary;
