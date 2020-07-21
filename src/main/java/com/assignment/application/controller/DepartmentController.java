@@ -1,9 +1,11 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.entity.Department;
+import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,28 +17,62 @@ public class DepartmentController {
     @Autowired
     private DepartmentServiceI departmentServiceI;
 
+    @Autowired
+    private VerifyUser verifyUser;
+
     @PostMapping(value="/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
-                                                    @RequestBody Department department){
-        return departmentServiceI.addDepartment(companyId,department);
+                                                    @RequestBody Department department,
+                                                    @RequestHeader("username") String username,
+                                                    @RequestHeader("password") String password){
+        int status = verifyUser.authorizeUser(username,password);
+        if(status==0){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            return departmentServiceI.addDepartment(companyId, department);
+        }
     }
 
     @GetMapping(value="/department")
-    public ResponseEntity<List<Department>> getDepartments(){
-        return departmentServiceI.getDepartments();
+    public ResponseEntity<List<Department>> getDepartments(@RequestHeader("username") String username,
+                                                           @RequestHeader("password") String password){
+        int status = verifyUser.authorizeUser(username,password);
+        if(status==0){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            return departmentServiceI.getDepartments();
+        }
     }
 
     @GetMapping(value="/{company_id}/department/{id}")
     public ResponseEntity<Department> getDepartment(@PathVariable("id") Long id,
-                                                    @PathVariable("company_id") Long companyId){
-        return departmentServiceI.getDepartment(companyId,id);
+                                                    @PathVariable("company_id") Long companyId,
+                                                    @RequestHeader("username") String username,
+                                                    @RequestHeader("password") String password){
+        int status = verifyUser.authorizeUser(username,password);
+        if(status==0){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            return departmentServiceI.getDepartment(companyId, id);
+        }
     }
 
     @PatchMapping(value="/{company_id}/department/{id}/update-department")
     public ResponseEntity<String> updateDepartmentInfo(@PathVariable("id") Long id,
-                                             @PathVariable("company_id") Long companyId,
-                                             @RequestBody DepartmentInfoUpdate departmentInfoUpdate){
-        return departmentServiceI.updateDepartmentInfo(companyId,id, departmentInfoUpdate);
+                                                       @PathVariable("company_id") Long companyId,
+                                                       @RequestBody DepartmentInfoUpdate departmentInfoUpdate,
+                                                       @RequestHeader("username") String username,
+                                                       @RequestHeader("password") String password){
+        int status = verifyUser.authorizeUser(username,password);
+        if(status==0){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            return departmentServiceI.updateDepartmentInfo(companyId, id, departmentInfoUpdate);
+        }
     }
 
 }
