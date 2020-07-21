@@ -90,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         try{
             Employee employee = employeeRepo.getEmployee(employeeId);
             if(companyId!=employee.getCompanyId()){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
+                return new ResponseEntity<>("Invalid credentials",HttpStatus.BAD_REQUEST);
             }
             employeeRepo.delete(employee);
             return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);

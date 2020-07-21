@@ -21,7 +21,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     public ResponseEntity<Department> addDepartment(Long companyId,Department department) {
         try{
             if(companyId!=department.getCompanyId() || department.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(departmentRepo.save(department),HttpStatus.OK);
         }
@@ -48,7 +48,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
         try{
             Department department = departmentRepo.findById(id).orElse(null);
             if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>("No such department exists",HttpStatus.OK);
+                return new ResponseEntity<>("No such department exists",HttpStatus.BAD_REQUEST);
             }
             if(!departmentInfoUpdate.getHead().isEmpty()){
                 department.setHead(departmentInfoUpdate.getHead());
@@ -76,7 +76,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
         try{
             Department department = departmentRepo.findById(id).orElse(null);
             if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>(null,HttpStatus.OK);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(department,HttpStatus.OK);
         }

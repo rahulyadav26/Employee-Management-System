@@ -49,7 +49,6 @@ public class Company{
         this.name = name;
     }
 
-    @Column(name="industry_type")
     public String getIndustryType() {
         return industryType;
     }
@@ -58,7 +57,6 @@ public class Company{
         this.industryType = industryType;
     }
 
-    @Column(name="employee_count")
     public Long getEmployeeCount() {
         return employeeCount;
     }
@@ -67,7 +65,6 @@ public class Company{
         this.employeeCount = employeeCount;
     }
 
-    @Column(name="head_office")
     public String getHeadOffice() {
         return headOffice;
     }

@@ -27,7 +27,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
             if(companyRepo.getCompany(company.getId())!=null
                     || companyRepo.getCompanyByName(company.getName().toUpperCase())!=null
                     || company.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.OK);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
             companyRepo.save(company);
             return new ResponseEntity<>(company,HttpStatus.OK);
@@ -43,7 +43,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
     public ResponseEntity<List<Company>> getCompanyList() {
         try {
             List<Company> companyList = companyRepo.findAll();
-            return new ResponseEntity<>(companyList,HttpStatus.OK);
+            return new ResponseEntity<>(companyList,HttpStatus.BAD_REQUEST);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
                 return new ResponseEntity<>("Update Successful",HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>("No such company exists",HttpStatus.OK);
+                return new ResponseEntity<>("No such company exists",HttpStatus. BAD_REQUEST);
             }
         }
         catch (Exception e){
@@ -100,7 +100,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
                 return new ResponseEntity<>("Company deleted",HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>("No such company exists",HttpStatus.OK);
+                return new ResponseEntity<>("No such company exists",HttpStatus.BAD_REQUEST);
             }
         }
         catch(Exception e){

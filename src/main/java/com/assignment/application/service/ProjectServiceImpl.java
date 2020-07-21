@@ -21,7 +21,7 @@ public class ProjectServiceImpl implements ProjectServiceI {
     public ResponseEntity<Project> addCompProject(Long companyId, Project project) {
         try{
             if(project.getCompanyId()!=companyId || project.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.OK);
+                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(projectRepo.save(project),HttpStatus.OK);
         }
@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectServiceI {
 
             Project project = projectRepo.findById(projectId).orElse(null);
             if(project.getCompanyId()!=compId){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
+                return new ResponseEntity<>("Invalid credentials",HttpStatus.BAD_REQUEST);
             }
             projectRepo.deleteById(projectId);
             return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);

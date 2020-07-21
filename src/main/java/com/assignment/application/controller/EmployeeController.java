@@ -77,7 +77,6 @@ public class EmployeeController {
                                                      @RequestHeader("username") String username,
                                                      @RequestHeader("password") String password){
         int status = 0;
-        System.out.println("username and password " + username + " " + password);
         if(verifyUser.authorizeUser(username,password)==1 || (verifyUser.authorizeEmployee(username,password)==1 && employeeId.equalsIgnoreCase(username))){
             status=1;
         }

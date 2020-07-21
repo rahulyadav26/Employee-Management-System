@@ -20,7 +20,7 @@ public class Department {
     @Column(name="completed_project")
     private Long completedProject;
     @Column(name="head")
-    String head;
+    private String head;
 
     public Department(){
 

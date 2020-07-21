@@ -35,7 +35,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     public ResponseEntity<Salary> addSalary(Long companyID, String employeeID, Salary salary) {
         try{
             if(!salary.getEmployeeId().equals(employeeID) || salary.getCompanyId()!=companyID ||salary.getId()==0){
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(salaryRepo.save(salary),HttpStatus.OK);
         }
@@ -82,7 +82,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
                         salaryList.get(i).setSalary(salaryList.get(i).getSalary()+salaryUpdate.getValue());
                     }
                 }
-                else{
+                else if(salaryUpdate.getSubType().equals("1")){
                     //update by percentage
                     for(int i=0;i<salaryList.size();i++){
                         double val = (salaryUpdate.getValue()/(double)100)*salaryList.get(i).getSalary();
@@ -91,7 +91,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
                 }
                 cachingInfo.updateSalary(salaryList,company.getName());
             }
-            else{
+            else if(salaryUpdate.getType().equals("1")){
                 //dept of a company
                 Department department = departmentRepo.getDeptByCompId(companyId,salaryUpdate.getDept_name());
                 List<Salary> salaryList = salaryRepo.salaryListCompDept(companyId,department.getId());
