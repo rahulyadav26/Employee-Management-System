@@ -1,10 +1,12 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.entity.Employee;
+import com.assignment.application.entity.Salary;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,17 @@ public class EmployeeController {
     @Autowired
     private EmployeeServiceI employeeServiceI;
 
+    @Autowired
+    private KafkaTemplate<String,EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Autowired
+    private KafkaTemplate<String,Employee> kafkaTemplateEmployee;
+
+    public final String TOPIC="EmployeeInformation";
+
     @PostMapping(value="/{company_id}/employee")
     public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,@RequestBody Employee employee){
+        kafkaTemplateEmployee.send(TOPIC,employee);
         return employeeServiceI.addEmployee(companyId,employee);
     }
 
@@ -34,6 +45,7 @@ public class EmployeeController {
     public ResponseEntity<String> updateEmployeeInfo(@PathVariable("emp_id") String employeeId,
                                                     @PathVariable("company_id") Long companyId,
                                                     @RequestBody EmployeeInfoUpdate employeeInfoUpdate){
+        kafkaTemplateEmployeeUpdate.send(TOPIC,employeeInfoUpdate);
         return employeeServiceI.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate);
     }
 

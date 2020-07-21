@@ -28,13 +28,13 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
 
 
     @Override
-    public ResponseEntity<Employee> addEmployee(Long id, Employee employee) {
+    public ResponseEntity<Employee> addEmployee(Long companyId, Employee employee) {
         try{
-            Company company = companyRepo.getCompany(id);
-            if(employee.getCompanyId()!=id || employee.getId()==0){
+            Company company = companyRepo.getCompany(companyId);
+            if(employee.getCompanyId()!=companyId || employee.getId()==0){
                 return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
             }
-            Employee employeeTemp = cachingInfo.addEmployee(id,employee,company.getName());
+            Employee employeeTemp = cachingInfo.addEmployee(companyId,employee,company.getName());
             return new ResponseEntity<>(employeeRepo.save(employee),HttpStatus.OK);
         }
         catch (Exception e){
