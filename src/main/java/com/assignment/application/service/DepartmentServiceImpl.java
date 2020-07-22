@@ -1,6 +1,9 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
@@ -17,10 +20,16 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     @Autowired
     private DepartmentRepo departmentRepo;
 
+    @Autowired
+    private CompanyRepo companyRepo;
+
+    @Autowired
+    private StringConstants stringConstants;
+
     @Override
     public Department addDepartment(Long companyId, Department department) {
-
-        if (department == null || !companyId.equals(department.getCompanyId()) || department.getId().equals(0)) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (department == null || company==null || !companyId.equals(department.getCompanyId()) || department.getId().equals(0)) {
             return null;
         }
         return departmentRepo.save(department);
@@ -36,8 +45,9 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     @Override
     public String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
         Department department = departmentRepo.findById(id).orElse(null);
-        if (department == null || !department.getCompanyId().equals(companyId) || departmentInfoUpdate == null) {
-            return "No such department exists";
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (department == null || company==null || !department.getCompanyId().equals(companyId) || departmentInfoUpdate == null) {
+            return stringConstants.invalidStatus;
         }
         if (!departmentInfoUpdate.getHead().isEmpty()) {
             department.setHead(departmentInfoUpdate.getHead());
@@ -52,15 +62,27 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
             department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
         }
         departmentRepo.save(department);
-        return "Update Successful";
+        return stringConstants.updateStatus;
     }
 
     @Override
     public Department getDepartment(Long companyId, Long id) {
         Department department = departmentRepo.findById(id).orElse(null);
-        if (department == null || !department.getCompanyId().equals(companyId)) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (department == null || company==null || !department.getCompanyId().equals(companyId)) {
             return null;
         }
         return department;
+    }
+
+    @Override
+    public String deleteDepartmentOfCompany(Long id, Long companyId) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        Department department = departmentRepo.findById(id).orElse(null);
+        if(company==null || department==null || !department.getCompanyId().equals(company.getId())){
+            return stringConstants.invalidStatus;
+        }
+        departmentRepo.deleteById(id);
+        return stringConstants.deleteStatus;
     }
 }

@@ -1,5 +1,6 @@
 package com.assignment.application.controller;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.CompanyServiceI;
@@ -22,10 +23,8 @@ public class CompanyController {
     @Autowired
     private VerifyUser verifyUser;
 
-    public final String updateString = "Update Successful";
-
-    public final String deleteString = "Company Deleted";
-
+    @Autowired
+    private StringConstants stringConstants;
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,
@@ -80,10 +79,10 @@ public class CompanyController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (companyServiceI.updateCompanyInfo(id, companyInfoUpdate).equals(updateString)) {
-            return new ResponseEntity<>(updateString, HttpStatus.OK);
+        if (companyServiceI.updateCompanyInfo(id, companyInfoUpdate).equals(stringConstants.updateStatus)) {
+            return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No such company exists", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -95,10 +94,10 @@ public class CompanyController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (companyServiceI.deleteCompany(id).equals(deleteString)) {
-            return new ResponseEntity<>(deleteString, HttpStatus.OK);
+        if (companyServiceI.deleteCompany(id).equals(stringConstants.deleteStatus)) {
+            return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No such company exists", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
     }
 
 }

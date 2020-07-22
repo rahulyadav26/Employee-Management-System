@@ -24,6 +24,7 @@ public class ResponseLogging extends OncePerRequestFilter {
         byte[] requestArray = requestWrapper.getContentAsByteArray();
         String requestBody = new String(requestArray,requestWrapper.getCharacterEncoding());
         System.out.println("Request Body " + requestBody);
+
         byte[] responseArray= responseWrapper.getContentAsByteArray();
         String responseBody = new String(responseArray,responseWrapper.getCharacterEncoding());
         System.out.println("Response Body " + requestBody);

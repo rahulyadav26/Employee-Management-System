@@ -1,6 +1,7 @@
 package com.assignment.application.controller;
 
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.SalaryServiceI;
@@ -25,9 +26,11 @@ public class SalaryController {
     @Autowired
     private VerifyUser verifyUser;
 
+    @Autowired
+    private StringConstants stringConstants;
+
     public final String TOPIC = "SalaryUpdate";
 
-    public final String updateStatus = "Salary Updated";
 
     @PostMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
@@ -35,18 +38,14 @@ public class SalaryController {
                                                 @RequestBody Salary salary,
                                                 @RequestHeader("username") String username,
                                                 @RequestHeader("password") String password) {
-        int status = 0;
         if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-            status = 1;
+            Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
+            if (salary == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
         }
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
-        if (salary == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping(value = "{comp_id}/{emp_id}/salary")
@@ -54,18 +53,14 @@ public class SalaryController {
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestHeader("username") String username,
                                                 @RequestHeader("password") String password) {
-        int status = 0;
         if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-            status = 1;
+            Salary salary = salaryServiceI.getSalary(companyId, employeeId);
+            if (salary == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(salary, HttpStatus.OK);
         }
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        Salary salary = salaryServiceI.getSalary(companyId, employeeId);
-        if (salary == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(salary, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping(value = "/salary")
@@ -91,11 +86,11 @@ public class SalaryController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(updateStatus)) {
+        if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(stringConstants.updateStatus)) {
             kafkaTemplateSalary.send(TOPIC, salaryUpdate);
-            return new ResponseEntity<>(updateStatus, HttpStatus.OK);
+            return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.BAD_REQUEST);
     }
 
 }

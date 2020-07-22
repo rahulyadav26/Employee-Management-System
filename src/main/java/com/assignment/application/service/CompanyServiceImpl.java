@@ -1,5 +1,6 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
@@ -18,10 +19,13 @@ public class CompanyServiceImpl implements CompanyServiceI {
     @Autowired
     private CachingInfo cachingInfo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
     @Override
     public Company createNewCompany(Company company) {
         if (company == null
-                || companyRepo.getCompany(company.getId()) != null
+                || companyRepo.findById(company.getId()) != null
                 || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null
                 || company.getId().equals(0)) {
             return null;
@@ -34,6 +38,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
     @Override
     public List<Company> getCompanyList() {
         List<Company> companyList = companyRepo.findAll();
+        if(companyList==null){
+            return null;
+        }
         return companyList;
     }
 
@@ -60,9 +67,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
                 company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
             }
             companyRepo.save(company);
-            return "Update Successful";
+            return stringConstants.updateStatus;
         }
-        return "No such company exists";
+        return stringConstants.invalidStatus;
     }
 
     @Override
@@ -70,9 +77,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
         Company company = companyRepo.findById(id).orElse(null);
         if (company != null) {
             companyRepo.delete(company);
-            return "Company Deleted";
+            return stringConstants.deleteStatus;
         }
-        return "No such company exists";
+        return stringConstants.invalidStatus;
 
     }
 }

@@ -1,5 +1,6 @@
 package com.assignment.application.controller;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Department;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
@@ -20,7 +21,8 @@ public class DepartmentController {
     @Autowired
     private VerifyUser verifyUser;
 
-    public final String updateStatus = "Update Successful";
+    @Autowired
+    private StringConstants stringConstants;
 
     @PostMapping(value = "/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
@@ -77,11 +79,24 @@ public class DepartmentController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if(departmentServiceI.updateDepartmentInfo(companyId,id,departmentInfoUpdate).equals(updateStatus)){
-            return new ResponseEntity<>(updateStatus,HttpStatus.OK);
+        if(departmentServiceI.updateDepartmentInfo(companyId,id,departmentInfoUpdate).equals(stringConstants.updateStatus)){
+            return new ResponseEntity<>(stringConstants.updateStatus,HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid Request",HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<>(stringConstants.invalidStatus,HttpStatus.BAD_REQUEST);
+    }
+    @DeleteMapping(value = "/{company_id}/department/{id}")
+    public ResponseEntity<String> deleteDepartmentOfCompany(@PathVariable("id") Long id,
+                                                            @PathVariable("company_id") Long companyId,
+                                                            @RequestHeader("username") String username,
+                                                            @RequestHeader("password") String password){
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        if(departmentServiceI.deleteDepartmentOfCompany(id,companyId).equalsIgnoreCase(stringConstants.deleteStatus)){
+            return new ResponseEntity<>(stringConstants.deleteStatus,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(stringConstants.invalidStatus,HttpStatus.BAD_REQUEST);
     }
 
 }

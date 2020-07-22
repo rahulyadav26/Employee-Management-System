@@ -1,6 +1,9 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Project;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.ProjectRepo;
 import com.assignment.application.service.interfaces.ProjectServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,16 @@ public class ProjectServiceImpl implements ProjectServiceI {
     @Autowired
     private ProjectRepo projectRepo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
+    @Autowired
+    private CompanyRepo companyRepo;
 
     @Override
     public Project addCompProject(Long companyId, Project project) {
-        if (project==null || !project.getCompanyId().equals(companyId) || project.getId().equals(0)) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (project==null || company==null || !project.getCompanyId().equals(companyId) || project.getId().equals(0)) {
             return null;
         }
         return projectRepo.save(project);
@@ -27,18 +36,20 @@ public class ProjectServiceImpl implements ProjectServiceI {
 
     @Override
     public String deleteProject(Long projectId, Long compId) {
+        Company company = companyRepo.findById(compId).orElse(null);
         Project project = projectRepo.findById(projectId).orElse(null);
-        if (project == null || !project.getCompanyId().equals(compId)) {
-            return "Invalid credentials";
+        if (project == null || company==null || !project.getCompanyId().equals(compId)) {
+            return stringConstants.invalidStatus;
         }
         projectRepo.deleteById(projectId);
-        return "Deletion Successful";
+        return stringConstants.deleteStatus;
     }
 
     @Override
     public List<Project> getProject(Long compId) {
         List<Project> projectList = projectRepo.getProjectListById(compId);
-        if (projectList == null) {
+        Company company = companyRepo.findById(compId).orElse(null);
+        if (projectList == null || company==null) {
             return null;
         }
         return projectList;

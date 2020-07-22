@@ -1,5 +1,6 @@
 package com.assignment.application.kafka;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
@@ -30,10 +31,16 @@ public class KafkaConsumerListener {
     @Autowired
     private CachingInfo cachingInfo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
     @KafkaListener(topics = "employeeAdd", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public String consumerEmployeeInfo(KafkaEmployee kafkaEmployee) {
         Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
+        if(kafkaEmployee==null){
+            return stringConstants.invalidStatus;
+        }
         if (employee == null) {
             employee = new Employee();
             employee.setId(kafkaEmployee.getId());
@@ -49,15 +56,15 @@ public class KafkaConsumerListener {
             employee.setDob(kafkaEmployee.getDob());
             Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
             if (company == null) {
-                return "Bad Request";
+                return stringConstants.invalidStatus;
             }
             cachingInfo.addEmployee(employee, kafkaEmployee.getCompanyId());
             salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getName(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
-            return "Information saved successfully";
+            return stringConstants.savedInfo;
         }
         Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
         if (company == null) {
-            return "Bad Request";
+            return stringConstants.invalidStatus;
         }
         Salary salary = new Salary();
         salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
@@ -66,7 +73,7 @@ public class KafkaConsumerListener {
         List<Salary> list = new ArrayList<>();
         list.add(salary);
         cachingInfo.updateSalary(list, company.getId());
-        return "Salary Updated Successfully";
+        return stringConstants.updateStatus;
     }
 
 }

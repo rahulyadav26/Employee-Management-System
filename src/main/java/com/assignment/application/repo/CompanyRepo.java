@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface CompanyRepo extends JpaRepository<Company,Long> {
 
-    @Query("Select comp from Company comp where comp.id=?1")
-    Company getCompany(Long compId);
-
     @Query("Select comp from Company comp where UPPER(comp.name)=?1")
     Company getCompanyByName(String compName);
 

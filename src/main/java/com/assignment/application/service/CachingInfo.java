@@ -1,5 +1,6 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.CompanyRepo;
@@ -29,6 +30,9 @@ public class CachingInfo {
     @Autowired
     private SalaryRepo salaryRepo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
     public List<Object> getCompanyCompleteInfo(Long companyId){
         List<Object> companyInfoList = companyRepo.getCompDataSet(companyId);
@@ -41,11 +45,11 @@ public class CachingInfo {
         return employeesList;
     }
 
-    @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyName"),@CacheEvict(value="companyCompleteInfo" , key="#companyName")})
+    @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#companyId")})
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate){
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if(!employee.getCompanyId().equals(companyId)){
-            return "Invalid credentials";
+        if(employee==null || !employee.getCompanyId().equals(companyId)){
+            return stringConstants.invalidStatus;
         }
         if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
             employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
@@ -60,7 +64,7 @@ public class CachingInfo {
             employee.setPhoneNumber(employeeInfoUpdate.getPhoneNumber());
         }
         employeeRepo.save(employee);
-        return "Update Successful";
+        return stringConstants.updateStatus;
     }
 
     @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#employee.companyId")})

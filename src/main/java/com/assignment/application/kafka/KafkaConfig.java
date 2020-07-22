@@ -1,5 +1,6 @@
 package com.assignment.application.kafka;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
 import com.assignment.application.entity.Salary;
@@ -9,6 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +27,13 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    @Autowired
+    private StringConstants stringConstants;
+
     @Bean
     public ProducerFactory<String,EmployeeInfoUpdate> producerFactoryEmpUpdate(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,stringConstants.localhost);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,EmployeeInfoUpdate>(map);
@@ -42,7 +47,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, Employee> producerFactoryEmp(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,stringConstants.localhost);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,Employee>(map);
@@ -56,7 +61,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, SalaryUpdate> producerFactoryEmpSalary(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,stringConstants.localhost);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,SalaryUpdate>(map);
@@ -70,7 +75,7 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, KafkaEmployee> consumerFactory(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,stringConstants.localhost);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,StringSerializer.class);
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonSerializer.class);
         map.put(ConsumerConfig.GROUP_ID_CONFIG,"employee");

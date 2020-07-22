@@ -1,7 +1,10 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.DepartmentRepo;
@@ -28,9 +31,17 @@ public class SalaryServiceImpl implements SalaryServiceI {
     @Autowired
     private CachingInfo cachingInfo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
+    @Autowired
+    private EmployeeRepo employeeRepo;
+
     @Override
     public Salary addSalary(Long companyID, String employeeID, Salary salary) {
-        if (salary == null || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) || salary.getId().equals(0)) {
+        Company company = companyRepo.findById(companyID).orElse(null);
+        Employee employee = employeeRepo.getEmployee(employeeID);
+        if (salary == null || company==null || employee==null || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) || salary.getId().equals(0)) {
             return null;
         }
         return salaryRepo.save(salary);
@@ -38,8 +49,9 @@ public class SalaryServiceImpl implements SalaryServiceI {
 
     @Override
     public Salary getSalary(Long companyId, String employeeId) {
+        Company company = companyRepo.findById(companyId).orElse(null);
         Salary salary = salaryRepo.getSalaryById(employeeId);
-        if (salary == null) {
+        if (salary == null || company==null) {
             return null;
         }
         return salary;
@@ -53,9 +65,9 @@ public class SalaryServiceImpl implements SalaryServiceI {
 
     @Override
     public String updateSalary(Long companyId, SalaryUpdate salaryUpdate) {
-        Company company = companyRepo.getCompany(companyId);
+        Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || salaryUpdate == null) {
-            return "Invalid Credentials";
+            return stringConstants.invalidStatus;
         }
         if (salaryUpdate.getType().equals("0")) {
             //whole company
@@ -73,9 +85,9 @@ public class SalaryServiceImpl implements SalaryServiceI {
                 }
             }
             cachingInfo.updateSalary(salaryList, company.getId());
-        } else if (salaryUpdate.getType().equals("1")) {
+        } else{
             //dept of a company
-            Department department = departmentRepo.getDeptByCompId(companyId, salaryUpdate.getDept_name());
+            Department department = departmentRepo.getDeptByCompId(companyId, salaryUpdate.getDepartmentName());
             List<Salary> salaryList = salaryRepo.salaryListCompDept(companyId, department.getId());
             if (salaryUpdate.getSubType().equals("0")) {
                 //update by amount
@@ -91,7 +103,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
             }
             cachingInfo.updateSalary(salaryList, company.getId());
         }
-        return "Salary Updated";
+        return stringConstants.updateStatus;
     }
 
 

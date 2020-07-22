@@ -18,4 +18,6 @@ public interface DepartmentServiceI {
 
     String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate);
 
+    String deleteDepartmentOfCompany(Long id, Long companyId);
+
 }

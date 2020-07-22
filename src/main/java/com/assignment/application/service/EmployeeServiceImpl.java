@@ -1,5 +1,6 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -23,10 +24,13 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private CompanyRepo companyRepo;
 
+    @Autowired
+    private StringConstants stringConstants;
+
 
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
-        Company company = companyRepo.getCompany(companyId);
+        Company company = companyRepo.findById(companyId).orElse(null);
         if (employee == null || company == null || !employee.getCompanyId().equals(companyId) || employee.getId().equals(0)) {
             return null;
         }
@@ -36,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
 
     @Override
     public List<Employee> getEmployeesOfComp(Long companyId) {
-        Company company = companyRepo.getCompany(companyId);
+        Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null) {
             return null;
         }
@@ -52,20 +56,21 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
 
     @Override
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
-        Company company = companyRepo.getCompany(companyId);
-        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase("Invalid Credentials")) {
-            return "Invalid Credentials";
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstants.invalidStatus)) {
+            return stringConstants.invalidStatus;
         }
-        return "Update Successful";
+        return stringConstants.updateStatus;
     }
 
     @Override
     public String deleteEmployee(Long companyId, String employeeId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if (employee == null || !companyId.equals(employee.getCompanyId())) {
-            return "Invalid credentials";
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company==null || employee == null || !companyId.equals(employee.getCompanyId())) {
+            return stringConstants.invalidStatus;
         }
         employeeRepo.delete(employee);
-        return "Deletion Successful";
+        return stringConstants.deleteStatus;
     }
 }

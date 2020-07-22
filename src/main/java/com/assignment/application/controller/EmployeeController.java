@@ -1,5 +1,6 @@
 package com.assignment.application.controller;
 
+import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
@@ -26,13 +27,12 @@ public class EmployeeController {
     private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
     @Autowired
+    private StringConstants stringConstants;
+
+    @Autowired
     private VerifyUser verifyUser;
 
     public final String TOPIC = "EmployeeInformation";
-
-    public final String updateStatus = "Update Successful";
-
-    public final String deleteStatus = "Deletion Successful";
 
     @PostMapping(value = "/{company_id}/employee")
     public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,
@@ -88,16 +88,13 @@ public class EmployeeController {
                                                      @RequestHeader("password") String password) {
         int status = 0;
         if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-            status = 1;
+            if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstants.updateStatus)) {
+                kafkaTemplateEmployeeUpdate.send(TOPIC, employeeInfoUpdate);
+                return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
         }
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(updateStatus)) {
-            kafkaTemplateEmployeeUpdate.send(TOPIC, employeeInfoUpdate);
-            return new ResponseEntity<>(updateStatus, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping(value = "{company_id}/{emp_id}")
@@ -109,10 +106,10 @@ public class EmployeeController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if(employeeServiceI.deleteEmployee(companyId,empId).equalsIgnoreCase(deleteStatus)){
-            return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
+        if (employeeServiceI.deleteEmployee(companyId, empId).equalsIgnoreCase(stringConstants.deleteStatus)) {
+            return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid Credentials",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
 
     }
 
