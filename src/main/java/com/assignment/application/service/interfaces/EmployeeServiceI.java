@@ -10,14 +10,14 @@ import java.util.List;
 @Component
 public interface EmployeeServiceI {
 
-    ResponseEntity<Employee> addEmployee(Long id, Employee employee);
+    Employee addEmployee(Long id, Employee employee);
 
-    ResponseEntity<List<Employee>> getEmployeesOfComp(Long companyId);
+    List<Employee> getEmployeesOfComp(Long companyId);
 
-    ResponseEntity<List<Employee>> getEmployees();
+    List<Employee> getEmployees();
 
-    ResponseEntity<String> updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate);
+    String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate);
 
-    ResponseEntity<String> deleteEmployee(Long companyId,String employeeId);
+    String deleteEmployee(Long companyId,String employeeId);
 
 }

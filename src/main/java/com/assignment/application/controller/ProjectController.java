@@ -20,45 +20,53 @@ public class ProjectController {
     @Autowired
     private VerifyUser verifyUser;
 
-    @DeleteMapping(value="/{project_id}" )
+    public final String deleteStatus = "Deletion Successful";
+
+    @DeleteMapping(value = "/{project_id}")
     public ResponseEntity<String> deleteProject(@PathVariable("project_id") Long projectId,
                                                 @PathVariable("comp_id") Long companyId,
                                                 @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return projectServiceI.deleteProject(projectId, companyId);
+        if (projectServiceI.deleteProject(projectId, companyId).equalsIgnoreCase(deleteStatus)) {
+            return new ResponseEntity<>(deleteStatus, HttpStatus.OK);
         }
+        return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value="")
+    @PostMapping(value = "")
     public ResponseEntity<Project> addProject(@PathVariable("comp_id") Long companyId,
                                               @RequestBody Project project,
                                               @RequestHeader("username") String username,
-                                              @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                              @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return projectServiceI.addCompProject(companyId, project);
+        Project projectToBeAdded = projectServiceI.addCompProject(companyId, project);
+        if (projectToBeAdded == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(projectToBeAdded, HttpStatus.OK);
+
     }
 
-    @GetMapping(value="")
+    @GetMapping(value = "")
     public ResponseEntity<List<Project>> getProject(@PathVariable("comp_id") Long companyId,
                                                     @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                    @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return projectServiceI.getProject(companyId);
+        List<Project> projectList = projectServiceI.getProject(companyId);
+        if (projectList == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 
 }

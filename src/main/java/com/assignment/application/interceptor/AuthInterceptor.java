@@ -33,7 +33,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if(employee==null){
             return false;
         }
-        System.out.println("employee info " + employee.getDob() + " " + employee.getId());
         if(!employee.getEmployeeId().equalsIgnoreCase(userName) || !employee.getDob().equalsIgnoreCase(password)){
             return false;
         }

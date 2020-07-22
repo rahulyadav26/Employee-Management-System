@@ -18,45 +18,29 @@ public class ProjectServiceImpl implements ProjectServiceI {
 
 
     @Override
-    public ResponseEntity<Project> addCompProject(Long companyId, Project project) {
-        try{
-            if(project.getCompanyId()!=companyId || project.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(projectRepo.save(project),HttpStatus.OK);
+    public Project addCompProject(Long companyId, Project project) {
+        if (project==null || !project.getCompanyId().equals(companyId) || project.getId().equals(0)) {
+            return null;
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return projectRepo.save(project);
     }
 
     @Override
-    public ResponseEntity<String> deleteProject(Long projectId,Long compId) {
-        try{
-
-            Project project = projectRepo.findById(projectId).orElse(null);
-            if(project.getCompanyId()!=compId){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.BAD_REQUEST);
-            }
-            projectRepo.deleteById(projectId);
-            return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);
+    public String deleteProject(Long projectId, Long compId) {
+        Project project = projectRepo.findById(projectId).orElse(null);
+        if (project == null || !project.getCompanyId().equals(compId)) {
+            return "Invalid credentials";
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while deleting", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        projectRepo.deleteById(projectId);
+        return "Deletion Successful";
     }
 
     @Override
-    public ResponseEntity<List<Project>> getProject(Long compId) {
-        try{
-            List<Project> projectList = projectRepo.getProjectListById(compId);
-            return new ResponseEntity<>(projectList,HttpStatus.OK);
+    public List<Project> getProject(Long compId) {
+        List<Project> projectList = projectRepo.getProjectListById(compId);
+        if (projectList == null) {
+            return null;
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return projectList;
     }
 }

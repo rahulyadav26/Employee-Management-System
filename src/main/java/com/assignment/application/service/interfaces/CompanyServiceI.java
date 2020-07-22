@@ -10,14 +10,14 @@ import java.util.List;
 @Component
 public interface CompanyServiceI {
 
-    ResponseEntity<Company> createNewCompany(Company company);
+    Company createNewCompany(Company company);
 
-    ResponseEntity<List<Company>> getCompanyList();
+    List<Company> getCompanyList();
 
-    ResponseEntity<List<Object>> getCompleteCompInfo(String compName);
+    List<Object> getCompleteCompInfo(String compName);
 
-    ResponseEntity<String> updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
+    String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
 
-    ResponseEntity<String> deleteCompany(Long id);
+    String deleteCompany(Long id);
 
 }

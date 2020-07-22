@@ -13,7 +13,6 @@ public class VerifyUser {
     private EmployeeRepo employeeRepo;
 
     public int authorizeUser(String username,String password){
-        System.out.println(username + " " + password);
         if(username.equalsIgnoreCase("admin") && username.equalsIgnoreCase("admin")){
             return 1;
         }

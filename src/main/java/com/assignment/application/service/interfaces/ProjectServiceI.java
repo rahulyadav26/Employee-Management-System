@@ -10,10 +10,10 @@ import java.util.List;
 @Component
 public interface ProjectServiceI {
 
-    ResponseEntity<Project> addCompProject(Long companyId,Project project);
+    Project addCompProject(Long companyId,Project project);
 
-    ResponseEntity<String> deleteProject(Long projectId,Long companyId);
+    String deleteProject(Long projectId,Long companyId);
 
-    ResponseEntity<List<Project>> getProject(Long companyId);
+    List<Project> getProject(Long companyId);
 
 }

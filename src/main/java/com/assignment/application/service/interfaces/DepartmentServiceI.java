@@ -10,12 +10,12 @@ import java.util.List;
 @Component
 public interface DepartmentServiceI {
 
-    ResponseEntity<Department> addDepartment(Long companyId,Department department);
+    Department addDepartment(Long companyId,Department department);
 
-    ResponseEntity<List<Department>> getDepartments();
+    List<Department> getDepartments();
 
-    ResponseEntity<Department> getDepartment(Long companyId,Long id);
+    Department getDepartment(Long companyId,Long id);
 
-    ResponseEntity<String> updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate);
+    String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate);
 
 }

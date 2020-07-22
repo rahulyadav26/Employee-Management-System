@@ -20,72 +20,82 @@ public class SalaryController {
     private SalaryServiceI salaryServiceI;
 
     @Autowired
-    private KafkaTemplate<String,SalaryUpdate> kafkaTemplateSalary;
+    private KafkaTemplate<String, SalaryUpdate> kafkaTemplateSalary;
 
     @Autowired
     private VerifyUser verifyUser;
 
     public final String TOPIC = "SalaryUpdate";
 
-    @PostMapping(value="{comp_id}/{emp_id}/salary" )
+    public final String updateStatus = "Salary Updated";
+
+    @PostMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestBody Salary salary,
                                                 @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password){
+                                                @RequestHeader("password") String password) {
         int status = 0;
-        if(verifyUser.authorizeUser(username,password)==1 || (verifyUser.authorizeEmployee(username,password)==1 && employeeId.equalsIgnoreCase(username))){
-            status=1;
+        if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
+            status = 1;
         }
-        if(status==0){
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else
-        return salaryServiceI.addSalary(companyId,employeeId,salary);
+        Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
+        if (salary == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
     }
 
-    @GetMapping(value="{comp_id}/{emp_id}/salary" )
+    @GetMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password){
+                                                @RequestHeader("password") String password) {
         int status = 0;
-        if(verifyUser.authorizeUser(username,password)==1 || (verifyUser.authorizeEmployee(username,password)==1 && employeeId.equalsIgnoreCase(username))){
-            status=1;
+        if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
+            status = 1;
         }
-        if(status==0){
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return salaryServiceI.getSalary(companyId, employeeId);
+        Salary salary = salaryServiceI.getSalary(companyId, employeeId);
+        if (salary == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(salary, HttpStatus.OK);
     }
 
     @GetMapping(value = "/salary")
     public ResponseEntity<List<Salary>> getSalaryList(@RequestHeader("username") String username,
-                                                      @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                      @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return salaryServiceI.getSalaryList();
+        List<Salary> salaryList = salaryServiceI.getSalaryList();
+        if (salaryList == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(salaryList, HttpStatus.OK);
     }
 
     @PatchMapping(value = "{comp_id}/salary-update")
     public ResponseEntity<String> updateSalary(@PathVariable("comp_id") Long companyId,
                                                @RequestBody SalaryUpdate salaryUpdate,
                                                @RequestHeader("username") String username,
-                                               @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                               @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
+        if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(updateStatus)) {
             kafkaTemplateSalary.send(TOPIC, salaryUpdate);
-            return salaryServiceI.updateSalary(companyId, salaryUpdate);
+            return new ResponseEntity<>(updateStatus, HttpStatus.OK);
         }
+        return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
     }
 
 }

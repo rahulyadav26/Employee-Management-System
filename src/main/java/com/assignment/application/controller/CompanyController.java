@@ -22,74 +22,83 @@ public class CompanyController {
     @Autowired
     private VerifyUser verifyUser;
 
+    public final String updateString = "Update Successful";
+
+    public final String deleteString = "Company Deleted";
+
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,
                                               @RequestHeader("username") String username,
-                                              @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                              @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else{
-            return companyServiceI.createNewCompany(company);
+        Company companyToBeAdded = companyServiceI.createNewCompany(company);
+        if (companyToBeAdded == null) {
+            new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(companyToBeAdded, HttpStatus.OK);
+
 
     }
 
-    @GetMapping(value="")
+    @GetMapping(value = "")
     public ResponseEntity<List<Company>> getCompanyList(@RequestHeader("username") String username,
-                                                        @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                        @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else{
-            return companyServiceI.getCompanyList();
-        }
-
+        return new ResponseEntity<>(companyServiceI.getCompanyList(), HttpStatus.OK);
     }
 
 
-    @GetMapping(value="/{comp_name}/complete-info")
-    public ResponseEntity<List<Object>> getCompleteCompInfo(@PathVariable("comp_name")String compName,
+    @GetMapping(value = "/{comp_name}/complete-info")
+    public ResponseEntity<List<Object>> getCompleteCompInfo(@PathVariable("comp_name") String compName,
                                                             @RequestHeader("username") String username,
-                                                            @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                            @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else{
-            return companyServiceI.getCompleteCompInfo(compName);
+        List<Object> objectList = companyServiceI.getCompleteCompInfo(compName);
+        if (objectList == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(objectList, HttpStatus.OK);
 
     }
 
-    @PatchMapping(value="/{id}/company-update")
+    @PatchMapping(value = "/{id}/company-update")
     public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") Long id,
                                                     @RequestBody CompanyInfoUpdate companyInfoUpdate,
                                                     @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                    @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return companyServiceI.updateCompanyInfo(id, companyInfoUpdate);
+        if (companyServiceI.updateCompanyInfo(id, companyInfoUpdate).equals(updateString)) {
+            return new ResponseEntity<>(updateString, HttpStatus.OK);
         }
+        return new ResponseEntity<>("No such company exists", HttpStatus.BAD_REQUEST);
+
     }
 
-    @DeleteMapping(value="/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id,
                                                 @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return companyServiceI.deleteCompany(id);
+        if (companyServiceI.deleteCompany(id).equals(deleteString)) {
+            return new ResponseEntity<>(deleteString, HttpStatus.OK);
         }
+        return new ResponseEntity<>("No such company exists", HttpStatus.BAD_REQUEST);
     }
 
 }

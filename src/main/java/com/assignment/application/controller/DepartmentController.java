@@ -20,59 +20,68 @@ public class DepartmentController {
     @Autowired
     private VerifyUser verifyUser;
 
-    @PostMapping(value="/{company_id}/department")
+    public final String updateStatus = "Update Successful";
+
+    @PostMapping(value = "/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
                                                     @RequestBody Department department,
                                                     @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                    @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return departmentServiceI.addDepartment(companyId, department);
+        Department departmentToBeAdded = departmentServiceI.addDepartment(companyId, department);
+        if (departmentToBeAdded == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(departmentToBeAdded, HttpStatus.OK);
+
     }
 
-    @GetMapping(value="/department")
+    @GetMapping(value = "/department")
     public ResponseEntity<List<Department>> getDepartments(@RequestHeader("username") String username,
-                                                           @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                           @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return departmentServiceI.getDepartments();
-        }
+        return new ResponseEntity<>(departmentServiceI.getDepartments(), HttpStatus.OK);
+
     }
 
-    @GetMapping(value="/{company_id}/department/{id}")
+    @GetMapping(value = "/{company_id}/department/{id}")
     public ResponseEntity<Department> getDepartment(@PathVariable("id") Long id,
                                                     @PathVariable("company_id") Long companyId,
                                                     @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                    @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return departmentServiceI.getDepartment(companyId, id);
+        Department department = departmentServiceI.getDepartment(companyId, id);
+        if (department == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(department, HttpStatus.OK);
+
     }
 
-    @PatchMapping(value="/{company_id}/department/{id}/update-department")
+    @PatchMapping(value = "/{company_id}/department/{id}/update-department")
     public ResponseEntity<String> updateDepartmentInfo(@PathVariable("id") Long id,
                                                        @PathVariable("company_id") Long companyId,
                                                        @RequestBody DepartmentInfoUpdate departmentInfoUpdate,
                                                        @RequestHeader("username") String username,
-                                                       @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username,password);
-        if(status==0){
+                                                       @RequestHeader("password") String password) {
+        int status = verifyUser.authorizeUser(username, password);
+        if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        else {
-            return departmentServiceI.updateDepartmentInfo(companyId, id, departmentInfoUpdate);
+        if(departmentServiceI.updateDepartmentInfo(companyId,id,departmentInfoUpdate).equals(updateStatus)){
+            return new ResponseEntity<>(updateStatus,HttpStatus.OK);
         }
+        return new ResponseEntity<>("Invalid Request",HttpStatus.BAD_REQUEST);
+
     }
 
 }

@@ -1,13 +1,10 @@
 package com.assignment.application.service;
 
 import com.assignment.application.entity.Company;
-import com.assignment.application.other.CachingInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,90 +19,60 @@ public class CompanyServiceImpl implements CompanyServiceI {
     private CachingInfo cachingInfo;
 
     @Override
-    public ResponseEntity<Company> createNewCompany(Company company) {
-        try {
-            if(companyRepo.getCompany(company.getId())!=null
-                    || companyRepo.getCompanyByName(company.getName().toUpperCase())!=null
-                    || company.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    public Company createNewCompany(Company company) {
+        if (company == null
+                || companyRepo.getCompany(company.getId()) != null
+                || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null
+                || company.getId().equals(0)) {
+            return null;
+        }
+        companyRepo.save(company);
+        return company;
+    }
+
+
+    @Override
+    public List<Company> getCompanyList() {
+        List<Company> companyList = companyRepo.findAll();
+        return companyList;
+    }
+
+    @Override
+    public List<Object> getCompleteCompInfo(String compName) {
+        Company company = companyRepo.getCompanyByName(compName.toUpperCase());
+        if (company == null) {
+            return null;
+        }
+        List<Object> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getId());
+        return companyInfoList;
+
+    }
+
+    @Override
+    public String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
+
+        Company company = companyRepo.findById(id).orElse(null);
+        if (company != null && companyInfoUpdate != null) {
+            if (!companyInfoUpdate.getIndustryType().isEmpty()) {
+                company.setIndustryType(companyInfoUpdate.getIndustryType());
+            }
+            if (!companyInfoUpdate.getEmployeeCount().isEmpty()) {
+                company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
             }
             companyRepo.save(company);
-            return new ResponseEntity<>(company,HttpStatus.OK);
+            return "Update Successful";
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    @Override
-    public ResponseEntity<List<Company>> getCompanyList() {
-        try {
-            List<Company> companyList = companyRepo.findAll();
-            return new ResponseEntity<>(companyList,HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return "No such company exists";
     }
 
     @Override
-    public ResponseEntity<List<Object>> getCompleteCompInfo(String compName) {
-        try{
-            Company company = companyRepo.getCompanyByName(compName.toUpperCase());
-            if(company==null){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-            }
-            List<Object> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getName().toLowerCase(),company.getId());
-            return new ResponseEntity<List<Object>>(companyInfoList,HttpStatus.OK);
+    public String deleteCompany(Long id) {
+        Company company = companyRepo.findById(id).orElse(null);
+        if (company != null) {
+            companyRepo.delete(company);
+            return "Company Deleted";
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+        return "No such company exists";
 
-    @Override
-    public ResponseEntity<String> updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
-        try{
-            Company company = companyRepo.findById(id).orElse(null);
-            if(company!=null){
-                if(!companyInfoUpdate.getIndustryType().isEmpty()){
-                    company.setIndustryType(companyInfoUpdate.getIndustryType());
-                }
-                if(!companyInfoUpdate.getEmployeeCount().isEmpty()){
-                    company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
-                }
-                companyRepo.save(company);
-                return new ResponseEntity<>("Update Successful",HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>("No such company exists",HttpStatus. BAD_REQUEST);
-            }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<String> deleteCompany(Long id) {
-        try{
-            Company company = companyRepo.findById(id).orElse(null);
-            if(company!=null){
-                companyRepo.delete(company);
-                return new ResponseEntity<>("Company deleted",HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>("No such company exists",HttpStatus.BAD_REQUEST);
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while deleting",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

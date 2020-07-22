@@ -18,71 +18,49 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     private DepartmentRepo departmentRepo;
 
     @Override
-    public ResponseEntity<Department> addDepartment(Long companyId,Department department) {
-        try{
-            if(companyId!=department.getCompanyId() || department.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(departmentRepo.save(department),HttpStatus.OK);
+    public Department addDepartment(Long companyId, Department department) {
+
+        if (department == null || !companyId.equals(department.getCompanyId()) || department.getId().equals(0)) {
+            return null;
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return departmentRepo.save(department);
+
     }
 
     @Override
-    public ResponseEntity<List<Department>> getDepartments() {
-        try{
-            List<Department> departmentList = departmentRepo.findAll();
-            return new ResponseEntity<>(departmentList,HttpStatus.OK);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<Department> getDepartments() {
+        List<Department> departmentList = departmentRepo.findAll();
+        return departmentList;
     }
 
     @Override
-    public ResponseEntity<String> updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
-        try{
-            Department department = departmentRepo.findById(id).orElse(null);
-            if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>("No such department exists",HttpStatus.BAD_REQUEST);
-            }
-            if(!departmentInfoUpdate.getHead().isEmpty()){
-                department.setHead(departmentInfoUpdate.getHead());
-            }
-            if(!departmentInfoUpdate.getEmployeeCount().isEmpty()){
-                department.setEmployeeCount(Long.parseLong(departmentInfoUpdate.getEmployeeCount()));
-            }
-            if(!departmentInfoUpdate.getOngoingProject().isEmpty()){
-                department.setOngoingProject(Long.parseLong(departmentInfoUpdate.getOngoingProject()));
-            }
-            if(!departmentInfoUpdate.getCompletedProject().isEmpty()){
-                department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
-            }
-            departmentRepo.save(department);
-            return new ResponseEntity<>("Update Successful",HttpStatus.OK);
+    public String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
+        Department department = departmentRepo.findById(id).orElse(null);
+        if (department == null || !department.getCompanyId().equals(companyId) || departmentInfoUpdate == null) {
+            return "No such department exists";
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!departmentInfoUpdate.getHead().isEmpty()) {
+            department.setHead(departmentInfoUpdate.getHead());
         }
+        if (!departmentInfoUpdate.getEmployeeCount().isEmpty()) {
+            department.setEmployeeCount(Long.parseLong(departmentInfoUpdate.getEmployeeCount()));
+        }
+        if (!departmentInfoUpdate.getOngoingProject().isEmpty()) {
+            department.setOngoingProject(Long.parseLong(departmentInfoUpdate.getOngoingProject()));
+        }
+        if (!departmentInfoUpdate.getCompletedProject().isEmpty()) {
+            department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
+        }
+        departmentRepo.save(department);
+        return "Update Successful";
     }
 
     @Override
-    public ResponseEntity<Department> getDepartment(Long companyId,Long id) {
-        try{
-            Department department = departmentRepo.findById(id).orElse(null);
-            if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(department,HttpStatus.OK);
+    public Department getDepartment(Long companyId, Long id) {
+        Department department = departmentRepo.findById(id).orElse(null);
+        if (department == null || !department.getCompanyId().equals(companyId)) {
+            return null;
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return department;
     }
 }

@@ -1,4 +1,4 @@
-package com.assignment.application.other;
+package com.assignment.application.service;
 
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
@@ -29,22 +29,22 @@ public class CachingInfo {
     @Autowired
     private SalaryRepo salaryRepo;
 
-    @Cacheable(value="companyCompleteInfo" , key = "#companyName" , condition = "#result==null")
-    public List<Object> getCompanyCompleteInfo(String companyName,Long companyId){
+    @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
+    public List<Object> getCompanyCompleteInfo(Long companyId){
         List<Object> companyInfoList = companyRepo.getCompDataSet(companyId);
         return companyInfoList;
     }
 
-    @Cacheable(value="companyEmployeeList" , key = "#companyName" , condition = "#result==null")
-    public List<Employee> getEmployeeOfComp(String companyName,Long companyId){
+    @Cacheable(value="companyEmployeeList" , key = "#companyId" , condition = "#result==null")
+    public List<Employee> getEmployeeOfComp(Long companyId){
         List<Employee> employeesList = employeeRepo.getAllEmpByCompId(companyId);
         return employeesList;
     }
 
     @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyName"),@CacheEvict(value="companyCompleteInfo" , key="#companyName")})
-    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate,String companyName){
+    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate){
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if(employee.getCompanyId()!=companyId){
+        if(!employee.getCompanyId().equals(companyId)){
             return "Invalid credentials";
         }
         if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
@@ -63,13 +63,13 @@ public class CachingInfo {
         return "Update Successful";
     }
 
-    @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyName"),@CacheEvict(value="companyCompleteInfo" , key="#companyName")})
-    public Employee addEmployee(Long id, Employee employee,String companyName){
+    @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#employee.companyId")})
+    public Employee addEmployee(Employee employee,Long companyId){
         return employeeRepo.save(employee);
     }
 
-    @CacheEvict(value="companyCompleteInfo" , key="#companyName")
-    public void updateSalary(List<Salary> salaryList,String companyName){
+    @CacheEvict(value="companyCompleteInfo" , key="#companyId")
+    public void updateSalary(List<Salary> salaryList,Long companyId){
         salaryRepo.saveAll(salaryList);
     }
 
