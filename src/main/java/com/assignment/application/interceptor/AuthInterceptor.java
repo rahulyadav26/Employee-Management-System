@@ -28,7 +28,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         else if(userName.equalsIgnoreCase("admin") && password.equalsIgnoreCase("admin")){
             return true;
         }
-        Employee employee = new Employee();
+        Employee employee;
         employee = employeeRepo.getEmployee(userName);
         if(employee==null){
             return false;

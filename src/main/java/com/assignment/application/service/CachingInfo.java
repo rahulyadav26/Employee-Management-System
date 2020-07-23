@@ -5,6 +5,7 @@ import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.CompleteCompInfoRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -34,9 +35,12 @@ public class CachingInfo {
     @Autowired
     private StringConstants stringConstants;
 
+    @Autowired
+    private CompleteCompInfoRepo completeCompInfoRepo;
+
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
     public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId){
-        List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
+        List<CompleteCompInfo> companyInfoList = completeCompInfoRepo.companyCompleteList(companyId);
         return companyInfoList;
     }
 

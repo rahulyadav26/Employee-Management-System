@@ -46,8 +46,8 @@ public class CompanyServiceImpl implements CompanyServiceI {
     }
 
     @Override
-    public List<CompleteCompInfo> getCompleteCompInfo(String compName) {
-        Company company = companyRepo.getCompanyByName(compName.toUpperCase());
+    public List<CompleteCompInfo> getCompleteCompInfo(Long companyId) {
+        Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null) {
             return null;
         }

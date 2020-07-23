@@ -53,15 +53,15 @@ public class CompanyController {
     }
 
 
-    @GetMapping(value = "/{comp_name}/complete-info")
-    public ResponseEntity<List<CompleteCompInfo>> getCompleteCompInfo(@PathVariable("comp_name") String compName,
+    @GetMapping(value = "/{comp_id}/complete-info")
+    public ResponseEntity<List<CompleteCompInfo>> getCompleteCompInfo(@PathVariable("comp_id") Long companyId,
                                                             @RequestHeader("username") String username,
                                                             @RequestHeader("password") String password) {
         int status = verifyUser.authorizeUser(username, password);
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        List<CompleteCompInfo> objectList = companyServiceI.getCompleteCompInfo(compName);
+        List<CompleteCompInfo> objectList = companyServiceI.getCompleteCompInfo(companyId);
         if (objectList == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

@@ -15,7 +15,7 @@ public interface CompanyServiceI {
 
     List<Company> getCompanyList();
 
-    List<CompleteCompInfo> getCompleteCompInfo(String compName);
+    List<CompleteCompInfo> getCompleteCompInfo(Long companyId);
 
     String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
 
