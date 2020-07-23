@@ -40,7 +40,7 @@ public class CachingInfo {
 
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
     public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId){
-        List<CompleteCompInfo> companyInfoList = completeCompInfoRepo.companyCompleteList(companyId);
+        List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
         return companyInfoList;
     }
 
