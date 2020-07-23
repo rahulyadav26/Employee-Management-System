@@ -2,10 +2,7 @@ package com.assignment.application.entity;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Component
 @Entity
@@ -29,8 +26,7 @@ public class Project {
 
     }
 
-    public Project(Long id, Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
-        this.id = id;
+    public Project(Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
         this.departmentId = departmentId;
         this.companyId = companyId;
         this.description = description;

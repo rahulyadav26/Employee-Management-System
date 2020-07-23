@@ -26,8 +26,7 @@ public class Department {
 
     }
 
-    public Department(Long id, String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
-        this.id = id;
+    public Department(String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
         this.name = name;
         this.companyId = companyId;
         this.employeeCount = employeeCount;

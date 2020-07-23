@@ -2,6 +2,7 @@ package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -39,8 +40,6 @@ public class CompanyController {
             new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(companyToBeAdded, HttpStatus.OK);
-
-
     }
 
     @GetMapping(value = "")
@@ -55,14 +54,14 @@ public class CompanyController {
 
 
     @GetMapping(value = "/{comp_name}/complete-info")
-    public ResponseEntity<List<Object>> getCompleteCompInfo(@PathVariable("comp_name") String compName,
+    public ResponseEntity<List<CompleteCompInfo>> getCompleteCompInfo(@PathVariable("comp_name") String compName,
                                                             @RequestHeader("username") String username,
                                                             @RequestHeader("password") String password) {
         int status = verifyUser.authorizeUser(username, password);
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        List<Object> objectList = companyServiceI.getCompleteCompInfo(compName);
+        List<CompleteCompInfo> objectList = companyServiceI.getCompleteCompInfo(compName);
         if (objectList == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

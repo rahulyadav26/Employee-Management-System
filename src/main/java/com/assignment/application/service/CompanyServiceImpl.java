@@ -2,6 +2,7 @@ package com.assignment.application.service;
 
 import com.assignment.application.Constants.StringConstants;
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -45,12 +46,12 @@ public class CompanyServiceImpl implements CompanyServiceI {
     }
 
     @Override
-    public List<Object> getCompleteCompInfo(String compName) {
+    public List<CompleteCompInfo> getCompleteCompInfo(String compName) {
         Company company = companyRepo.getCompanyByName(compName.toUpperCase());
         if (company == null) {
             return null;
         }
-        List<Object> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getId());
+        List<CompleteCompInfo> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getId());
         return companyInfoList;
 
     }

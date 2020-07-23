@@ -24,8 +24,7 @@ public class Company{
 
     }
 
-    public Company(Long id, String name, String industryType, Long employeeCount, String headOffice, String founder) {
-        this.id = id;
+    public Company(String name, String industryType, Long employeeCount, String headOffice, String founder) {
         this.name = name;
         this.industryType = industryType;
         this.employeeCount = employeeCount;

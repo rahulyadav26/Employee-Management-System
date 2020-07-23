@@ -1,6 +1,7 @@
 package com.assignment.application.service;
 
 import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.CompanyRepo;
@@ -34,8 +35,8 @@ public class CachingInfo {
     private StringConstants stringConstants;
 
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
-    public List<Object> getCompanyCompleteInfo(Long companyId){
-        List<Object> companyInfoList = companyRepo.getCompDataSet(companyId);
+    public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId){
+        List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
         return companyInfoList;
     }
 

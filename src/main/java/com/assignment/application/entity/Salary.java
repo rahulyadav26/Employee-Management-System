@@ -11,7 +11,7 @@ public class Salary {
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="emp_id")
+    @Column(name="emp_id" , columnDefinition = "text")
     private String employeeId;
     @Column(name="emp_name")
     private String employeeName;
@@ -23,6 +23,9 @@ public class Salary {
     private Long companyId;
     @Column(name="dept_id")
     private Long departmentId;
+    @OneToOne
+    @JoinColumn(name="emp_id", referencedColumnName = "emp_id" , insertable=false, updatable=false)
+    private Employee employee;
 
     public Salary(){
 

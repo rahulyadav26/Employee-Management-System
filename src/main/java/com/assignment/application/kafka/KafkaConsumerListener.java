@@ -34,7 +34,7 @@ public class KafkaConsumerListener {
     @Autowired
     private StringConstants stringConstants;
 
-    @KafkaListener(topics = "employeeAdd", groupId = "employee",
+    @KafkaListener(topics = "employeeUpdate", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public String consumerEmployeeInfo(KafkaEmployee kafkaEmployee) {
         Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
@@ -66,13 +66,21 @@ public class KafkaConsumerListener {
         if (company == null) {
             return stringConstants.invalidStatus;
         }
-        Salary salary = new Salary();
-        salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
-        salaryRepo.deleteById(salary.getId());
-        salary.setSalary(kafkaEmployee.getSalary());
-        List<Salary> list = new ArrayList<>();
-        list.add(salary);
-        cachingInfo.updateSalary(list, company.getId());
+        try {
+            System.out.println("hey3");
+            Salary salary = new Salary();
+            System.out.println(kafkaEmployee.getEmployeeId());
+            salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
+            salaryRepo.deleteById(salary.getId());
+            salary.setSalary(kafkaEmployee.getSalary());
+            List<Salary> list = new ArrayList<>();
+            list.add(salary);
+            cachingInfo.updateSalary(list, company.getId());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return stringConstants.updateStatus;
     }
 

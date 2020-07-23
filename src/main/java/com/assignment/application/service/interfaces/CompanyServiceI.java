@@ -1,6 +1,7 @@
 package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ public interface CompanyServiceI {
 
     List<Company> getCompanyList();
 
-    List<Object> getCompleteCompInfo(String compName);
+    List<CompleteCompInfo> getCompleteCompInfo(String compName);
 
     String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
 
