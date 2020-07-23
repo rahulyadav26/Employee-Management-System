@@ -46,9 +46,9 @@ public class CompanyController {
     public ResponseEntity<List<Company>> getCompanyList(@RequestHeader("username") String username,
                                                         @RequestHeader("password") String password) {
         int status = verifyUser.authorizeUser(username, password);
-        //if (status == 0) {
-        //    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        //}
+        if (status == 0) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         return new ResponseEntity<>(companyServiceI.getCompanyList(), HttpStatus.OK);
     }
 
