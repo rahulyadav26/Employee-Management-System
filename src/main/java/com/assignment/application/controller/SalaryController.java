@@ -29,6 +29,7 @@ public class SalaryController {
     @Autowired
     private StringConstant stringConstant;
 
+
     public final String TOPIC = "SalaryUpdate";
 
 

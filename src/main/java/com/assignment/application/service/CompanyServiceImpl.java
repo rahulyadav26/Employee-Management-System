@@ -65,7 +65,6 @@ public class CompanyServiceImpl implements CompanyServiceI {
 
         Company company = companyRepo.findById(id).orElse(null);
         if (company == null) {
-            System.out.println("sdf");
             throw new RuntimeException("No such company exists");
         }
         if (companyInfoUpdate == null) {
@@ -80,7 +79,6 @@ public class CompanyServiceImpl implements CompanyServiceI {
         }
         companyRepo.save(company);
         return StringConstant.UPDATE_SUCCESSFUL;
-
     }
 
     @Override

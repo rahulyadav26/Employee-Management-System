@@ -27,7 +27,6 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private StringConstant stringConstant;
 
-
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
         Company company = companyRepo.findById(companyId).orElse(null);
