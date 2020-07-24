@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.CompanyRepo;
@@ -8,8 +8,6 @@ import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     private CompanyRepo companyRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @Override
     public Department addDepartment(Long companyId, Department department) {

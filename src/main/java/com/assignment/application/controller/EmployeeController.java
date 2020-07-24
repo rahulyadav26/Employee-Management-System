@@ -1,8 +1,7 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -27,7 +26,7 @@ public class EmployeeController {
     private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @Autowired
     private VerifyUser verifyUser;

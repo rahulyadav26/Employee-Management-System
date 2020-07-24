@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.other.VerifyUser;
@@ -25,7 +25,7 @@ public class CompanyController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,

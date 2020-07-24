@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.CompanyRepo;
@@ -32,7 +32,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @Autowired
     private EmployeeRepo employeeRepo;

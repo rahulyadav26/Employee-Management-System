@@ -1,6 +1,6 @@
 package com.assignment.application.kafka;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
@@ -32,7 +32,7 @@ public class KafkaConsumerListener {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @KafkaListener(topics = "employeeUpdate", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")

@@ -1,7 +1,7 @@
 package com.assignment.application.controller;
 
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.SalaryServiceI;
@@ -27,7 +27,7 @@ public class SalaryController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     public final String TOPIC = "SalaryUpdate";
 

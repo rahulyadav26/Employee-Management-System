@@ -1,12 +1,11 @@
 package com.assignment.application.test;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.DepartmentServiceImpl;
 import com.assignment.application.update.DepartmentInfoUpdate;
-import org.apache.kafka.common.protocol.types.Field;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -36,7 +34,7 @@ public class DepartmentServiceTest {
     private CompanyRepo companyRepo;
 
     @Mock
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @Before
     public void setUp() throws Exception{
@@ -128,56 +126,56 @@ public class DepartmentServiceTest {
     @Test
     public void testUpdateDepartmentInfo(){
         //assumption company and department exists and department.companyId==companyId and DepartmentInfoUpdate json is not null
-        String result = stringConstants.updateStatus;
+        String result = StringConstant.UPDATE_SUCCESSFUL;
         //action
         when(departmentService.updateDepartmentInfo(anyLong(),anyLong(),any(DepartmentInfoUpdate.class))).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.updateStatus);
+        Assert.assertEquals(result,stringConstants.UPDATE_SUCCESSFUL);
 
         //assumption companyId!=department.companyId and DepartmentInfoUpdate is not null
-        result = stringConstants.invalidStatus;
+        result = stringConstants.INVALID_CREDENTIALS;
         //action
         when(departmentService.updateDepartmentInfo(anyLong(),anyLong(),any(DepartmentInfoUpdate.class))).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        Assert.assertEquals(result,stringConstants.INVALID_CREDENTIALS);
 
         //assumption companyId==department.companyId and either or both of them doesn't exists and DepartmentInfoUpdate is not null
-        result = stringConstants.invalidStatus;
+        result = stringConstants.INVALID_CREDENTIALS;
         //action
         when(departmentService.updateDepartmentInfo(anyLong(),anyLong(),any(DepartmentInfoUpdate.class))).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        Assert.assertEquals(result,stringConstants.INVALID_CREDENTIALS);
 
         //assumption DepartmentInfoUpdate is null
-        result = stringConstants.invalidStatus;
+        result = stringConstants.INVALID_CREDENTIALS;
         //action
         when(departmentService.updateDepartmentInfo(anyLong(),anyLong(),any(DepartmentInfoUpdate.class))).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        Assert.assertEquals(result,stringConstants.INVALID_CREDENTIALS);
     }
 
     @Test
     public void testDeleteDepartmentOfCompany(){
         //assumption company and department exists and department.companyId==companyId
-        String result = stringConstants.deleteStatus;
+        String result = stringConstants.DELETION_SUCCESSFUL;
         //action
         when(departmentService.deleteDepartmentOfCompany(anyLong(),anyLong())).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.deleteStatus);
+        Assert.assertEquals(result,stringConstants.DELETION_SUCCESSFUL);
 
         //assumption companyId!=department.companyId
-        result = stringConstants.invalidStatus;
+        result = stringConstants.DELETION_SUCCESSFUL;
         //action
         when(departmentService.deleteDepartmentOfCompany(anyLong(),anyLong())).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        Assert.assertEquals(result,StringConstant.INVALID_CREDENTIALS);
 
         //assumption companyId==department.companyId and either or both of them doesn't exists
-        result = stringConstants.invalidStatus;
+        result = stringConstants.INVALID_CREDENTIALS;
         //action
         when(departmentService.deleteDepartmentOfCompany(anyLong(),anyLong())).thenReturn(result);
         //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        Assert.assertEquals(result,stringConstants.INVALID_CREDENTIALS);
     }
 
 }

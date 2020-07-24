@@ -1,8 +1,9 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.exception.DuplicateCompanyException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -21,13 +22,16 @@ public class CompanyServiceImpl implements CompanyServiceI {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @Override
     public Company createNewCompany(Company company) {
-        if (company == null
-                || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
-            return null;
+        if (company == null || company.getName() == null || company.getName().isEmpty()) {
+            throw new IllegalArgumentException("Company details not found or company name is empty");
+        }
+
+        if (companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
+            throw new DuplicateCompanyException("Company already exists with this name");
         }
         companyRepo.save(company);
         return company;
@@ -37,7 +41,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
     @Override
     public List<Company> getCompanyList() {
         List<Company> companyList = companyRepo.findAll();
-        if(companyList==null){
+        if (companyList == null) {
             return null;
         }
         return companyList;
@@ -58,6 +62,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
     public String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
 
         Company company = companyRepo.findById(id).orElse(null);
+        if(company == null ){
+            // throw IAE
+        }
         if (company != null && companyInfoUpdate != null) {
             if (!companyInfoUpdate.getIndustryType().isEmpty()) {
                 company.setIndustryType(companyInfoUpdate.getIndustryType());
@@ -66,9 +73,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
                 company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
             }
             companyRepo.save(company);
-            return stringConstants.updateStatus;
+            return StringConstant.UPDATE_SUCCESSFUL;
         }
-        return stringConstants.invalidStatus;
+        return StringConstant.FAILED;
     }
 
     @Override
@@ -76,9 +83,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
         Company company = companyRepo.findById(id).orElse(null);
         if (company != null) {
             companyRepo.delete(company);
-            return stringConstants.deleteStatus;
+            return stringConstants.DELETION_SUCCESSFUL;
         }
-        return stringConstants.invalidStatus;
+        return stringConstants.FAILED;
 
     }
 }

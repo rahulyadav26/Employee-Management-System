@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Project;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.ProjectServiceI;
@@ -22,7 +22,7 @@ public class ProjectController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @DeleteMapping(value = "/{project_id}")
     public ResponseEntity<String> deleteProject(@PathVariable("project_id") Long projectId,

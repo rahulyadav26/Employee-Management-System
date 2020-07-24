@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Department;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
@@ -22,7 +22,7 @@ public class DepartmentController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
     @PostMapping(value = "/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,

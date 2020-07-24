@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -25,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     private CompanyRepo companyRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstants;
 
 
     @Override
