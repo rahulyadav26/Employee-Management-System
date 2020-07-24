@@ -1,21 +1,17 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.repo.CompleteCompInfoRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,7 +29,7 @@ public class CachingInfo {
     private SalaryRepo salaryRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 //
 //    @Autowired
 //    private CompleteCompInfoRepo completeCompInfoRepo;
@@ -54,7 +50,7 @@ public class CachingInfo {
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate){
         Employee employee = employeeRepo.getEmployee(employeeId);
         if(employee==null || !employee.getCompanyId().equals(companyId)){
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
             employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
@@ -69,7 +65,7 @@ public class CachingInfo {
             employee.setPhoneNumber(employeeInfoUpdate.getPhoneNumber());
         }
         employeeRepo.save(employee);
-        return stringConstants.updateStatus;
+        return stringConstant.updateStatus;
     }
 
     @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#employee.companyId")})

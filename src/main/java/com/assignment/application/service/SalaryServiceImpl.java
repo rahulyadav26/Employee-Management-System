@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.CompanyRepo;
@@ -32,7 +32,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @Autowired
     private EmployeeRepo employeeRepo;
@@ -67,7 +67,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     public String updateSalary(Long companyId, SalaryUpdate salaryUpdate) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || salaryUpdate == null) {
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         if (salaryUpdate.getType().equals("0")) {
             //whole company
@@ -103,7 +103,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
             }
             cachingInfo.updateSalary(salaryList, company.getId());
         }
-        return stringConstants.updateStatus;
+        return stringConstant.updateStatus;
     }
 
 

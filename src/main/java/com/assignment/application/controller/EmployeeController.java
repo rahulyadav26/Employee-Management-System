@@ -1,8 +1,7 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -27,7 +26,7 @@ public class EmployeeController {
     private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @Autowired
     private VerifyUser verifyUser;
@@ -88,11 +87,11 @@ public class EmployeeController {
                                                      @RequestHeader("password") String password) {
         int status = 0;
         if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-            if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstants.updateStatus)) {
+            if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstant.updateStatus)) {
                 kafkaTemplateEmployeeUpdate.send(TOPIC, employeeInfoUpdate);
-                return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
+                return new ResponseEntity<>(stringConstant.updateStatus, HttpStatus.OK);
             }
-            return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(stringConstant.invalidStatus, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
@@ -106,10 +105,10 @@ public class EmployeeController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (employeeServiceI.deleteEmployee(companyId, empId).equalsIgnoreCase(stringConstants.deleteStatus)) {
-            return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.OK);
+        if (employeeServiceI.deleteEmployee(companyId, empId).equalsIgnoreCase(stringConstant.deleteStatus)) {
+            return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstant.invalidStatus, HttpStatus.BAD_REQUEST);
 
     }
 

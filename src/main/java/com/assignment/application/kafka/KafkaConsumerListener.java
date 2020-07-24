@@ -1,6 +1,6 @@
 package com.assignment.application.kafka;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
@@ -32,14 +32,14 @@ public class KafkaConsumerListener {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @KafkaListener(topics = "employeeUpdate", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public String consumerEmployeeInfo(KafkaEmployee kafkaEmployee) {
         Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
         if(kafkaEmployee==null){
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         if (employee == null) {
             employee = new Employee();
@@ -56,15 +56,15 @@ public class KafkaConsumerListener {
             employee.setDob(kafkaEmployee.getDob());
             Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
             if (company == null) {
-                return stringConstants.invalidStatus;
+                return stringConstant.invalidStatus;
             }
             cachingInfo.addEmployee(employee, kafkaEmployee.getCompanyId());
             salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getName(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
-            return stringConstants.savedInfo;
+            return stringConstant.savedInfo;
         }
         Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
         if (company == null) {
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         try {
             System.out.println("hey3");
@@ -81,7 +81,7 @@ public class KafkaConsumerListener {
             e.printStackTrace();
         }
 
-        return stringConstants.updateStatus;
+        return stringConstant.updateStatus;
     }
 
 }

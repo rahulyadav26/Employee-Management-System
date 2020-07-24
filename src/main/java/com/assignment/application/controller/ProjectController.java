@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Project;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.ProjectServiceI;
@@ -22,7 +22,7 @@ public class ProjectController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @DeleteMapping(value = "/{project_id}")
     public ResponseEntity<String> deleteProject(@PathVariable("project_id") Long projectId,
@@ -33,10 +33,10 @@ public class ProjectController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (projectServiceI.deleteProject(projectId, companyId).equalsIgnoreCase(stringConstants.deleteStatus)) {
-            return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.OK);
+        if (projectServiceI.deleteProject(projectId, companyId).equalsIgnoreCase(stringConstant.deleteStatus)) {
+            return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstant.invalidStatus, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "")

@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -25,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     private CompanyRepo companyRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
 
     @Override
@@ -57,10 +57,10 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstants.invalidStatus)) {
-            return stringConstants.invalidStatus;
+        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstant.invalidStatus)) {
+            return stringConstant.invalidStatus;
         }
-        return stringConstants.updateStatus;
+        return stringConstant.updateStatus;
     }
 
     @Override
@@ -68,9 +68,9 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         Employee employee = employeeRepo.getEmployee(employeeId);
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company==null || employee == null || !companyId.equals(employee.getCompanyId())) {
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         employeeRepo.delete(employee);
-        return stringConstants.deleteStatus;
+        return stringConstant.deleteStatus;
     }
 }

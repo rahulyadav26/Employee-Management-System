@@ -1,14 +1,12 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Project;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.ProjectRepo;
 import com.assignment.application.service.interfaces.ProjectServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +18,7 @@ public class ProjectServiceImpl implements ProjectServiceI {
     private ProjectRepo projectRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @Autowired
     private CompanyRepo companyRepo;
@@ -39,10 +37,10 @@ public class ProjectServiceImpl implements ProjectServiceI {
         Company company = companyRepo.findById(compId).orElse(null);
         Project project = projectRepo.findById(projectId).orElse(null);
         if (project == null || company==null || !project.getCompanyId().equals(compId)) {
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         projectRepo.deleteById(projectId);
-        return stringConstants.deleteStatus;
+        return stringConstant.deleteStatus;
     }
 
     @Override

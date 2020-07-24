@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.repo.CompanyRepo;
@@ -8,8 +8,6 @@ import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     private CompanyRepo companyRepo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @Override
     public Department addDepartment(Long companyId, Department department) {
@@ -47,7 +45,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
         Department department = departmentRepo.findById(id).orElse(null);
         Company company = companyRepo.findById(companyId).orElse(null);
         if (department == null || company==null || !department.getCompanyId().equals(companyId) || departmentInfoUpdate == null) {
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         if (!departmentInfoUpdate.getHead().isEmpty()) {
             department.setHead(departmentInfoUpdate.getHead());
@@ -62,7 +60,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
             department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
         }
         departmentRepo.save(department);
-        return stringConstants.updateStatus;
+        return stringConstant.updateStatus;
     }
 
     @Override
@@ -80,9 +78,9 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
         Company company = companyRepo.findById(companyId).orElse(null);
         Department department = departmentRepo.findById(id).orElse(null);
         if(company==null || department==null || !department.getCompanyId().equals(company.getId())){
-            return stringConstants.invalidStatus;
+            return stringConstant.invalidStatus;
         }
         departmentRepo.deleteById(id);
-        return stringConstants.deleteStatus;
+        return stringConstant.deleteStatus;
     }
 }

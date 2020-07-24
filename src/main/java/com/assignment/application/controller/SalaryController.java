@@ -1,7 +1,7 @@
 package com.assignment.application.controller;
 
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.SalaryServiceI;
@@ -27,7 +27,7 @@ public class SalaryController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     public final String TOPIC = "SalaryUpdate";
 
@@ -86,11 +86,11 @@ public class SalaryController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(stringConstants.updateStatus)) {
+        if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(stringConstant.updateStatus)) {
             kafkaTemplateSalary.send(TOPIC, salaryUpdate);
-            return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
+            return new ResponseEntity<>(stringConstant.updateStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.BAD_REQUEST);
     }
 
 }

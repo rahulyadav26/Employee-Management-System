@@ -1,8 +1,12 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.exception.DuplicateCompanyException;
+import com.assignment.application.exception.EmptyDatabaseException;
+import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -21,13 +25,15 @@ public class CompanyServiceImpl implements CompanyServiceI {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @Override
     public Company createNewCompany(Company company) {
-        if (company == null
-                || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
-            return null;
+        if (company == null || company.getName().isEmpty()) {
+            throw new IllegalArgumentException("Data is not valid");
+        }
+        if (companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
+            throw new DuplicateCompanyException("Company Already Exists");
         }
         companyRepo.save(company);
         return company;
@@ -37,8 +43,8 @@ public class CompanyServiceImpl implements CompanyServiceI {
     @Override
     public List<Company> getCompanyList() {
         List<Company> companyList = companyRepo.findAll();
-        if(companyList==null){
-            return null;
+        if (companyList.size() == 0) {
+            throw new EmptyDatabaseException("No Data Available");
         }
         return companyList;
     }
@@ -47,7 +53,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
     public List<CompleteCompInfo> getCompleteCompInfo(Long companyId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null) {
-            return null;
+            throw new RuntimeException("No such company Exists");
         }
         List<CompleteCompInfo> companyInfoList = cachingInfo.getCompanyCompleteInfo(company.getId());
         return companyInfoList;
@@ -58,27 +64,32 @@ public class CompanyServiceImpl implements CompanyServiceI {
     public String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
 
         Company company = companyRepo.findById(id).orElse(null);
-        if (company != null && companyInfoUpdate != null) {
-            if (!companyInfoUpdate.getIndustryType().isEmpty()) {
-                company.setIndustryType(companyInfoUpdate.getIndustryType());
-            }
-            if (!companyInfoUpdate.getEmployeeCount().isEmpty()) {
-                company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
-            }
-            companyRepo.save(company);
-            return stringConstants.updateStatus;
+        if (company == null) {
+            System.out.println("sdf");
+            throw new RuntimeException("No such company exists");
         }
-        return stringConstants.invalidStatus;
+        if (companyInfoUpdate == null) {
+            throw new EmptyUpdateException("Company Update Info not valid");
+        }
+
+        if (!companyInfoUpdate.getIndustryType().isEmpty()) {
+            company.setIndustryType(companyInfoUpdate.getIndustryType());
+        }
+        if (!companyInfoUpdate.getEmployeeCount().isEmpty()) {
+            company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
+        }
+        companyRepo.save(company);
+        return StringConstant.UPDATE_SUCCESSFUL;
+
     }
 
     @Override
     public String deleteCompany(Long id) {
-        Company company = companyRepo.findById(id).orElse(null);
-        if (company != null) {
-            companyRepo.delete(company);
-            return stringConstants.deleteStatus;
+        if (companyRepo.findById(id) != null) {
+            companyRepo.deleteById(id);
+            return StringConstant.DELETION_SUCCESSFUL;
         }
-        return stringConstants.invalidStatus;
+        throw new IllegalArgumentException("No such company Exists");
 
     }
 }

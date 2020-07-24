@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstants;
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.other.VerifyUser;
@@ -25,7 +25,7 @@ public class CompanyController {
     private VerifyUser verifyUser;
 
     @Autowired
-    private StringConstants stringConstants;
+    private StringConstant stringConstant;
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,
@@ -78,10 +78,10 @@ public class CompanyController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (companyServiceI.updateCompanyInfo(id, companyInfoUpdate).equals(stringConstants.updateStatus)) {
-            return new ResponseEntity<>(stringConstants.updateStatus, HttpStatus.OK);
+        if (companyServiceI.updateCompanyInfo(id, companyInfoUpdate).equals(stringConstant.updateStatus)) {
+            return new ResponseEntity<>(stringConstant.updateStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -93,10 +93,10 @@ public class CompanyController {
         if (status == 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        if (companyServiceI.deleteCompany(id).equals(stringConstants.deleteStatus)) {
-            return new ResponseEntity<>(stringConstants.deleteStatus, HttpStatus.OK);
+        if (companyServiceI.deleteCompany(id).equals(stringConstant.deleteStatus)) {
+            return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.OK);
         }
-        return new ResponseEntity<>(stringConstants.invalidStatus, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stringConstant.invalidStatus, HttpStatus.BAD_REQUEST);
     }
 
 }
