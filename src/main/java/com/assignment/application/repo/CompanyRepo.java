@@ -5,9 +5,11 @@ import com.assignment.application.entity.CompleteCompInfo;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CompanyRepo extends JpaRepository<Company, Long> {
 
     @Query("Select comp from Company comp where UPPER(comp.name)=?1")

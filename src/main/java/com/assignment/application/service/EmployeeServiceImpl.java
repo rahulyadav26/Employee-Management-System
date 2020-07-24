@@ -31,11 +31,11 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (employee == null || company == null || !employee.getCompanyId().equals(companyId) || employee.getId().equals(0)) {
+        if (employee == null || company == null || !employee.getCompanyId().equals(companyId) ) {
             return null;
         }
         Employee employeeTemp = cachingInfo.addEmployee(employee,companyId);
-        return employeeRepo.save(employee);
+        return employeeTemp;
     }
 
     @Override

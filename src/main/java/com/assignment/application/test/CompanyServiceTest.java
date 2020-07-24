@@ -25,6 +25,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +39,10 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@DataJpaTest
 public class CompanyServiceTest {
 
-    @Mock
+    @InjectMocks
     private CompanyServiceImpl companyService;
 
     @Mock
@@ -55,24 +61,18 @@ public class CompanyServiceTest {
 
     @Test
     public void testCreateNewCompany(){
-        //assumption no such company exists
+        //assumption
         Company company = new Company("Google", "Technology", 1000000L, "California", "Sergey Brin, Larry Page");
         //action
-        when(companyService.createNewCompany(any(Company.class))).thenReturn(company);
+        when(companyRepo.save(any(Company.class))).thenReturn(company);
         //result
-        Assert.assertEquals(company.getName(),"Google");
-        Assert.assertEquals(company.getIndustryType(),"Technology");
-        Assert.assertEquals(Optional.ofNullable(company.getEmployeeCount()),Optional.of(1000000L));
-        Assert.assertEquals(company.getHeadOffice(),"California");
-        Assert.assertEquals(company.getFounder(),"Sergey Brin, Larry Page");
-
-        //assumption already existing company addition
-        Company companyCopy = new Company("Google", "Technology", 1000000L, "California", "Sergey Brin, Larry Page");
-        Company companyTest = null;
-        //action
-        when(companyService.createNewCompany(any(Company.class))).thenReturn(companyTest);
-        //result
-        Assert.assertEquals(companyTest,null);
+        Company actualResult = companyService.createNewCompany(company);
+        Assert.assertEquals(company.getFounder(),actualResult.getFounder());
+        Assert.assertEquals(company.getHeadOffice(),actualResult.getHeadOffice());
+        Assert.assertEquals(company.getEmployeeCount(),actualResult.getEmployeeCount());
+        Assert.assertEquals(company.getIndustryType(),actualResult.getIndustryType());
+        Assert.assertEquals(company.getName(),actualResult.getName());
+        Assert.assertEquals(company.getId(),actualResult.getId());
 
     }
 
@@ -83,90 +83,45 @@ public class CompanyServiceTest {
         companyList.add(new Company("Microsoft", "Technology", 1000000L, "California", "Bill Gates"));
         companyList.add(new Company("Google", "Technology", 1000000L, "California", "Sergey Brin, Larry Page"));
         //action
-        when(companyService.getCompanyList()).thenReturn(companyList);
+        when(companyRepo.findAll()).thenReturn(companyList);
         //result
-        Assert.assertEquals(companyList.size(), 2);
-        Assert.assertEquals(companyList.get(0).getName(), "Microsoft");
-        Assert.assertEquals(companyList.get(0).getHeadOffice(), "California");
-        Assert.assertEquals(companyList.get(0).getIndustryType(), "Technology");
-        Assert.assertEquals(companyList.get(0).getFounder(), "Bill Gates");
+        List<Company> actualResult = companyRepo.findAll();
+        Assert.assertEquals(2,actualResult.size());
+        Assert.assertEquals(companyList.get(0).getName(),actualResult.get(0).getName());
+        Assert.assertEquals(companyList.get(0).getFounder(),actualResult.get(0).getFounder());
+        Assert.assertEquals(companyList.get(0).getIndustryType(),actualResult.get(0).getIndustryType());
+        Assert.assertEquals(companyList.get(0).getEmployeeCount(),actualResult.get(0).getEmployeeCount());
     }
 
     @Test
     public void testGetCompleteCompanyInfo(){
-        //assumption company exists
+        //assumption
         List<CompleteCompInfo> completeCompInfoList = new ArrayList<>();
         completeCompInfoList.add(new CompleteCompInfo("Sundar Pichai","google_3",1L,"Engineering",2L,(double)1000000,"123454323454",null,"1234567890","California","Chennai"));
         //action
-        when(companyService.getCompleteCompInfo(anyLong())).thenReturn(completeCompInfoList);
+        when(companyRepo.getCompanyCompleteInfo(anyLong())).thenReturn(completeCompInfoList);
         //result
-        Assert.assertEquals(completeCompInfoList.size(),1);
-        Assert.assertEquals(completeCompInfoList.get(0).getEmployeeName(),"Sundar Pichai");
-        Assert.assertEquals(completeCompInfoList.get(0).getEmployeeId(),"google_3");
-        Assert.assertEquals(Optional.ofNullable(completeCompInfoList.get(0).getCompanyId()), Optional.of(1L));
-        Assert.assertEquals(completeCompInfoList.get(0).getDepartmentName(),"Engineering");
-        Assert.assertEquals(Optional.ofNullable(completeCompInfoList.get(0).getDepartmentId()),Optional.of(2L));
-        Assert.assertEquals(Optional.ofNullable(completeCompInfoList.get(0).getSalary()),Optional.of(1000000.0));
-        Assert.assertEquals(completeCompInfoList.get(0).getAccountNo(),"123454323454");
-        Assert.assertEquals(completeCompInfoList.get(0).getProjectId(),null);
-        Assert.assertEquals(completeCompInfoList.get(0).getPhoneNumber(),"1234567890");
-        Assert.assertEquals(completeCompInfoList.get(0).getCurrentAdd(),"California");
-        Assert.assertEquals(completeCompInfoList.get(0).getPermanentAdd(),"Chennai");
-
-        //assumption if no such company exist
-        List<CompleteCompInfo> completeCompInfosEmpty = null;
-        //action
-        when(companyService.getCompleteCompInfo(anyLong())).thenReturn(completeCompInfosEmpty);
-        //result
-        Assert.assertEquals(completeCompInfosEmpty,null);
+        List<CompleteCompInfo> actualResult = companyService.getCompleteCompInfo(1L);
+        Assert.assertEquals(null,actualResult);
     }
 
     @Test
     public void testUpdateCompanyInfo(){
-        //assumption company exists and company update json is not null
-        String result = stringConstants.updateStatus;
+        //assumption
+        Company company = new Company(9L,"Google", "Technology", 1000000L, "California", "Sergey Brin, Larry Page");
+        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform","");
+        String expectedResult = stringConstants.invalidStatus;
         //action
-        when(companyService.updateCompanyInfo(anyLong(),any(CompanyInfoUpdate.class))).thenReturn(result);
+        if(!companyInfoUpdate.getEmployeeCount().isEmpty()){
+            company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
+        }
+        if(companyInfoUpdate.getIndustryType().isEmpty()){
+            company.setIndustryType(companyInfoUpdate.getIndustryType());
+        }
+        when(companyRepo.save(any(Company.class))).thenReturn(company);
         //result
-        Assert.assertEquals(result,stringConstants.updateStatus);
-
-        //assumption company exists and company update json is null
-        result = stringConstants.invalidStatus;
-        //action
-        when(companyService.updateCompanyInfo(anyLong(),any(CompanyInfoUpdate.class))).thenReturn(result);
-        //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
-
-        //assumption company doesn't exists and company update json is not null
-        result = stringConstants.invalidStatus;
-        //action
-        when(companyService.updateCompanyInfo(anyLong(),any(CompanyInfoUpdate.class))).thenReturn(result);
-        //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
-
-        //assumption company doesn't exists and company update json is null
-        result = stringConstants.invalidStatus;
-        //action
-        when(companyService.updateCompanyInfo(anyLong(),any(CompanyInfoUpdate.class))).thenReturn(result);
-        //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
-    }
-
-    @Test
-    public void testDeleteCompany(){
-        //assumption company to be deleted exists
-        String result = stringConstants.deleteStatus;
-        //action
-        when(companyService.deleteCompany(anyLong())).thenReturn(result);
-        //result
-        Assert.assertEquals(result,stringConstants.deleteStatus);
-
-        //assumption company to be deleted doesn't exists
-        result = stringConstants.invalidStatus;
-        //action
-        when(companyService.deleteCompany(anyLong())).thenReturn(result);
-        //result
-        Assert.assertEquals(result,stringConstants.invalidStatus);
+        String actualResult = companyService.updateCompanyInfo(company.getId(),companyInfoUpdate);
+        Assert.assertEquals(expectedResult,actualResult);
     }
 
 }

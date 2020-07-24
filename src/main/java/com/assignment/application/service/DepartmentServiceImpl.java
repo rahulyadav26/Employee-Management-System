@@ -29,7 +29,7 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     @Override
     public Department addDepartment(Long companyId, Department department) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (department == null || company==null || !companyId.equals(department.getCompanyId()) || department.getId().equals(0)) {
+        if (department == null || company==null || !companyId.equals(department.getCompanyId())) {
             return null;
         }
         return departmentRepo.save(department);

@@ -28,7 +28,7 @@ public class ProjectServiceImpl implements ProjectServiceI {
     @Override
     public Project addCompProject(Long companyId, Project project) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (project==null || company==null || !project.getCompanyId().equals(companyId) || project.getId().equals(0)) {
+        if (project==null || company==null || !project.getCompanyId().equals(companyId)) {
             return null;
         }
         return projectRepo.save(project);

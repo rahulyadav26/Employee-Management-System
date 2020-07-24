@@ -34,9 +34,9 @@ public class CachingInfo {
 
     @Autowired
     private StringConstants stringConstants;
-
-    @Autowired
-    private CompleteCompInfoRepo completeCompInfoRepo;
+//
+//    @Autowired
+//    private CompleteCompInfoRepo completeCompInfoRepo;
 
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
     public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId){

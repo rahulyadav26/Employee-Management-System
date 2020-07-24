@@ -9,7 +9,7 @@ public class Salary {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(name="emp_id" , columnDefinition = "text")
     private String employeeId;

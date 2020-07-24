@@ -41,7 +41,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     public Salary addSalary(Long companyID, String employeeID, Salary salary) {
         Company company = companyRepo.findById(companyID).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeID);
-        if (salary == null || company==null || employee==null || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) || salary.getId().equals(0)) {
+        if (salary == null || company==null || employee==null || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID)) {
             return null;
         }
         return salaryRepo.save(salary);

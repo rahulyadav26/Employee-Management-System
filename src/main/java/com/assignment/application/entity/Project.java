@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class Project {
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(name="dept_id")
     private Long departmentId;

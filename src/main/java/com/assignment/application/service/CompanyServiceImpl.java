@@ -26,9 +26,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
     @Override
     public Company createNewCompany(Company company) {
         if (company == null
-                || companyRepo.findById(company.getId()) != null
-                || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null
-                || company.getId().equals(0)) {
+                || companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
             return null;
         }
         companyRepo.save(company);
