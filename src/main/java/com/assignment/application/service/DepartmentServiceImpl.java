@@ -1,12 +1,17 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
+import com.assignment.application.exception.DuplicateDataException;
+import com.assignment.application.exception.EmptyDatabaseException;
+import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,72 +22,75 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     @Autowired
     private DepartmentRepo departmentRepo;
 
+    @Autowired
+    private CompanyRepo companyRepo;
+
+    @Autowired
+    private StringConstant stringConstant;
+
     @Override
-    public ResponseEntity<Department> addDepartment(Long companyId,Department department) {
-        try{
-            if(companyId!=department.getCompanyId() || department.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity<>(departmentRepo.save(department),HttpStatus.OK);
+    public Department addDepartment(Long companyId, Department department) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company==null || department == null || department.getName().isEmpty() || !companyId.equals(department.getCompanyId())) {
+            throw new RuntimeException("Data Invalid");
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(departmentRepo.getDeptByCompId(companyId,department.getName().toUpperCase())!=null){
+            throw new DuplicateDataException("Data Already Exists");
         }
+        return departmentRepo.save(department);
+
     }
 
     @Override
-    public ResponseEntity<List<Department>> getDepartments() {
-        try{
-            List<Department> departmentList = departmentRepo.findAll();
-            return new ResponseEntity<>(departmentList,HttpStatus.OK);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<Department> getDepartments() {
+        List<Department> departmentList = departmentRepo.findAll();
+        return departmentList;
     }
 
     @Override
-    public ResponseEntity<String> updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
-        try{
-            Department department = departmentRepo.findById(id).orElse(null);
-            if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>("No such department exists",HttpStatus.OK);
-            }
-            if(!departmentInfoUpdate.getHead().isEmpty()){
-                department.setHead(departmentInfoUpdate.getHead());
-            }
-            if(!departmentInfoUpdate.getEmployeeCount().isEmpty()){
-                department.setEmployeeCount(Long.parseLong(departmentInfoUpdate.getEmployeeCount()));
-            }
-            if(!departmentInfoUpdate.getOngoingProject().isEmpty()){
-                department.setOngoingProject(Long.parseLong(departmentInfoUpdate.getOngoingProject()));
-            }
-            if(!departmentInfoUpdate.getCompletedProject().isEmpty()){
-                department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
-            }
-            departmentRepo.save(department);
-            return new ResponseEntity<>("Update Successful",HttpStatus.OK);
+    public String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
+        Department department = departmentRepo.findById(id).orElse(null);
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (department == null || company==null || !department.getCompanyId().equals(companyId)){
+            throw new RuntimeException("Data not valid");
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
+        if(departmentInfoUpdate==null){
+            throw new EmptyUpdateException("Information is not valid");
         }
+        if (!departmentInfoUpdate.getHead().isEmpty()) {
+            department.setHead(departmentInfoUpdate.getHead());
+        }
+        if (!departmentInfoUpdate.getEmployeeCount().isEmpty()) {
+            department.setEmployeeCount(Long.parseLong(departmentInfoUpdate.getEmployeeCount()));
+        }
+        if (!departmentInfoUpdate.getOngoingProject().isEmpty()) {
+            department.setOngoingProject(Long.parseLong(departmentInfoUpdate.getOngoingProject()));
+        }
+        if (!departmentInfoUpdate.getCompletedProject().isEmpty()) {
+            department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
+        }
+        departmentRepo.save(department);
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Override
-    public ResponseEntity<Department> getDepartment(Long companyId,Long id) {
-        try{
-            Department department = departmentRepo.findById(id).orElse(null);
-            if(department==null || department.getCompanyId()!=companyId){
-                return new ResponseEntity<>(null,HttpStatus.OK);
-            }
-            return new ResponseEntity<>(department,HttpStatus.OK);
+    public Department getDepartment(Long companyId, Long id) {
+        Department department = departmentRepo.findById(id).orElse(null);
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (department == null || company==null || !department.getCompanyId().equals(companyId)) {
+            throw new RuntimeException("Data not Valid");
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+        return department;
+    }
+
+    @Override
+    public String deleteDepartmentOfCompany(Long departmentId, Long companyId) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        Department department = departmentRepo.findById(departmentId).orElse(null);
+        if(department==null || company==null || !department.getCompanyId().equals(company.getId())){
+           throw new RuntimeException("Data not valid");
         }
+        departmentRepo.deleteById(departmentId);
+        return StringConstant.DELETION_SUCCESSFUL;
     }
 }

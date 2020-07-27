@@ -1,13 +1,15 @@
 package com.assignment.application.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="department")
-public class Department {
+public class Department implements Serializable {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="name")
     private String name;
@@ -20,7 +22,7 @@ public class Department {
     @Column(name="completed_project")
     private Long completedProject;
     @Column(name="head")
-    String head;
+    private String head;
 
     public Department(){
 
@@ -28,6 +30,15 @@ public class Department {
 
     public Department(Long id, String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
         this.id = id;
+        this.name = name;
+        this.companyId = companyId;
+        this.employeeCount = employeeCount;
+        this.ongoingProject = ongoingProject;
+        this.completedProject = completedProject;
+        this.head = head;
+    }
+
+    public Department(String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
         this.name = name;
         this.companyId = companyId;
         this.employeeCount = employeeCount;

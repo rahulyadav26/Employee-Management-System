@@ -24,4 +24,9 @@ public class CompanyInfoUpdate {
     public void setEmployeeCount(String employeeCount) {
         this.employeeCount = employeeCount;
     }
+
+    public CompanyInfoUpdate(String industryType, String employeeCount) {
+        this.industryType = industryType;
+        this.employeeCount = employeeCount;
+    }
 }

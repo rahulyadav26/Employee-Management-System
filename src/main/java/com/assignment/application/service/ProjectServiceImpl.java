@@ -1,11 +1,12 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Project;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.ProjectRepo;
 import com.assignment.application.service.interfaces.ProjectServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,47 +17,37 @@ public class ProjectServiceImpl implements ProjectServiceI {
     @Autowired
     private ProjectRepo projectRepo;
 
+    @Autowired
+    private CompanyRepo companyRepo;
 
     @Override
-    public ResponseEntity<Project> addCompProject(Long companyId, Project project) {
-        try{
-            if(project.getCompanyId()!=companyId || project.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.OK);
-            }
-            return new ResponseEntity<>(projectRepo.save(project),HttpStatus.OK);
+    public Project addCompProject(Long companyId, Project project) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (project==null || company==null || !project.getCompanyId().equals(companyId)) {
+            throw new RuntimeException("Data not valid");
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Project tempProject = projectRepo.save(project);
+        return tempProject;
     }
 
     @Override
-    public ResponseEntity<String> deleteProject(Long projectId,Long compId) {
-        try{
-
-            Project project = projectRepo.findById(projectId).orElse(null);
-            if(project.getCompanyId()!=compId){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
-            }
-            projectRepo.deleteById(projectId);
-            return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);
+    public String deleteProject(Long projectId, Long compId) {
+        Company company = companyRepo.findById(compId).orElse(null);
+        Project project = projectRepo.findById(projectId).orElse(null);
+        if (project == null || company==null || !project.getCompanyId().equals(compId)) {
+            throw new RuntimeException("Data not valid");
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while deleting", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        projectRepo.deleteById(projectId);
+        return StringConstant.DELETION_SUCCESSFUL;
     }
 
     @Override
-    public ResponseEntity<List<Project>> getProject(Long compId) {
-        try{
-            List<Project> projectList = projectRepo.getProjectListById(compId);
-            return new ResponseEntity<>(projectList,HttpStatus.OK);
+    public List<Project> getProject(Long compId) {
+        Company company = companyRepo.findById(compId).orElse(null);
+        if (company==null) {
+            throw new RuntimeException("Data not valid");
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Project> projectList = projectRepo.getProjectListById(compId);
+        return projectList;
     }
 }

@@ -1,5 +1,8 @@
 package com.assignment.application.logging;
 
+import com.assignment.application.kafka.KafkaConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -13,6 +16,9 @@ import java.io.IOException;
 
 @Component
 public class ResponseLogging extends OncePerRequestFilter {
+
+    Logger logger = LoggerFactory.getLogger(KafkaConfig.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
@@ -20,13 +26,13 @@ public class ResponseLogging extends OncePerRequestFilter {
         HttpServletResponse response = httpServletResponse;
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-        filterChain.doFilter(requestWrapper,responseWrapper);
+        filterChain.doFilter(requestWrapper, responseWrapper);
         byte[] requestArray = requestWrapper.getContentAsByteArray();
-        String requestBody = new String(requestArray,requestWrapper.getCharacterEncoding());
-        System.out.println("Request Body: " + requestBody);
-        byte[] responseArray= responseWrapper.getContentAsByteArray();
-        String responseBody = new String(responseArray,responseWrapper.getCharacterEncoding());
-        System.out.println("Response Body: " + responseBody);
+        String requestBody = new String(requestArray, requestWrapper.getCharacterEncoding());
+        logger.info("Request Body " + requestBody);
+        byte[] responseArray = responseWrapper.getContentAsByteArray();
+        String responseBody = new String(responseArray, responseWrapper.getCharacterEncoding());
+        logger.info("Response Body " + responseBody);
         responseWrapper.copyBodyToResponse();
     }
 }

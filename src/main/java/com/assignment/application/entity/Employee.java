@@ -2,10 +2,7 @@ package com.assignment.application.entity;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -14,6 +11,7 @@ public class Employee implements Serializable {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="name")
     private String name;
@@ -33,15 +31,17 @@ public class Employee implements Serializable {
     private Long projectId;
     @Column(name="comp_id")
     private Long companyId;
-    @Column(name="emp_id")
+    @Column(name="emp_id" , columnDefinition = "text")
     private String employeeId;
+    @OneToOne
+    @JoinColumn(name="dept_id", referencedColumnName = "id",insertable=false, updatable=false)
+    private Department department;
 
     public Employee(){
 
     }
 
-    public Employee(Long id, String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
-        this.id = id;
+    public Employee(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
         this.name = name;
         this.dob = dob;
         this.permanentAdd = permanentAdd;

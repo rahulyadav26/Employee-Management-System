@@ -18,14 +18,6 @@ public class DepartmentInfoUpdate {
     @JsonProperty(value="completed_project")
     private String completedProject;
 
-//    public String getFieldToUpdate() {
-//        return fieldToUpdate;
-//    }
-//
-//    public void setFieldToUpdate(String fieldToUpdate) {
-//        this.fieldToUpdate = fieldToUpdate;
-//    }
-
     public String getHead() {
         return head;
     }
@@ -55,6 +47,13 @@ public class DepartmentInfoUpdate {
     }
 
     public void setCompletedProject(String completedProject) {
+        this.completedProject = completedProject;
+    }
+
+    public DepartmentInfoUpdate(String head, String employeeCount, String ongoingProject, String completedProject) {
+        this.head = head;
+        this.employeeCount = employeeCount;
+        this.ongoingProject = ongoingProject;
         this.completedProject = completedProject;
     }
 }

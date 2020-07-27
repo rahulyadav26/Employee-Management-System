@@ -2,10 +2,8 @@ package com.assignment.application.entity;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Component
 @Entity
@@ -13,6 +11,7 @@ import javax.persistence.Table;
 public class Project {
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="dept_id")
     private Long departmentId;
@@ -27,6 +26,14 @@ public class Project {
 
     public Project(){
 
+    }
+
+    public Project(Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
+        this.departmentId = departmentId;
+        this.companyId = companyId;
+        this.description = description;
+        this.teamLead = teamLead;
+        this.teamLeadId = teamLeadId;
     }
 
     public Project(Long id, Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {

@@ -1,22 +1,30 @@
 package com.assignment.application.kafka;
 
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
-import com.assignment.application.entity.Salary;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.update.SalaryUpdate;
+import com.oracle.tools.packager.Log;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.*;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.messaging.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +33,16 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    Logger logger = LoggerFactory.getLogger(KafkaConfig.class);
+
+    @Autowired
+    private StringConstant stringConstant;
+
+
     @Bean
     public ProducerFactory<String,EmployeeInfoUpdate> producerFactoryEmpUpdate(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,EmployeeInfoUpdate>(map);
@@ -42,7 +56,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, Employee> producerFactoryEmp(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,Employee>(map);
@@ -56,7 +70,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, SalaryUpdate> producerFactoryEmpSalary(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,SalaryUpdate>(map);
@@ -67,21 +81,42 @@ public class KafkaConfig {
         return new KafkaTemplate(producerFactoryEmpSalary());
     }
 
+
     @Bean
     public ConsumerFactory<String, KafkaEmployee> consumerFactory(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
-        map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,StringSerializer.class);
+        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
+        map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonSerializer.class);
         map.put(ConsumerConfig.GROUP_ID_CONFIG,"employee");
-        return new DefaultKafkaConsumerFactory<>(map,new StringDeserializer(),new JsonDeserializer<>(KafkaEmployee.class));
+        ErrorHandlingDeserializer<KafkaEmployee> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(KafkaEmployee.class));
+
+        return new DefaultKafkaConsumerFactory<>(map,new StringDeserializer(),errorHandlingDeserializer);
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String,KafkaEmployee> concurrentKafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory containerFactory = new ConcurrentKafkaListenerContainerFactory();
         containerFactory.setConsumerFactory(consumerFactory());
+        containerFactory.setErrorHandler(new KafkaErrorHandler());
         return containerFactory;
+    }
+
+    public class KafkaErrorHandler implements ErrorHandler, KafkaListenerErrorHandler {
+        @Override
+        public Object handleError(Message<?> message, ListenerExecutionFailedException e) {
+            logger.info(message.toString());
+            return null;
+        }
+
+        @Override
+        public Object handleError(Message<?> message, ListenerExecutionFailedException ex, Consumer<?, ?> consumer) {
+            return null;
+        }
+
+        @Override
+        public void handle(Exception e, ConsumerRecord<?, ?> consumerRecord) {
+        }
     }
 
 }

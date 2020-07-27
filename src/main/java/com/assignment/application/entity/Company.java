@@ -4,10 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="company_info")
-public class Company{
+public class Company {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="name")
     private String name;
@@ -33,6 +34,14 @@ public class Company{
         this.founder = founder;
     }
 
+    public Company(String name, String industryType, Long employeeCount, String headOffice, String founder) {
+        this.name = name;
+        this.industryType = industryType;
+        this.employeeCount = employeeCount;
+        this.headOffice = headOffice;
+        this.founder = founder;
+    }
+
     public Long getId() {
         return id;
     }
@@ -49,7 +58,6 @@ public class Company{
         this.name = name;
     }
 
-    @Column(name="industry_type")
     public String getIndustryType() {
         return industryType;
     }
@@ -58,7 +66,6 @@ public class Company{
         this.industryType = industryType;
     }
 
-    @Column(name="employee_count")
     public Long getEmployeeCount() {
         return employeeCount;
     }
@@ -67,7 +74,6 @@ public class Company{
         this.employeeCount = employeeCount;
     }
 
-    @Column(name="head_office")
     public String getHeadOffice() {
         return headOffice;
     }
@@ -82,5 +88,17 @@ public class Company{
 
     public void setFounder(String founder) {
         this.founder = founder;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", industryType='" + industryType + '\'' +
+                ", employeeCount=" + employeeCount +
+                ", headOffice='" + headOffice + '\'' +
+                ", founder='" + founder + '\'' +
+                '}';
     }
 }

@@ -1,15 +1,15 @@
 package com.assignment.application.service;
 
+import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.other.CachingInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,78 +26,60 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private CompanyRepo companyRepo;
 
+    @Autowired
+    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Autowired
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
+    public final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
+
 
     @Override
-    public ResponseEntity<Employee> addEmployee(Long companyId, Employee employee) {
-        try{
-            Company company = companyRepo.getCompany(companyId);
-            if(employee.getCompanyId()!=companyId || employee.getId()==0){
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-            }
-            Employee employeeTemp = cachingInfo.addEmployee(companyId,employee,company.getName());
-            return new ResponseEntity<>(employeeRepo.save(employee),HttpStatus.OK);
+    public Employee addEmployee(Long companyId, Employee employee) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (employee == null || company == null || !employee.getCompanyId().equals(companyId) ) {
+            throw new RuntimeException("Data not valid");
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Employee employeeTemp = cachingInfo.addEmployee(employee,companyId);
+        kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
+        return employeeTemp;
     }
 
     @Override
-    public ResponseEntity<List<Employee>> getEmployeesOfComp(Long companyId) {
-        try{
-            Company company = companyRepo.getCompany(companyId);
-            List<Employee> employeeList = cachingInfo.getEmployeeOfComp(company.getName().toLowerCase(),company.getId());
-            return new ResponseEntity<>(employeeList,HttpStatus.OK);
+    public List<Employee> getEmployeesOfComp(Long companyId) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company == null) {
+            throw new RuntimeException("Data not valid");
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Employee> employeeList = cachingInfo.getEmployeeOfComp(company.getId());
+        return employeeList;
     }
 
     @Override
-    public ResponseEntity<List<Employee>> getEmployees() {
-        try{
-            List<Employee> employeeList = employeeRepo.findAll();
-            return new ResponseEntity<>(employeeList,HttpStatus.OK);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<Employee> getEmployees() {
+        List<Employee> employeeList = employeeRepo.findAll();
+        return employeeList;
     }
 
     @Override
-    public ResponseEntity<String> updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
-        try{
-            Company company = companyRepo.getCompany(companyId);
-            if(cachingInfo.updateEmployeeInfo(employeeId,companyId,employeeInfoUpdate,company.getName().toLowerCase()).equalsIgnoreCase("Invalid Credentials")){
-                return new ResponseEntity<>("Invalid Credentials",HttpStatus.BAD_REQUEST);
-            }
-            else{
-                return new ResponseEntity<>("Update Successful",HttpStatus.OK);
-            }
+    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.INVALID_CREDENTIALS)) {
+            throw new RuntimeException("Data not valid");
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while updating",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Override
-    public ResponseEntity<String> deleteEmployee(Long companyId, String employeeId) {
-        try{
-            Employee employee = employeeRepo.getEmployee(employeeId);
-            if(companyId!=employee.getCompanyId()){
-                return new ResponseEntity<>("Invalid credentials",HttpStatus.OK);
-            }
-            employeeRepo.delete(employee);
-            return new ResponseEntity<>("Deletion Successful",HttpStatus.OK);
+    public String deleteEmployee(Long companyId, String employeeId) {
+        Employee employee = employeeRepo.getEmployee(employeeId);
+        Company company = companyRepo.findById(companyId).orElse(null);
+        if (company==null || employee == null || !companyId.equals(employee.getCompanyId())) {
+            throw new RuntimeException("Data not Valid");
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Error while deleting",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        employeeRepo.delete(employee);
+        return StringConstant.DELETION_SUCCESSFUL;
     }
 }
