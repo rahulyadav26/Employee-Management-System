@@ -49,4 +49,11 @@ public class DepartmentInfoUpdate {
     public void setCompletedProject(String completedProject) {
         this.completedProject = completedProject;
     }
+
+    public DepartmentInfoUpdate(String head, String employeeCount, String ongoingProject, String completedProject) {
+        this.head = head;
+        this.employeeCount = employeeCount;
+        this.ongoingProject = ongoingProject;
+        this.completedProject = completedProject;
+    }
 }

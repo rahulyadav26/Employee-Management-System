@@ -18,18 +18,16 @@ public class ProjectServiceImpl implements ProjectServiceI {
     private ProjectRepo projectRepo;
 
     @Autowired
-    private StringConstant stringConstant;
-
-    @Autowired
     private CompanyRepo companyRepo;
 
     @Override
     public Project addCompProject(Long companyId, Project project) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (project==null || company==null || !project.getCompanyId().equals(companyId)) {
-            return null;
+            throw new RuntimeException("Data not valid");
         }
-        return projectRepo.save(project);
+        Project tempProject = projectRepo.save(project);
+        return tempProject;
     }
 
     @Override
@@ -37,19 +35,19 @@ public class ProjectServiceImpl implements ProjectServiceI {
         Company company = companyRepo.findById(compId).orElse(null);
         Project project = projectRepo.findById(projectId).orElse(null);
         if (project == null || company==null || !project.getCompanyId().equals(compId)) {
-            return stringConstant.invalidStatus;
+            throw new RuntimeException("Data not valid");
         }
         projectRepo.deleteById(projectId);
-        return stringConstant.deleteStatus;
+        return StringConstant.DELETION_SUCCESSFUL;
     }
 
     @Override
     public List<Project> getProject(Long compId) {
-        List<Project> projectList = projectRepo.getProjectListById(compId);
         Company company = companyRepo.findById(compId).orElse(null);
-        if (projectList == null || company==null) {
-            return null;
+        if (company==null) {
+            throw new RuntimeException("Data not valid");
         }
+        List<Project> projectList = projectRepo.getProjectListById(compId);
         return projectList;
     }
 }

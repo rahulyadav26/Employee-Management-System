@@ -5,6 +5,7 @@ import com.assignment.application.entity.Department;
 import com.assignment.application.other.VerifyUser;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,35 +22,39 @@ public class DepartmentController {
     @Autowired
     private VerifyUser verifyUser;
 
-    @Autowired
-    private StringConstant stringConstant;
-
     @PostMapping(value = "/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
                                                     @RequestBody Department department,
                                                     @RequestHeader("username") String username,
                                                     @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        Department departmentToBeAdded = departmentServiceI.addDepartment(companyId, department);
-        if (departmentToBeAdded == null) {
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            Department departmentToBeAdded = departmentServiceI.addDepartment(companyId, department);
+            if (departmentToBeAdded == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(departmentToBeAdded, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(departmentToBeAdded, HttpStatus.OK);
 
     }
 
     @GetMapping(value = "/department")
     public ResponseEntity<List<Department>> getDepartments(@RequestHeader("username") String username,
                                                            @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            return new ResponseEntity<>(departmentServiceI.getDepartments(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(departmentServiceI.getDepartments(), HttpStatus.OK);
-
     }
 
     @GetMapping(value = "/{company_id}/department/{id}")
@@ -57,15 +62,19 @@ public class DepartmentController {
                                                     @PathVariable("company_id") Long companyId,
                                                     @RequestHeader("username") String username,
                                                     @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        Department department = departmentServiceI.getDepartment(companyId, id);
-        if (department == null) {
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            Department department = departmentServiceI.getDepartment(companyId, id);
+            if (department == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(department, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(department, HttpStatus.OK);
 
     }
 
@@ -75,28 +84,37 @@ public class DepartmentController {
                                                        @RequestBody DepartmentInfoUpdate departmentInfoUpdate,
                                                        @RequestHeader("username") String username,
                                                        @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            if (departmentServiceI.updateDepartmentInfo(companyId, id, departmentInfoUpdate).equals(StringConstant.UPDATE_SUCCESSFUL)) {
+                return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        if(departmentServiceI.updateDepartmentInfo(companyId,id,departmentInfoUpdate).equals(stringConstant.updateStatus)){
-            return new ResponseEntity<>(stringConstant.updateStatus,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(stringConstant.invalidStatus,HttpStatus.BAD_REQUEST);
     }
+
     @DeleteMapping(value = "/{company_id}/department/{id}")
     public ResponseEntity<String> deleteDepartmentOfCompany(@PathVariable("id") Long id,
                                                             @PathVariable("company_id") Long companyId,
                                                             @RequestHeader("username") String username,
-                                                            @RequestHeader("password") String password){
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                                                            @RequestHeader("password") String password) {
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            if (departmentServiceI.deleteDepartmentOfCompany(id, companyId).equalsIgnoreCase(StringConstant.DELETION_SUCCESSFUL)) {
+                return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        if(departmentServiceI.deleteDepartmentOfCompany(id,companyId).equalsIgnoreCase(stringConstant.deleteStatus)){
-            return new ResponseEntity<>(stringConstant.deleteStatus,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(stringConstant.invalidStatus,HttpStatus.BAD_REQUEST);
     }
 
 }

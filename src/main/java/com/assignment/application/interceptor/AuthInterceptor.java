@@ -22,8 +22,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         super.preHandle(request, response, handler);
         String userName = request.getHeader("username");
         String password = request.getHeader("password");
-        if(userName.isEmpty() || password.isEmpty()){
-            return false;
+        if(userName==null || password==null || userName.isEmpty() || password.isEmpty()){
+            throw new IllegalArgumentException("Invalid Credential");
         }
         else if(userName.equalsIgnoreCase("admin") && password.equalsIgnoreCase("admin")){
             return true;
@@ -31,10 +31,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         Employee employee;
         employee = employeeRepo.getEmployee(userName);
         if(employee==null){
-            return false;
+            throw new IllegalArgumentException("Invalid Credential");
         }
         if(!employee.getEmployeeId().equalsIgnoreCase(userName) || !employee.getDob().equalsIgnoreCase(password)){
-            return false;
+            throw new IllegalArgumentException("Invalid Credential");
         }
         return true;
     }

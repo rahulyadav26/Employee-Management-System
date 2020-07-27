@@ -36,7 +36,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String,EmployeeInfoUpdate> producerFactoryEmpUpdate(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, stringConstant.localhost);
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,EmployeeInfoUpdate>(map);
@@ -50,7 +50,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, Employee> producerFactoryEmp(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, stringConstant.localhost);
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,Employee>(map);
@@ -64,7 +64,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, SalaryUpdate> producerFactoryEmpSalary(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, stringConstant.localhost);
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String,SalaryUpdate>(map);
@@ -79,7 +79,7 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, KafkaEmployee> consumerFactory(){
         Map<String,Object> map = new HashMap<>();
-        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, stringConstant.localhost);
+        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonSerializer.class);
         map.put(ConsumerConfig.GROUP_ID_CONFIG,"employee");
@@ -92,11 +92,11 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String,KafkaEmployee> concurrentKafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory containerFactory = new ConcurrentKafkaListenerContainerFactory();
         containerFactory.setConsumerFactory(consumerFactory());
-        containerFactory.setErrorHandler(new MyErrorHandler());
+        containerFactory.setErrorHandler(new KafkaErrorHandler());
         return containerFactory;
     }
 
-    public class MyErrorHandler implements ErrorHandler, KafkaListenerErrorHandler {
+    public class KafkaErrorHandler implements ErrorHandler, KafkaListenerErrorHandler {
         @Override
         public Object handleError(Message<?> message, ListenerExecutionFailedException e) {
             return null;
@@ -109,7 +109,7 @@ public class KafkaConfig {
 
         @Override
         public void handle(Exception e, ConsumerRecord<?, ?> consumerRecord) {
-
+            //e.printStackTrace();
         }
     }
 

@@ -16,18 +16,17 @@ public class ResponseLogging extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
-//        HttpServletRequest request = httpServletRequest;
-//        HttpServletResponse response = httpServletResponse;
-//        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-//        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-//        filterChain.doFilter(requestWrapper,responseWrapper);
-//        byte[] requestArray = requestWrapper.getContentAsByteArray();
-//        String requestBody = new String(requestArray,requestWrapper.getCharacterEncoding());
-//        System.out.println("Request Body " + requestBody);
-//
-//        byte[] responseArray= responseWrapper.getContentAsByteArray();
-//        String responseBody = new String(responseArray,responseWrapper.getCharacterEncoding());
-//        System.out.println("Response Body " + requestBody);
-//        responseWrapper.copyBodyToResponse();
+        HttpServletRequest request = httpServletRequest;
+        HttpServletResponse response = httpServletResponse;
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
+        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+        filterChain.doFilter(requestWrapper, responseWrapper);
+        byte[] requestArray = requestWrapper.getContentAsByteArray();
+        String requestBody = new String(requestArray, requestWrapper.getCharacterEncoding());
+        logger.info("Request Body " + requestBody);
+        byte[] responseArray = responseWrapper.getContentAsByteArray();
+        String responseBody = new String(responseArray, responseWrapper.getCharacterEncoding());
+        logger.info("Response Body " + responseBody);
+        responseWrapper.copyBodyToResponse();
     }
 }

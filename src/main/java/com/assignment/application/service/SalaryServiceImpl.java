@@ -3,6 +3,7 @@ package com.assignment.application.service;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.SalaryServiceI;
@@ -11,6 +12,7 @@ import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.update.SalaryUpdate;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.SalaryRepo;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,17 +34,16 @@ public class SalaryServiceImpl implements SalaryServiceI {
     private CachingInfo cachingInfo;
 
     @Autowired
-    private StringConstant stringConstant;
-
-    @Autowired
     private EmployeeRepo employeeRepo;
 
     @Override
     public Salary addSalary(Long companyID, String employeeID, Salary salary) {
         Company company = companyRepo.findById(companyID).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeID);
-        if (salary == null || company==null || employee==null || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID)) {
-            return null;
+        if (salary == null || company==null || employee==null
+                || !salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) || salary.getSalary()==null
+                    || salaryRepo.getSalaryById(employeeID)!=null) {
+            throw new RuntimeException("Data not valid");
         }
         return salaryRepo.save(salary);
     }
@@ -52,7 +53,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
         Company company = companyRepo.findById(companyId).orElse(null);
         Salary salary = salaryRepo.getSalaryById(employeeId);
         if (salary == null || company==null) {
-            return null;
+            throw new RuntimeException("Data not valid");
         }
         return salary;
     }
@@ -66,8 +67,11 @@ public class SalaryServiceImpl implements SalaryServiceI {
     @Override
     public String updateSalary(Long companyId, SalaryUpdate salaryUpdate) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company == null || salaryUpdate == null) {
-            return stringConstant.invalidStatus;
+        if (company == null) {
+            throw new RuntimeException("Data not valid");
+        }
+        if(salaryUpdate==null){
+            throw new EmptyUpdateException("Salary Update info is not valid");
         }
         if (salaryUpdate.getType().equals("0")) {
             //whole company
@@ -87,7 +91,10 @@ public class SalaryServiceImpl implements SalaryServiceI {
             cachingInfo.updateSalary(salaryList, company.getId());
         } else{
             //dept of a company
-            Department department = departmentRepo.getDeptByCompId(companyId, salaryUpdate.getDepartmentName());
+            Department department = departmentRepo.getDeptByCompId(companyId, salaryUpdate.getDepartmentName().toUpperCase());
+            if(department==null){
+                throw new RuntimeException("Department not exists");
+            }
             List<Salary> salaryList = salaryRepo.salaryListCompDept(companyId, department.getId());
             if (salaryUpdate.getSubType().equals("0")) {
                 //update by amount
@@ -103,7 +110,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
             }
             cachingInfo.updateSalary(salaryList, company.getId());
         }
-        return stringConstant.updateStatus;
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
 

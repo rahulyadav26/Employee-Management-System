@@ -4,11 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="company_info")
-public class Company{
+public class Company {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="name")
     private String name;
@@ -88,5 +88,17 @@ public class Company{
 
     public void setFounder(String founder) {
         this.founder = founder;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", industryType='" + industryType + '\'' +
+                ", employeeCount=" + employeeCount +
+                ", headOffice='" + headOffice + '\'' +
+                ", founder='" + founder + '\'' +
+                '}';
     }
 }

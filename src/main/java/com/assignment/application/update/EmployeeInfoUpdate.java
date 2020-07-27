@@ -49,4 +49,11 @@ public class EmployeeInfoUpdate {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public EmployeeInfoUpdate(String currentAddress, String permanentAddress, String position, String phoneNumber) {
+        this.currentAddress = currentAddress;
+        this.permanentAddress = permanentAddress;
+        this.position = position;
+        this.phoneNumber = phoneNumber;
+    }
 }

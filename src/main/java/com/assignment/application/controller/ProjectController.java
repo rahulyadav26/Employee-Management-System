@@ -21,22 +21,23 @@ public class ProjectController {
     @Autowired
     private VerifyUser verifyUser;
 
-    @Autowired
-    private StringConstant stringConstant;
-
     @DeleteMapping(value = "/{project_id}")
     public ResponseEntity<String> deleteProject(@PathVariable("project_id") Long projectId,
                                                 @PathVariable("comp_id") Long companyId,
                                                 @RequestHeader("username") String username,
                                                 @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            if (projectServiceI.deleteProject(projectId, companyId).equalsIgnoreCase(StringConstant.DELETION_SUCCESSFUL)) {
+                return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        if (projectServiceI.deleteProject(projectId, companyId).equalsIgnoreCase(stringConstant.deleteStatus)) {
-            return new ResponseEntity<>(stringConstant.deleteStatus, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(stringConstant.invalidStatus, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "")
@@ -44,15 +45,19 @@ public class ProjectController {
                                               @RequestBody Project project,
                                               @RequestHeader("username") String username,
                                               @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        Project projectToBeAdded = projectServiceI.addCompProject(companyId, project);
-        if (projectToBeAdded == null) {
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            Project projectToBeAdded = projectServiceI.addCompProject(companyId, project);
+            if (projectToBeAdded == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(projectToBeAdded, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(projectToBeAdded, HttpStatus.OK);
 
     }
 
@@ -60,15 +65,19 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getProject(@PathVariable("comp_id") Long companyId,
                                                     @RequestHeader("username") String username,
                                                     @RequestHeader("password") String password) {
-        int status = verifyUser.authorizeUser(username, password);
-        if (status == 0) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-        List<Project> projectList = projectServiceI.getProject(companyId);
-        if (projectList == null) {
+        try {
+            int status = verifyUser.authorizeUser(username, password);
+            if (status == 0) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            List<Project> projectList = projectServiceI.getProject(companyId);
+            if (projectList == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(projectList, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 
 }

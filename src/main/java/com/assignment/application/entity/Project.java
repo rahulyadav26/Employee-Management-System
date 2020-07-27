@@ -3,6 +3,7 @@ package com.assignment.application.entity;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Component
 @Entity
@@ -10,7 +11,7 @@ import javax.persistence.*;
 public class Project {
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="dept_id")
     private Long departmentId;
@@ -28,6 +29,15 @@ public class Project {
     }
 
     public Project(Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
+        this.departmentId = departmentId;
+        this.companyId = companyId;
+        this.description = description;
+        this.teamLead = teamLead;
+        this.teamLeadId = teamLeadId;
+    }
+
+    public Project(Long id, Long departmentId, Long companyId, String description, String teamLead, String teamLeadId) {
+        this.id = id;
         this.departmentId = departmentId;
         this.companyId = companyId;
         this.description = description;

@@ -2,14 +2,15 @@ package com.assignment.application.entity;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="salary")
-public class Salary {
+public class Salary implements Serializable{
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="emp_id" , columnDefinition = "text")
     private String employeeId;

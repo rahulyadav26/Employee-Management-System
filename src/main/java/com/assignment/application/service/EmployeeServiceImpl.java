@@ -7,6 +7,7 @@ import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +25,12 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private CompanyRepo companyRepo;
 
-    @Autowired
-    private StringConstant stringConstant;
 
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (employee == null || company == null || !employee.getCompanyId().equals(companyId) ) {
-            return null;
+            throw new RuntimeException("Data not valid");
         }
         Employee employeeTemp = cachingInfo.addEmployee(employee,companyId);
         return employeeTemp;
@@ -41,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     public List<Employee> getEmployeesOfComp(Long companyId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null) {
-            return null;
+            throw new RuntimeException("Data not valid");
         }
         List<Employee> employeeList = cachingInfo.getEmployeeOfComp(company.getId());
         return employeeList;
@@ -56,10 +55,10 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(stringConstant.invalidStatus)) {
-            return stringConstant.invalidStatus;
+        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.INVALID_CREDENTIALS)) {
+            throw new RuntimeException("Data not valid");
         }
-        return stringConstant.updateStatus;
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Override
@@ -67,9 +66,9 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         Employee employee = employeeRepo.getEmployee(employeeId);
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company==null || employee == null || !companyId.equals(employee.getCompanyId())) {
-            return stringConstant.invalidStatus;
+            throw new RuntimeException("Data not Valid");
         }
         employeeRepo.delete(employee);
-        return stringConstant.deleteStatus;
+        return StringConstant.DELETION_SUCCESSFUL;
     }
 }

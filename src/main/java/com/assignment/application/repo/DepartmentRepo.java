@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DepartmentRepo extends JpaRepository<Department,Long> {
 
-    @Query("Select dept from Department dept where dept.companyId=?1 and dept.name=?2")
+    @Query("Select dept from Department dept where dept.companyId=?1 and Upper(dept.name)=?2")
     Department getDeptByCompId(Long companyId,String deptName);
 
 }

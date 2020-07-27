@@ -9,6 +9,7 @@ import com.assignment.application.service.CachingInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -31,15 +32,13 @@ public class KafkaConsumerListener {
     @Autowired
     private CachingInfo cachingInfo;
 
-    @Autowired
-    private StringConstant stringConstant;
 
-    @KafkaListener(topics = "employeeUpdate", groupId = "employee",
+    @KafkaListener(topics = "employeeAddition", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public String consumerEmployeeInfo(KafkaEmployee kafkaEmployee) {
         Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
         if(kafkaEmployee==null){
-            return stringConstant.invalidStatus;
+            return StringConstant.INVALID_CREDENTIALS;
         }
         if (employee == null) {
             employee = new Employee();
@@ -56,20 +55,18 @@ public class KafkaConsumerListener {
             employee.setDob(kafkaEmployee.getDob());
             Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
             if (company == null) {
-                return stringConstant.invalidStatus;
+                return StringConstant.INVALID_CREDENTIALS;
             }
             cachingInfo.addEmployee(employee, kafkaEmployee.getCompanyId());
             salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getName(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
-            return stringConstant.savedInfo;
+            return StringConstant.INFORMATION_SAVED_SUCCESSFULLY;
         }
         Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
         if (company == null) {
-            return stringConstant.invalidStatus;
+            return StringConstant.INVALID_CREDENTIALS;
         }
         try {
-            System.out.println("hey3");
-            Salary salary = new Salary();
-            System.out.println(kafkaEmployee.getEmployeeId());
+            Salary salary;
             salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
             salaryRepo.deleteById(salary.getId());
             salary.setSalary(kafkaEmployee.getSalary());
@@ -81,7 +78,7 @@ public class KafkaConsumerListener {
             e.printStackTrace();
         }
 
-        return stringConstant.updateStatus;
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
 }

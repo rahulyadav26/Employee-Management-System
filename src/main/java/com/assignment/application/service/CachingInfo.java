@@ -28,12 +28,6 @@ public class CachingInfo {
     @Autowired
     private SalaryRepo salaryRepo;
 
-    @Autowired
-    private StringConstant stringConstant;
-//
-//    @Autowired
-//    private CompleteCompInfoRepo completeCompInfoRepo;
-
     @Cacheable(value="companyCompleteInfo" , key = "#companyId" , condition = "#result==null")
     public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId){
         List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
@@ -42,15 +36,21 @@ public class CachingInfo {
 
     @Cacheable(value="companyEmployeeList" , key = "#companyId" , condition = "#result==null")
     public List<Employee> getEmployeeOfComp(Long companyId){
-        List<Employee> employeesList = employeeRepo.getAllEmpByCompId(companyId);
-        return employeesList;
+        try {
+            List<Employee> employeesList = employeeRepo.getAllEmpByCompId(companyId);
+            return employeesList;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#companyId")})
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate){
         Employee employee = employeeRepo.getEmployee(employeeId);
         if(employee==null || !employee.getCompanyId().equals(companyId)){
-            return stringConstant.invalidStatus;
+            return StringConstant.INVALID_CREDENTIALS;
         }
         if(!employeeInfoUpdate.getCurrentAddress().isEmpty()){
             employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
@@ -65,7 +65,7 @@ public class CachingInfo {
             employee.setPhoneNumber(employeeInfoUpdate.getPhoneNumber());
         }
         employeeRepo.save(employee);
-        return stringConstant.updateStatus;
+        return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Caching(evict={@CacheEvict(value="companyEmployeeList" , key = "#companyId"),@CacheEvict(value="companyCompleteInfo" , key="#employee.companyId")})

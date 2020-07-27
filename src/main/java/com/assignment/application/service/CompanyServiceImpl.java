@@ -3,10 +3,9 @@ package com.assignment.application.service;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
-import com.assignment.application.exception.DuplicateCompanyException;
+import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyDatabaseException;
 import com.assignment.application.exception.EmptyUpdateException;
-import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -33,7 +32,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
             throw new IllegalArgumentException("Data is not valid");
         }
         if (companyRepo.getCompanyByName(company.getName().toUpperCase()) != null) {
-            throw new DuplicateCompanyException("Company Already Exists");
+            throw new DuplicateDataException("Company Already Exists");
         }
         companyRepo.save(company);
         return company;

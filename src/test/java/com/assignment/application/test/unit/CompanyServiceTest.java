@@ -1,13 +1,12 @@
-package com.assignment.application.test;
+package com.assignment.application.test.unit;
 
 
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
-import com.assignment.application.exception.DuplicateCompanyException;
+import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyDatabaseException;
 import com.assignment.application.exception.EmptyUpdateException;
-import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.service.CachingInfo;
 import com.assignment.application.service.CompanyServiceImpl;
@@ -21,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.management.relation.RoleUnresolved;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +38,6 @@ public class CompanyServiceTest {
     @Mock
     private CachingInfo cachingInfo;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_CompanyNull_CreateNewCompany_fails(){
@@ -54,7 +48,7 @@ public class CompanyServiceTest {
         //result
     }
 
-    @Test(expected = DuplicateCompanyException.class)
+    @Test(expected = DuplicateDataException.class)
     public void test_CompanyExist_CreateNewCompany_fails(){
         //check for name uniqueness
         Company company = new Company("Microsoft", "Technology", 1000000L, "California", "Bill Gates");
