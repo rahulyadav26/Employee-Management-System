@@ -2,7 +2,7 @@ package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.other.VerifyUser;
+import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +19,11 @@ public class EmployeeController {
     @Autowired
     private EmployeeServiceI employeeServiceI;
 
-    @Autowired
-    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
-
-    @Autowired
-    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
     @Autowired
     private VerifyUser verifyUser;
 
-    public final String TOPIC = "EmployeeInformation";
+    public final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
 
     @PostMapping(value = "/{company_id}/employee")
     public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,
@@ -44,7 +39,6 @@ public class EmployeeController {
             if (employeeToBeAdded == null) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            kafkaTemplateEmployee.send(TOPIC, employee);
             return new ResponseEntity<>(employeeToBeAdded, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -98,7 +92,6 @@ public class EmployeeController {
             int status = 0;
             if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
                 if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.UPDATE_SUCCESSFUL)) {
-                    kafkaTemplateEmployeeUpdate.send(TOPIC, employeeInfoUpdate);
                     return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
                 }
                 return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);

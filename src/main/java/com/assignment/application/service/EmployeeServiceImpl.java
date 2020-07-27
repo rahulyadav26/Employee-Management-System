@@ -9,6 +9,7 @@ import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +26,14 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Autowired
     private CompanyRepo companyRepo;
 
+    @Autowired
+    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Autowired
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
+    public final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
+
 
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
@@ -33,6 +42,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
             throw new RuntimeException("Data not valid");
         }
         Employee employeeTemp = cachingInfo.addEmployee(employee,companyId);
+        kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
         return employeeTemp;
     }
 
@@ -58,6 +68,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.INVALID_CREDENTIALS)) {
             throw new RuntimeException("Data not valid");
         }
+        kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 

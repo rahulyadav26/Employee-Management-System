@@ -1,5 +1,8 @@
 package com.assignment.application.logging;
 
+import com.assignment.application.kafka.KafkaConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -13,6 +16,9 @@ import java.io.IOException;
 
 @Component
 public class ResponseLogging extends OncePerRequestFilter {
+
+    Logger logger = LoggerFactory.getLogger(KafkaConfig.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 

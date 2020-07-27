@@ -75,7 +75,7 @@ public class KafkaConsumerListener {
             cachingInfo.updateSalary(list, company.getId());
         }
         catch (Exception e){
-            e.printStackTrace();
+
         }
 
         return StringConstant.UPDATE_SUCCESSFUL;

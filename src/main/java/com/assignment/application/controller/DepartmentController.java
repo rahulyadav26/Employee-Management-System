@@ -2,10 +2,9 @@ package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Department;
-import com.assignment.application.other.VerifyUser;
+import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

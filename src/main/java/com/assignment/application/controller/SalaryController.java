@@ -3,7 +3,7 @@ package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Salary;
-import com.assignment.application.other.VerifyUser;
+import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,10 @@ public class SalaryController {
     @Autowired
     private SalaryServiceI salaryServiceI;
 
-    @Autowired
-    private KafkaTemplate<String, SalaryUpdate> kafkaTemplateSalary;
 
     @Autowired
     private VerifyUser verifyUser;
 
-
-    public final String TOPIC = "SalaryUpdate";
 
 
     @PostMapping(value = "{comp_id}/{emp_id}/salary")
@@ -99,7 +95,6 @@ public class SalaryController {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
             if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(StringConstant.UPDATE_SUCCESSFUL)) {
-                kafkaTemplateSalary.send(TOPIC, salaryUpdate);
                 return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
             }
             return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);

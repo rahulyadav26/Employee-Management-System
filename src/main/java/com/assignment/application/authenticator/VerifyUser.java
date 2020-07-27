@@ -1,4 +1,4 @@
-package com.assignment.application.other;
+package com.assignment.application.authenticator;
 
 import com.assignment.application.entity.Employee;
 import com.assignment.application.repo.EmployeeRepo;
@@ -20,7 +20,7 @@ public class VerifyUser {
     }
 
     public int authorizeEmployee(String username,String password){
-        Employee employee = new Employee();
+        Employee employee;
         employee = employeeRepo.getEmployee(username);
         if(employee==null || !employee.getDob().equalsIgnoreCase(password)){
             return 0;

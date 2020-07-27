@@ -14,6 +14,7 @@ import com.assignment.application.entity.Salary;
 import com.assignment.application.repo.SalaryRepo;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +36,11 @@ public class SalaryServiceImpl implements SalaryServiceI {
 
     @Autowired
     private EmployeeRepo employeeRepo;
+
+    @Autowired
+    private KafkaTemplate<String, SalaryUpdate> kafkaTemplateSalary;
+
+    public final String SALARY_UPDATE_TOPIC = "SalaryUpdate";
 
     @Override
     public Salary addSalary(Long companyID, String employeeID, Salary salary) {
@@ -110,6 +116,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
             }
             cachingInfo.updateSalary(salaryList, company.getId());
         }
+        kafkaTemplateSalary.send(SALARY_UPDATE_TOPIC, salaryUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
