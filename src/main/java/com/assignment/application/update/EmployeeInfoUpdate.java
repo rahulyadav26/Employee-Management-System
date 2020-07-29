@@ -1,5 +1,6 @@
 package com.assignment.application.update;
 
+import com.assignment.application.exception.EmptyUpdateException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,6 +49,10 @@ public class EmployeeInfoUpdate {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public EmployeeInfoUpdate(){
+
     }
 
     public EmployeeInfoUpdate(String currentAddress, String permanentAddress, String position, String phoneNumber) {

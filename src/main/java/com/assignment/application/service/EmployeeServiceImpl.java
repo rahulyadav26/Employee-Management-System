@@ -3,6 +3,10 @@ package com.assignment.application.service;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.InsufficientInformationException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
@@ -40,8 +44,14 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public Employee addEmployee(Long companyId, Employee employee) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (employee == null || company == null || !employee.getCompanyId().equals(companyId) ) {
-            throw new RuntimeException("Data not valid");
+        if (company == null) {
+            throw new NotExistsException("No such company exists");
+        }
+        if (employee == null || employee.getEmployeeId().isEmpty()) {
+            throw new InsufficientInformationException("Insufficient data found in request");
+        }
+        if (!employee.getCompanyId().equals(companyId)) {
+            throw new DataMismatchException("Company Id is not valid for the given employee");
         }
         Employee employeeTemp = cachingInfo.addEmployee(employee);
         kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
@@ -52,7 +62,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     public List<Employee> getEmployeesOfComp(Long companyId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null) {
-            throw new RuntimeException("Data not valid");
+            throw new NotExistsException("No such company exists");
         }
         List<Employee> employeeList = cachingInfo.getEmployeeOfComp(company.getId());
         return employeeList;
@@ -67,9 +77,13 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     @Override
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company == null || employeeInfoUpdate==null || cachingInfo.updateEmployeeInfo(employeeId,companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.INVALID_CREDENTIALS)) {
-            throw new RuntimeException("Data not valid");
+        if (company == null) {
+            throw new NotExistsException("No such company exists");
         }
+        if (employeeInfoUpdate == null){
+            throw new EmptyUpdateException("Employee Update information is null");
+        }
+        cachingInfo.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate);
         kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
@@ -78,11 +92,17 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     public String deleteEmployee(Long companyId, String employeeId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company==null || employee == null || !companyId.equals(employee.getCompanyId())) {
-            throw new RuntimeException("Data not Valid");
+        if (company == null) {
+            throw new NotExistsException("No such company exists");
+        }
+        if (employee == null) {
+            throw new NotExistsException("Insufficient data found in request");
+        }
+        if (!companyId.equals(employee.getCompanyId())) {
+            throw new DataMismatchException("Company Id not valid for the given employee");
         }
         employeeRepo.delete(employee);
-        redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED+employeeId);
+        redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED + employeeId);
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }

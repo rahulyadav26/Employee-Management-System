@@ -3,6 +3,7 @@ package com.assignment.application.interceptor;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.NotExistsException;
+import com.assignment.application.exception.UnauthorisedAccessException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.RedisService;
@@ -39,38 +40,43 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Long startTime = System.currentTimeMillis();
         request.setAttribute(START_TIME, startTime);
-        System.out.println(request.getRequestURL());
         if (request.getMethod().equalsIgnoreCase("POST") &&
                 validateUrl(request.getRequestURL().toString())) {
             String userName = request.getHeader("username");
             String password = request.getHeader("password");
+            if (userName == null || password == null) {
+                throw new UnauthorisedAccessException("Username and password not found");
+            }
             String decodedPassword = new String(Base64.getDecoder().decode(password));
-            if(userName.equalsIgnoreCase("superadmin") && decodedPassword.equalsIgnoreCase("superadmin")){
-                String checkIfExist = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_GENERATED + userName);
-                if(checkIfExist==null){
-                    return true;
+            if (userName.equalsIgnoreCase("superadmin")) {
+                if (decodedPassword.equalsIgnoreCase("superadmin")) {
+                    String checkIfExist = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_GENERATED + userName);
+                    if (checkIfExist == null) {
+                        return true;
+                    }
+                    throw new UnauthorisedAccessException("User already verified");
                 }
-                throw new IllegalArgumentException("Invalid Login Credential");
+                throw new UnauthorisedAccessException("Password is incorrect");
             }
             Employee employee = employeeRepo.getEmployee(userName);
-            if(employee==null){
+            if (employee == null) {
                 throw new NotExistsException("No such employee exists");
             }
             String checkIfExist = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_GENERATED + employee.getEmployeeId());
-            if (checkIfExist==null && employee.getEmployeeId().equalsIgnoreCase(userName) &&
+            if (checkIfExist == null && employee.getEmployeeId().equalsIgnoreCase(userName) &&
                     employee.getDob().equalsIgnoreCase(decodedPassword) &&
-                        companyId!=0 && employee.getCompanyId().equals(companyId)) {
+                    companyId != 0 && employee.getCompanyId().equals(companyId)) {
                 return true;
             }
-            throw new IllegalArgumentException("Invalid Url or invalid login credentials");
+            throw new UnauthorisedAccessException("Invalid url or login credentials");
         }
         String accessToken = request.getHeader("access_token");
-        if(accessToken==null){
-            throw new IllegalArgumentException("Invalid Request");
+        if (accessToken == null) {
+            throw new UnauthorisedAccessException("No access token found");
         }
         String cachedToken = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX + accessToken);
-        if(cachedToken==null){
-            throw new IllegalArgumentException("Invalid access token");
+        if (cachedToken == null) {
+            throw new UnauthorisedAccessException("Not a verified user");
         }
         return true;
     }

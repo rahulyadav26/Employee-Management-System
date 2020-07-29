@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 
-@Component
 public class EmployeeCacheInfo implements Serializable {
     private Long id;
 

@@ -5,7 +5,10 @@ import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
+import com.assignment.application.exception.DataMismatchException;
 import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.InsufficientInformationException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
@@ -53,7 +56,7 @@ public class SalaryServiceTest {
     @Mock
     private KafkaTemplate<String, SalaryUpdate> kafkaTemplateSalary;
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_AddSalary_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -63,7 +66,7 @@ public class SalaryServiceTest {
         salaryService.addSalary(companyId,employeeId,salary);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_EmployeeNotExists_AddSalary_fails(){
         //employee not exists
         final Long companyId = new Long(11L);
@@ -75,7 +78,7 @@ public class SalaryServiceTest {
         salaryService.addSalary(companyId,employeeId,salary);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_CompanyIdMismatch_AddSalary_fails(){
         //companyId!=salary.companyId
         final Long companyId = new Long(10L);
@@ -89,7 +92,7 @@ public class SalaryServiceTest {
         salaryService.addSalary(companyId,employeeId,salary);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_EmployeeIdMismatch_AddSalary_fails(){
         //employeeId!=salary.employeeId
         final Long companyId = new Long(11L);
@@ -103,9 +106,9 @@ public class SalaryServiceTest {
         salaryService.addSalary(companyId,employeeId,salary);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = InsufficientInformationException.class)
     public void test_SalaryInfoNull_AddSalary_fails(){
-        //employeeId!=salary.employeeId
+        //salary info null or salary.getSalary() is empty
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_2");
         Salary salary = null;
@@ -136,7 +139,7 @@ public class SalaryServiceTest {
         verify(salaryRepo).save(salary);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_GetSalaryOfEmp_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -146,7 +149,7 @@ public class SalaryServiceTest {
         salaryService.getSalary(companyId,employeeId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_EmployeeInfoNotExists_GetSalaryOfEmp_fails(){
         //employee info not exists
         final Long companyId = new Long(11L);
@@ -178,7 +181,7 @@ public class SalaryServiceTest {
 
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_UpdateSalary_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -191,7 +194,7 @@ public class SalaryServiceTest {
 
     @Test(expected = EmptyUpdateException.class)
     public void test_SalaryUpdateInfoNull_UpdateSalary_fails(){
-        //company not exist
+        //salary update info is null
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
         Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);

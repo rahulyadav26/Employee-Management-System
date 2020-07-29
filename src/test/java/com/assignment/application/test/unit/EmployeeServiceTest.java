@@ -3,10 +3,15 @@ package com.assignment.application.test.unit;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.InsufficientInformationException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.CachingInfo;
 import com.assignment.application.service.EmployeeServiceImpl;
+import com.assignment.application.service.RedisService;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,7 +51,10 @@ public class EmployeeServiceTest {
     @Mock
     private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
-    @Test(expected = RuntimeException.class)
+    @Mock
+    private RedisService redisService;
+
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_AddEmployee_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -55,7 +63,7 @@ public class EmployeeServiceTest {
         employeeService.addEmployee(companyId,employee);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = InsufficientInformationException.class)
     public void test_EmployeeInfoNull_AddEmployee_fails(){
         //employee info null
         final Long companyId = new Long(11L);
@@ -66,12 +74,13 @@ public class EmployeeServiceTest {
         employeeService.addEmployee(companyId,employee);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_CompanyIdMismatch_AddEmployee_fails(){
         //companyId!=employee.companyId
         final Long companyId = new Long(10L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
         Company company = new Company(companyId,"Google", "Technology", "California", "Bill Gates");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
         //action
         employeeService.addEmployee(companyId,employee);
     }
@@ -92,7 +101,7 @@ public class EmployeeServiceTest {
         verify(cachingInfo).addEmployee(employee);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_GetEmployeeOfComp_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -119,7 +128,7 @@ public class EmployeeServiceTest {
         verify(cachingInfo).getEmployeeOfComp(companyId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_UpdateEmployeeInfo_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -129,12 +138,12 @@ public class EmployeeServiceTest {
         employeeService.updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void test_EmployeeNotExist_UpdateEmployeeInfo_fails(){
-        //employee not exist
+    @Test(expected = EmptyUpdateException.class)
+    public void test_EmployeeInfoNull_UpdateEmployeeInfo_fails(){
+        //employeeInfoUpdate is null
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
-        EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","","1234567890");
+        EmployeeInfoUpdate employeeInfoUpdate = null;
         Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -158,7 +167,7 @@ public class EmployeeServiceTest {
         verify(cachingInfo).updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_DeleteEmployee_fails(){
         //company not exist
         final Long companyId = new Long(11L);
@@ -167,7 +176,7 @@ public class EmployeeServiceTest {
         employeeService.deleteEmployee(companyId,employee.getEmployeeId());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_EmployeeNotExist_DeleteEmployee_fails(){
         //employee not exist
         final Long companyId = new Long(11L);
@@ -178,12 +187,14 @@ public class EmployeeServiceTest {
         employeeService.deleteEmployee(companyId,employee.getEmployeeId());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_CompanyIdMismatch_DeleteEmployee_fails(){
         //companyId!=employee.companyId
         final Long companyId = new Long(10L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
         Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        when(employeeRepo.getEmployee(anyString())).thenReturn(employee);
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
         //action
         employeeService.deleteEmployee(companyId,employee.getEmployeeId());
     }

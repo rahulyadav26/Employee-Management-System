@@ -5,9 +5,7 @@ import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.exception.DuplicateDataException;
-import com.assignment.application.exception.EmptyDatabaseException;
-import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.CachingInfo;
@@ -46,7 +44,7 @@ public class CompanyServiceTest {
 
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InsufficientInformationException.class)
     public void test_CompanyNull_CreateNewCompany_fails(){
         //check for conditions when company is null
         Company company = null;
@@ -65,7 +63,7 @@ public class CompanyServiceTest {
         //result
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InsufficientInformationException.class)
     public void test_CompanyNameIsEmpty_CreateNewCompany_fails(){
         //check for empty company name
         Company company = new Company("", "Technology", "California", "Bill Gates");
@@ -89,15 +87,6 @@ public class CompanyServiceTest {
         verify(companyRepo,times(1)).save(company);
     }
 
-    @Test(expected = EmptyDatabaseException.class)
-    public void test_DatabaseEmpty_GetCompanyList_fails(){
-        //if no company exists in database
-        List<Company> companyList = new ArrayList<>();
-        when(companyRepo.findAll()).thenReturn(companyList);
-        //action
-        companyService.getCompanyList();
-        //result
-    }
 
     @Test
     public void test_GetCompanyList_Success(){
@@ -178,12 +167,11 @@ public class CompanyServiceTest {
         verify(companyRepo,times(1)).findById(id);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_DeleteCompany_fails(){
         //no such company exists
         final Long id = new Long(11);
         Company company = new Company();
-        when(companyRepo.findById(id)).thenReturn(null);
         //action
         companyService.deleteCompany(id);
         //result
@@ -194,7 +182,7 @@ public class CompanyServiceTest {
         //company exists in database
         final Long id = new Long(11);
         Company company = new Company(id,"Google", "Technology","California", "Bill Gates");
-        when(companyRepo.findById(id)).thenReturn(Optional.of(company));
+        when(companyRepo.existsById(id)).thenReturn(true);
         //action
         String actualResult = companyService.deleteCompany(id);
         //result

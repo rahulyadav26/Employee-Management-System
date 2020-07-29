@@ -5,6 +5,8 @@ import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.EmployeeCacheInfo;
 import com.assignment.application.entity.Salary;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
@@ -31,9 +33,6 @@ public class CachingInfo {
     @Autowired
     private SalaryRepo salaryRepo;
 
-    @Autowired
-    private EmployeeCacheInfo employeeCacheInfo;
-
     @Cacheable(value = "companyCompleteInfo", key = "#companyId", condition = "#result==null")
     public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId) {
         List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
@@ -49,8 +48,11 @@ public class CachingInfo {
     @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
     public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if (employee == null || !employee.getCompanyId().equals(companyId)) {
-            return StringConstant.INVALID_CREDENTIALS;
+        if (employee == null) {
+            throw new NotExistsException("No such employee exists");
+        }
+        if(!employee.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company Id is not valid for the given employee");
         }
         if (!employeeInfoUpdate.getCurrentAddress().isEmpty()) {
             employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());

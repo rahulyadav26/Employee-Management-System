@@ -1,40 +1,41 @@
-[INFO ] 2020-07-29 13:36:37.890 [http-nio-8081-exec-3] AuthInterceptor - total time for request http://localhost:8081//company/9/complete-info is 104 ms
-[INFO ] 2020-07-29 13:36:37.899 [http-nio-8081-exec-3] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 13:36:37.899 [http-nio-8081-exec-3] ResponseLogging - Response Body []
-[INFO ] 2020-07-29 13:38:01.952 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 4264 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-29 13:38:01.961 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-29 13:38:05.779 [main] TaskAppApplication - Started TaskAppApplication in 4.203 seconds (JVM running for 5.142)
-[INFO ] 2020-07-29 13:38:09.174 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//company/9/complete-info is 188 ms
-[INFO ] 2020-07-29 13:38:09.177 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 13:38:09.177 [http-nio-8081-exec-2] ResponseLogging - Response Body []
-[INFO ] 2020-07-29 13:39:06.507 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 4285 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-29 13:39:06.517 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-29 13:39:10.438 [main] TaskAppApplication - Started TaskAppApplication in 4.269 seconds (JVM running for 5.011)
-[INFO ] 2020-07-29 13:39:13.425 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//company/4/complete-info is 100 ms
-[INFO ] 2020-07-29 13:39:13.426 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 13:39:13.426 [http-nio-8081-exec-2] ResponseLogging - Response Body 
-[INFO ] 2020-07-29 13:39:21.555 [http-nio-8081-exec-4] AuthInterceptor - total time for request http://localhost:8081//company/2/complete-info is 88 ms
-[INFO ] 2020-07-29 13:39:21.556 [http-nio-8081-exec-4] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 13:39:21.556 [http-nio-8081-exec-4] ResponseLogging - Response Body [{"employeeName":"Ritesh Agarwal","employeeId":"oyo_1","companyId":2,"departmentName":"Marketing","departmentId":6,"salary":1030000.0,"projectId":0,"accountNo":"235676543234567","currentAdd":"gurgaon","permanentAdd":"gurgaon","phoneNumber":"2345678901"},{"employeeName":"Anil Goel","employeeId":"oyo_3","companyId":2,"departmentName":"Engineering","departmentId":4,"salary":1516680.55,"projectId":3,"accountNo":"2345643245643","currentAdd":"gurgaon","permanentAdd":"gurgaon","phoneNumber":"2345678901"},{"employeeName":"ABCD","employeeId":"oyo_6","companyId":2,"departmentName":"Homes","departmentId":5,"salary":5.4877398620000005E7,"projectId":0,"accountNo":"234534322332","currentAdd":"bangalore","permanentAdd":"bangalore","phoneNumber":"234532451"},{"employeeName":"Rahul Yadav","employeeId":"oyo_4","companyId":2,"departmentName":"Engineering","departmentId":4,"salary":1000.0,"projectId":2,"accountNo":"235676543234567","currentAdd":"Gurgaon","permanentAdd":"Bangalore","phoneNumber":"2345434323"},{"employeeName":"Rohit Kamaal","employeeId":"oyo_2","companyId":2,"departmentName":"Homes","departmentId":5,"salary":100.0,"projectId":0,"accountNo":"235676543234567","currentAdd":"gurgaon","permanentAdd":"gurgaon","phoneNumber":"2345678901"}]
-[INFO ] 2020-07-29 13:40:29.307 [http-nio-8081-exec-7] AuthInterceptor - total time for request http://localhost:8081//9/google_3/update-employee-info is 25 ms
-[INFO ] 2020-07-29 13:40:29.308 [http-nio-8081-exec-7] ResponseLogging - Request Body {
-   "current_address":"New York",
-   "permanent_address":"California",
-   "phone_number":"",
-   "position":""
+[INFO ] 2020-07-29 22:01:49.868 [http-nio-8081-exec-3] ResponseLogging - Request Body 
+[INFO ] 2020-07-29 22:01:49.877 [http-nio-8081-exec-3] ResponseLogging - Response Body Deletion Successful
+[INFO ] 2020-07-29 22:01:53.778 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 9283 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-29 22:01:53.789 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-29 22:01:58.243 [main] TaskAppApplication - Started TaskAppApplication in 4.887 seconds (JVM running for 5.61)
+[INFO ] 2020-07-29 22:02:01.492 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081/error is 46 ms
+[INFO ] 2020-07-29 22:02:18.855 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 9299 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-29 22:02:18.863 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-29 22:02:24.021 [main] TaskAppApplication - Started TaskAppApplication in 5.612 seconds (JVM running for 6.744)
+[INFO ] 2020-07-29 22:03:02.790 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081/error is 88 ms
+[INFO ] 2020-07-29 22:03:06.708 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 9319 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-29 22:03:06.717 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-29 22:03:11.290 [main] TaskAppApplication - Started TaskAppApplication in 5.007 seconds (JVM running for 5.971)
+[INFO ] 2020-07-29 22:03:13.343 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-29 22:03:13.343 [http-nio-8081-exec-2] ResponseLogging - Response Body {"date":"2020-07-29T16:33:13.311+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No such company exists","path":""}
+[INFO ] 2020-07-29 22:03:40.623 [http-nio-8081-exec-3] ResponseLogging - Request Body {
+    "industry_type":"Technology"
 }
-[INFO ] 2020-07-29 13:40:29.308 [http-nio-8081-exec-7] ResponseLogging - Response Body 
-[INFO ] 2020-07-29 13:41:05.696 [http-nio-8081-exec-8] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 13:41:05.696 [http-nio-8081-exec-8] ResponseLogging - Response Body 
-[INFO ] 2020-07-29 13:41:05.715 [http-nio-8081-exec-8] AuthInterceptor - total time for request http://localhost:8081/error is 14 ms
-[INFO ] 2020-07-29 13:42:09.624 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 4319 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-29 13:42:09.633 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-29 13:42:14.436 [main] TaskAppApplication - Started TaskAppApplication in 5.299 seconds (JVM running for 6.392)
-[INFO ] 2020-07-29 13:43:08.013 [http-nio-8081-exec-1] AuthInterceptor - total time for request http://localhost:8081//9/google_3/update-employee-info is 40910 ms
-[INFO ] 2020-07-29 13:43:08.017 [http-nio-8081-exec-1] ResponseLogging - Request Body {
-   "current_address":"New York",
-   "permanent_address":"California",
-   "phone_number":"",
-   "position":""
+[INFO ] 2020-07-29 22:03:40.624 [http-nio-8081-exec-3] ResponseLogging - Response Body 
+[INFO ] 2020-07-29 22:03:40.639 [http-nio-8081-exec-3] AuthInterceptor - total time for request http://localhost:8081/error is 12 ms
+[INFO ] 2020-07-29 22:04:07.111 [http-nio-8081-exec-4] ResponseLogging - Request Body {
+    "industry_type":"Technology"
 }
-[INFO ] 2020-07-29 13:43:08.017 [http-nio-8081-exec-1] ResponseLogging - Response Body 
+[INFO ] 2020-07-29 22:04:07.111 [http-nio-8081-exec-4] ResponseLogging - Response Body 
+[INFO ] 2020-07-29 22:04:07.114 [http-nio-8081-exec-4] AuthInterceptor - total time for request http://localhost:8081/error is 3 ms
+[INFO ] 2020-07-29 22:04:38.000 [http-nio-8081-exec-7] ResponseLogging - Request Body {
+    "industry_type":"Technology"
+}
+[INFO ] 2020-07-29 22:04:38.000 [http-nio-8081-exec-7] ResponseLogging - Response Body 
+[INFO ] 2020-07-29 22:04:38.002 [http-nio-8081-exec-7] AuthInterceptor - total time for request http://localhost:8081/error is 1 ms
+[INFO ] 2020-07-29 22:11:20.542 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 9391 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-29 22:11:20.551 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-29 22:11:24.929 [main] TaskAppApplication - Started TaskAppApplication in 4.812 seconds (JVM running for 5.795)
+[INFO ] 2020-07-29 22:11:39.190 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-29 22:11:39.191 [http-nio-8081-exec-2] ResponseLogging - Response Body 
+[INFO ] 2020-07-29 22:11:39.295 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081/error is 90 ms
+[INFO ] 2020-07-29 22:11:42.602 [http-nio-8081-exec-3] AuthInterceptor - total time for request http://localhost:8081//department is 110 ms
+[INFO ] 2020-07-29 22:11:42.605 [http-nio-8081-exec-3] ResponseLogging - Request Body 
+[INFO ] 2020-07-29 22:11:42.605 [http-nio-8081-exec-3] ResponseLogging - Response Body [{"id":5,"name":"Homes","companyId":2,"head":"Rohit Kamaal"},{"id":111,"name":"Engineering","companyId":5,"head":"Ratan tata"},{"id":132,"name":"Engineering","companyId":9,"head":"Sundar Pichai"},{"id":1,"name":"Engineering","companyId":1,"head":"Unknown"},{"id":2,"name":"Growth","companyId":1,"head":"Unknown"},{"id":3,"name":"Marketing","companyId":1,"head":"Satya Nadela"},{"id":4,"name":"Engineering","companyId":2,"head":"Anil Goel"},{"id":6,"name":"Marketing","companyId":2,"head":"Ritesh Agarwal"}]
+[INFO ] 2020-07-29 22:12:07.776 [http-nio-8081-exec-4] ResponseLogging - Request Body 
+[INFO ] 2020-07-29 22:12:07.776 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-29T16:42:07.773+00:00","status":"409 CONFLICT","error":"Not found in database","message":"Incorrect information found","path":""}

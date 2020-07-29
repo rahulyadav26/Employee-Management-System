@@ -3,8 +3,7 @@ package com.assignment.application.test.unit;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
-import com.assignment.application.exception.DuplicateDataException;
-import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.DepartmentServiceImpl;
@@ -16,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Not;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -44,12 +44,11 @@ public class DepartmentServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_AddDepartment_fails() {
         //company doesn't exists in database
         final Long companyId = new Long(11L);
         Company company = new Company();
-        when(companyRepo.findById(companyId)).thenReturn(null);
         Department department = new Department(1L, "Engineering", 11L,"Sundar Pichai");
         //action
         departmentService.addDepartment(companyId, department);
@@ -67,7 +66,7 @@ public class DepartmentServiceTest {
         departmentService.addDepartment(companyId, department);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = InsufficientInformationException.class)
     public void test_DepartmentNameEmpty_AddDepartment_fails() {
         //department name is empty
         final Long companyId = new Long(11L);
@@ -78,12 +77,13 @@ public class DepartmentServiceTest {
         departmentService.addDepartment(companyId, department);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_DepartmentNotBelongToCompany_AddDepartment_fails() {
         //companyId!=department.getCompanyId()
         final Long companyId = new Long(11L);
         Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         Department department = new Department(1L, "Engineering", 10L, "Sundar Pichai");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
         //action
         departmentService.addDepartment(companyId, department);
     }
@@ -120,14 +120,13 @@ public class DepartmentServiceTest {
         verify(departmentRepo).findAll();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_UpdateDepartment_fails() {
         //company doesn't exists in database
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
         Department department = new Department("Engineering", 11L, "Sundar Pichai");
         DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
-        when(companyRepo.findById(companyId)).thenReturn(null);
         //action
         departmentService.updateDepartmentInfo(companyId, departmentId, departmentInfoUpdate);
     }
@@ -139,12 +138,11 @@ public class DepartmentServiceTest {
         final Long departmentId = new Long(1L);
         Department department = new Department("Engineering", 11L,"Sundar Pichai");
         DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
-        when(departmentRepo.findById(departmentId)).thenReturn(null);
         //action
         departmentService.updateDepartmentInfo(companyId, departmentId, departmentInfoUpdate);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_DepartmentCompanyIdNotMatches_UpdateDepartment_fails() {
         //companyId!=department.getCompanyId()
         final Long companyId = new Long(11L);
@@ -191,31 +189,29 @@ public class DepartmentServiceTest {
         verify(departmentRepo).save(department);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_GetDepartmentOfCompany_fails(){
         //companyId doesn't exists in db
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
         Department department = new Department("Engineering", 11L,"Sundar Pichai");
         Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
-        when(companyRepo.findById(companyId)).thenReturn(null);
         //action
         departmentService.getDepartment(companyId,departmentId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_DepartmentNotExist_GetDepartmentOfCompany_fails(){
         //department not exist in db
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
         Department department = new Department("Engineering", 11L,"Sundar Pichai");
         Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
-        when(departmentRepo.findById(departmentId)).thenReturn(null);
         //action
         departmentService.getDepartment(companyId,departmentId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_CompanyIdMismatch_GetDepartmentOfCompany_fails(){
         //companyId!=department.companyId()
         final Long companyId = new Long(11L);
@@ -245,7 +241,7 @@ public class DepartmentServiceTest {
         verify(departmentRepo).findById(departmentId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_CompanyNotExist_DeleteDepartment_fails(){
         //companyId doesn't exists in db
         final Long companyId = new Long(11L);
@@ -254,7 +250,7 @@ public class DepartmentServiceTest {
         departmentService.deleteDepartmentOfCompany(companyId,departmentId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NotExistsException.class)
     public void test_DepartmentNotExist_DeleteDepartment_fails(){
         //department not exist in Database
         final Long companyId = new Long(11L);
@@ -265,13 +261,15 @@ public class DepartmentServiceTest {
         departmentService.deleteDepartmentOfCompany(companyId,departmentId);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DataMismatchException.class)
     public void test_CompanyIdMismatch_DeleteDepartment_fails(){
         //companyId!=department.companyId()
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
         Department department = new Department("Engineering", 10L, "Sundar Pichai");
         Company company = new Company(companyId, "Google", "Technology", "California", "Bill Gates");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        when(departmentRepo.findById(anyLong())).thenReturn(Optional.of(department));
         //action
         departmentService.deleteDepartmentOfCompany(companyId,departmentId);
     }

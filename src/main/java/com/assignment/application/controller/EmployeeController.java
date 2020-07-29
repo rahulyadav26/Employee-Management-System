@@ -28,55 +28,27 @@ public class EmployeeController {
     public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,
                                                 @RequestBody Employee employee,
                                                 @RequestHeader("access_token") String token) {
-        try {
-            int status = verifyUser.authorizeUser(token, companyId+"/employee","post");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            Employee employeeToBeAdded = employeeServiceI.addEmployee(companyId, employee);
-            if (employeeToBeAdded == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(employeeToBeAdded, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, companyId + "/employee", "post");
+        Employee employeeToBeAdded = employeeServiceI.addEmployee(companyId, employee);
+        return new ResponseEntity<>(employeeToBeAdded, HttpStatus.OK);
+
     }
 
     @GetMapping(value = "{company_id}/employee")
     public ResponseEntity<List<Employee>> getEmployeesOfComp(@PathVariable("company_id") Long companyId,
                                                              @RequestHeader("access_token") String token) {
-        try {
-            int status = verifyUser.authorizeUser(token,companyId+"/employee","get");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            List<Employee> employeeList = employeeServiceI.getEmployeesOfComp(companyId);
-            if (employeeList == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(employeeList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, companyId + "/employee", "get");
+        List<Employee> employeeList = employeeServiceI.getEmployeesOfComp(companyId);
+        return new ResponseEntity<>(employeeList, HttpStatus.OK);
+
     }
 
     @GetMapping(value = "/employee")
     public ResponseEntity<List<Employee>> getEmployees(@RequestHeader("access_token") String token) {
-        try {
-            int status = verifyUser.authorizeUser(token,"employee","get");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            List<Employee> employeeList = employeeServiceI.getEmployees();
-            if (employeeList == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(employeeList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, "employee", "get");
+        List<Employee> employeeList = employeeServiceI.getEmployees();
+        return new ResponseEntity<>(employeeList, HttpStatus.OK);
+
     }
 
     @PatchMapping(value = "/{company_id}/{emp_id}/update-employee-info")
@@ -84,37 +56,18 @@ public class EmployeeController {
                                                      @PathVariable("company_id") Long companyId,
                                                      @RequestBody EmployeeInfoUpdate employeeInfoUpdate,
                                                      @RequestHeader("access_token") String token) {
-        try {
-            int status = 0;
-            if (verifyUser.authorizeUser(token,companyId+"/"+employeeId+"/update-employee-info","patch") == 1) {
-                if (employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate).equalsIgnoreCase(StringConstant.UPDATE_SUCCESSFUL)) {
-                    return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
-                }
-                return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, companyId + "/" + employeeId + "/update-employee-info", "patch");
+        employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "{company_id}/{emp_id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("company_id") Long companyId,
                                                  @PathVariable("emp_id") String empId,
                                                  @RequestHeader("access_token") String token) {
-        try {
-            int status = verifyUser.authorizeUser(token,companyId+"/"+empId,"delete");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            if (employeeServiceI.deleteEmployee(companyId, empId).equalsIgnoreCase(StringConstant.DELETION_SUCCESSFUL)) {
-                return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
+        verifyUser.authorizeUser(token, companyId + "/" + empId, "delete");
+        employeeServiceI.deleteEmployee(companyId, empId);
+        return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }
 
 }

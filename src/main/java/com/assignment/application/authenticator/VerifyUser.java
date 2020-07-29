@@ -3,6 +3,7 @@ package com.assignment.application.authenticator;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.exception.UnauthorisedAccessException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.RedisService;
@@ -34,9 +35,9 @@ public class VerifyUser {
                 if(urlSplit[1].equalsIgnoreCase(employeeId) && info[info.length-1].equals(urlSplit[0])){
                     return 1;
                 }
-                return 0;
+                throw new UnauthorisedAccessException("Not allowed to access");
             }
-            return 0;
+            throw new UnauthorisedAccessException("Not allowed to access");
         }
         return 1;
     }

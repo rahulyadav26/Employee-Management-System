@@ -24,77 +24,39 @@ public class SalaryController {
     private VerifyUser verifyUser;
 
 
-
     @PostMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestBody Salary salary,
                                                 @RequestHeader("access_token") String token) {
-        try {
-            if (verifyUser.authorizeUser(token,companyId+"/"+employeeId+"/salary","post") == 1) {
-                Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
-                if (salary == null) {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-                return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+
+        verifyUser.authorizeUser(token, companyId + "/" + employeeId + "/salary", "post");
+        Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
+        return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
     }
 
     @GetMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestHeader("access_token") String token) {
-        try {
-            if (verifyUser.authorizeUser(token,companyId+"/"+employeeId+"/salary","get") == 1) {
-                Salary salary = salaryServiceI.getSalary(companyId, employeeId);
-                if (salary == null) {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-                return new ResponseEntity<>(salary, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, companyId + "/" + employeeId + "/salary", "get");
+        Salary salary = salaryServiceI.getSalary(companyId, employeeId);
+        return new ResponseEntity<>(salary, HttpStatus.OK);
     }
 
     @GetMapping(value = "/salary")
     public ResponseEntity<List<Salary>> getSalaryList(@RequestHeader("access_token") String token) {
-        try {
-            int status = verifyUser.authorizeUser(token,"/salary","get");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            List<Salary> salaryList = salaryServiceI.getSalaryList();
-            if (salaryList == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(salaryList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        verifyUser.authorizeUser(token, "/salary", "get");
+        List<Salary> salaryList = salaryServiceI.getSalaryList();
+        return new ResponseEntity<>(salaryList, HttpStatus.OK);
     }
 
     @PatchMapping(value = "{comp_id}/salary-update")
     public ResponseEntity<String> updateSalary(@PathVariable("comp_id") Long companyId,
                                                @RequestBody SalaryUpdate salaryUpdate,
-                                               @RequestHeader("access_token") String token){
-        try {
-            int status = verifyUser.authorizeUser(token,companyId+"/salary-update","patch");
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(StringConstant.UPDATE_SUCCESSFUL)) {
-                return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+                                               @RequestHeader("access_token") String token) {
+        verifyUser.authorizeUser(token, companyId + "/salary-update", "patch");
+        salaryServiceI.updateSalary(companyId, salaryUpdate);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 }

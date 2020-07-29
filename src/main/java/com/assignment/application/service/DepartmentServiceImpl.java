@@ -3,8 +3,7 @@ package com.assignment.application.service;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
-import com.assignment.application.exception.DuplicateDataException;
-import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
@@ -29,8 +28,14 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     @Override
     public Department addDepartment(Long companyId, Department department) {
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (company==null || department == null || department.getName().isEmpty() || !companyId.equals(department.getCompanyId())) {
-            throw new RuntimeException("Data Invalid");
+        if(company==null){
+            throw new NotExistsException("No such company exists");
+        }
+        if (department == null || department.getName().isEmpty()){
+            throw new InsufficientInformationException("Not sufficient information found in the request");
+        }
+        if(!department.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company id not valid for the department");
         }
         if(departmentRepo.getDeptByCompId(companyId,department.getName().toUpperCase())!=null){
             throw new DuplicateDataException("Data Already Exists");
@@ -49,8 +54,11 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     public String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate) {
         Department department = departmentRepo.findById(id).orElse(null);
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (department == null || company==null || !department.getCompanyId().equals(companyId)){
-            throw new RuntimeException("Data not valid");
+        if (department == null || company==null){
+            throw new NotExistsException("No such company/department exists");
+        }
+        if(!department.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company id not valid for the department");
         }
         if(departmentInfoUpdate==null){
             throw new EmptyUpdateException("Information is not valid");
@@ -66,8 +74,11 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     public Department getDepartment(Long companyId, Long id) {
         Department department = departmentRepo.findById(id).orElse(null);
         Company company = companyRepo.findById(companyId).orElse(null);
-        if (department == null || company==null || !department.getCompanyId().equals(companyId)) {
-            throw new RuntimeException("Data not Valid");
+        if (department == null || company==null){
+            throw new NotExistsException("No such company/department exists");
+        }
+        if(!department.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company id not valid for the department");
         }
         return department;
     }
@@ -76,8 +87,11 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
     public String deleteDepartmentOfCompany(Long departmentId, Long companyId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         Department department = departmentRepo.findById(departmentId).orElse(null);
-        if(department==null || company==null || !department.getCompanyId().equals(company.getId())){
-           throw new RuntimeException("Data not valid");
+        if (department == null || company==null){
+            throw new NotExistsException("No such company/department exists");
+        }
+        if(!department.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company id not valid for the department");
         }
         departmentRepo.deleteById(departmentId);
         return StringConstant.DELETION_SUCCESSFUL;
