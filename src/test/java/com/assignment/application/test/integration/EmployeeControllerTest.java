@@ -41,8 +41,7 @@ public class EmployeeControllerTest {
     HttpHeaders httpHeaders = new HttpHeaders();
 
     public void setHttpHeaders(HttpHeaders httpHeaders) {
-        httpHeaders.add("username","admin");
-        httpHeaders.add("password","admin");
+        httpHeaders.add("access_token","f9662650-ec3b-4d2e-96fd-6e29b8a77df7");
         this.httpHeaders = httpHeaders;
     }
 

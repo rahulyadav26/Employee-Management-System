@@ -46,7 +46,7 @@ public class ProjectServiceTest {
         //project info null
         final Long companyId = new Long(11L);
         Project project = null;
-        Company company = new Company("Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company("Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         projectService.addCompProject(companyId, project);
@@ -57,7 +57,7 @@ public class ProjectServiceTest {
         //companyId!=project.companyId
         final Long companyId = new Long(10L);
         Project project = new Project(1L, 11L, "ABCD", "Sundar Pichai", "google_3");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         projectService.addCompProject(companyId, project);
@@ -68,7 +68,7 @@ public class ProjectServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         Project project = new Project(1L, 1L, 11L, "ABCD", "Sundar Pichai", "google_3");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(projectRepo.save(any(Project.class))).thenReturn(project);
         //action
@@ -94,7 +94,7 @@ public class ProjectServiceTest {
         final Long companyId = new Long(11L);
         List<Project> projectList = new ArrayList<>();
         projectList.add(new Project(1L, 1L, 11L, "ABCD", "Sundar Pichai", "google_3"));
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(projectRepo.getProjectListById(companyId)).thenReturn(projectList);
         //action
@@ -121,7 +121,7 @@ public class ProjectServiceTest {
         //project not exists
         final Long companyId = new Long(11L);
         Project project = new Project(1L, 1L, 11L, "ABCD", "Sundar Pichai", "google_3");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         projectService.deleteProject(project.getId(), companyId);
@@ -132,7 +132,7 @@ public class ProjectServiceTest {
         //companyId!=project.companyId
         final Long companyId = new Long(10L);
         Project project = new Project(1L, 1L, 11L, "ABCD", "Sundar Pichai", "google_3");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(projectRepo.findById(project.getId())).thenReturn(Optional.of(project));
         //action
@@ -144,7 +144,7 @@ public class ProjectServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         Project project = new Project(1L, 1L, 11L, "ABCD", "Sundar Pichai", "google_3");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(projectRepo.findById(project.getId())).thenReturn(Optional.of(project));
         //action

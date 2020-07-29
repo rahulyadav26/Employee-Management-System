@@ -3,7 +3,6 @@ package com.assignment.application.repo;
 import com.assignment.application.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

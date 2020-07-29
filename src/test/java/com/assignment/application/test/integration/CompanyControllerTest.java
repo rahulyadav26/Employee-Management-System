@@ -45,15 +45,14 @@ public class CompanyControllerTest {
     HttpHeaders httpHeaders = new HttpHeaders();
 
     public void setHttpHeaders(HttpHeaders httpHeaders) {
-        httpHeaders.add("username","admin");
-        httpHeaders.add("password","admin");
+        httpHeaders.add("access_token","f9662650-ec3b-4d2e-96fd-6e29b8a77df7");
         this.httpHeaders = httpHeaders;
     }
 
     @Test
     public void test_AddCompany_Success(){
         setHttpHeaders(httpHeaders);
-        Company company = new Company("Apple", "Technology", 1000000L, "California", "Steve Jobs");
+        Company company = new Company("Apple", "Technology","California", "Steve Jobs");
         HttpEntity<Company> entity = new HttpEntity<>(company,httpHeaders);
         ResponseEntity<Company> responseEntity = testRestTemplate.exchange("http://localhost:" + port +"//company",
                                                                             HttpMethod.POST,entity,Company.class);
@@ -89,7 +88,7 @@ public class CompanyControllerTest {
         this.restTemplate = testRestTemplate.getRestTemplate();
         HttpClient httpClient = HttpClientBuilder.create().build();
         this.restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
-        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform","");
+        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform");
         HttpEntity<CompanyInfoUpdate> entity = new HttpEntity<>(companyInfoUpdate,httpHeaders);
         List<CompleteCompInfo> companyList = new ArrayList<>();
         ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:" + port + "//company/9/company-update",

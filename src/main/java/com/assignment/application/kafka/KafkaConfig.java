@@ -5,22 +5,23 @@ import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.update.SalaryUpdate;
-import com.oracle.tools.packager.Log;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
-import org.springframework.kafka.listener.*;
+import org.springframework.kafka.listener.ErrorHandler;
+import org.springframework.kafka.listener.KafkaListenerErrorHandler;
+import org.springframework.kafka.listener.ListenerExecutionFailedException;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -33,7 +34,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    Logger logger = LoggerFactory.getLogger(KafkaConfig.class);
+    private static final Logger LOG = LogManager.getLogger(KafkaConfig.class);
 
     @Autowired
     private StringConstant stringConstant;
@@ -105,7 +106,7 @@ public class KafkaConfig {
     public class KafkaErrorHandler implements ErrorHandler, KafkaListenerErrorHandler {
         @Override
         public Object handleError(Message<?> message, ListenerExecutionFailedException e) {
-            logger.info(message.toString());
+            LOG.info(message.toString());
             return null;
         }
 

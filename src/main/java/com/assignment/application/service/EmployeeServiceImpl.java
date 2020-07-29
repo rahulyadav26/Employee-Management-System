@@ -2,12 +2,11 @@ package com.assignment.application.service;
 
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.repo.CompanyRepo;
-import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
-import org.apache.kafka.common.protocol.types.Field;
+import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -27,6 +26,9 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     private CompanyRepo companyRepo;
 
     @Autowired
+    private RedisService redisService;
+
+    @Autowired
     private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
 
     @Autowired
@@ -41,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         if (employee == null || company == null || !employee.getCompanyId().equals(companyId) ) {
             throw new RuntimeException("Data not valid");
         }
-        Employee employeeTemp = cachingInfo.addEmployee(employee,companyId);
+        Employee employeeTemp = cachingInfo.addEmployee(employee);
         kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
         return employeeTemp;
     }
@@ -80,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
             throw new RuntimeException("Data not Valid");
         }
         employeeRepo.delete(employee);
+        redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED+employeeId);
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }

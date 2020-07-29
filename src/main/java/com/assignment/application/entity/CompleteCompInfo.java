@@ -1,9 +1,7 @@
 package com.assignment.application.entity;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Component

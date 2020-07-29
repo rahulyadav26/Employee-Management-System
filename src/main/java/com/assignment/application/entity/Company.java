@@ -14,8 +14,6 @@ public class Company {
     private String name;
     @Column(name="industry_type")
     private String industryType;
-    @Column(name="employee_count")
-    private Long employeeCount;
     @Column(name="head_office")
     private String headOffice;
     @Column(name="founder")
@@ -25,19 +23,17 @@ public class Company {
 
     }
 
-    public Company(Long id, String name, String industryType, Long employeeCount, String headOffice, String founder) {
+    public Company(Long id, String name, String industryType,String headOffice, String founder) {
         this.id = id;
         this.name = name;
         this.industryType = industryType;
-        this.employeeCount = employeeCount;
         this.headOffice = headOffice;
         this.founder = founder;
     }
 
-    public Company(String name, String industryType, Long employeeCount, String headOffice, String founder) {
+    public Company(String name, String industryType,String headOffice, String founder) {
         this.name = name;
         this.industryType = industryType;
-        this.employeeCount = employeeCount;
         this.headOffice = headOffice;
         this.founder = founder;
     }
@@ -66,13 +62,6 @@ public class Company {
         this.industryType = industryType;
     }
 
-    public Long getEmployeeCount() {
-        return employeeCount;
-    }
-
-    public void setEmployeeCount(Long employeeCount) {
-        this.employeeCount = employeeCount;
-    }
 
     public String getHeadOffice() {
         return headOffice;
@@ -90,15 +79,4 @@ public class Company {
         this.founder = founder;
     }
 
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", industryType='" + industryType + '\'' +
-                ", employeeCount=" + employeeCount +
-                ", headOffice='" + headOffice + '\'' +
-                ", founder='" + founder + '\'' +
-                '}';
-    }
 }

@@ -4,12 +4,15 @@ package com.assignment.application.test.unit;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyDatabaseException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.CachingInfo;
 import com.assignment.application.service.CompanyServiceImpl;
+import com.assignment.application.service.RedisService;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,6 +41,10 @@ public class CompanyServiceTest {
     @Mock
     private CachingInfo cachingInfo;
 
+    @Mock
+    private EmployeeRepo employeeRepo;
+
+
 
     @Test(expected = IllegalArgumentException.class)
     public void test_CompanyNull_CreateNewCompany_fails(){
@@ -51,7 +58,7 @@ public class CompanyServiceTest {
     @Test(expected = DuplicateDataException.class)
     public void test_CompanyExist_CreateNewCompany_fails(){
         //check for name uniqueness
-        Company company = new Company("Microsoft", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company("Microsoft", "Technology", "California", "Bill Gates");
         when(companyRepo.getCompanyByName(company.getName().toUpperCase())).thenReturn(company);
         //action
         companyService.createNewCompany(company);
@@ -61,7 +68,7 @@ public class CompanyServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void test_CompanyNameIsEmpty_CreateNewCompany_fails(){
         //check for empty company name
-        Company company = new Company("", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company("", "Technology", "California", "Bill Gates");
         //action
         companyService.createNewCompany(company);
         //result
@@ -70,13 +77,12 @@ public class CompanyServiceTest {
     @Test
     public void test_CompanyUnique_CreateNewCompany_Success(){
         //company data is valid and company doesn't exists in database
-        Company company = new Company("Microsoft", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company("Microsoft", "Technology","California", "Bill Gates");
         //action
         Company actualCompany = companyService.createNewCompany(company);
         //result
         Assert.assertEquals(company.getName(),actualCompany.getName());
         Assert.assertEquals(company.getFounder(),actualCompany.getFounder());
-        Assert.assertEquals(company.getEmployeeCount(),actualCompany.getEmployeeCount());
         Assert.assertEquals(company.getIndustryType(),actualCompany.getIndustryType());
         Assert.assertEquals(company.getHeadOffice(),actualCompany.getHeadOffice());
         verify(companyRepo,times(1)).getCompanyByName(company.getName().toUpperCase());
@@ -97,8 +103,8 @@ public class CompanyServiceTest {
     public void test_GetCompanyList_Success(){
         //if database is not empty
         List<Company> companyList = new ArrayList<>();
-        companyList.add(new Company("Microsoft", "Technology", 1000000L, "California", "Bill Gates"));
-        companyList.add(new Company("Google", "Technology", 1000000L, "California", "Sergey Brin, Larry Page"));
+        companyList.add(new Company("Microsoft", "Technology", "California", "Bill Gates"));
+        companyList.add(new Company("Google", "Technology", "California", "Sergey Brin, Larry Page"));
         when(companyRepo.findAll()).thenReturn(companyList);
         //action
         List<Company> actualResult = companyService.getCompanyList();
@@ -124,7 +130,7 @@ public class CompanyServiceTest {
         //no such company exists
         final Long id = new Long(11);
         List<CompleteCompInfo> completeCompInfos = new ArrayList<>();
-        Company company = new Company(id,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(id,"Google", "Technology","California", "Bill Gates");
         completeCompInfos.add(new CompleteCompInfo("Sundar Pichai","google_3",11L,"Engineering",2L,(double)1000000,"123454323454",null,"1234567890","California","Chennai"));
         when(companyRepo.findById(id)).thenReturn(Optional.of(company));
         when(cachingInfo.getCompanyCompleteInfo(id)).thenReturn(completeCompInfos);
@@ -142,7 +148,7 @@ public class CompanyServiceTest {
         //company doesn't exists in db
         final Long id = new Long(11);
         when(companyRepo.findById(id)).thenReturn(null);
-        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform","");
+        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform");
         //action
         companyService.updateCompanyInfo(id,companyInfoUpdate);
     }
@@ -151,7 +157,7 @@ public class CompanyServiceTest {
     public void test_InfoEmpty_UpdateCompanyInfo_fails(){
         //company doesn't exists in db
         final Long id = new Long(11);
-        Company company = new Company(id,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(id,"Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(id)).thenReturn(Optional.of(company));
         CompanyInfoUpdate companyInfoUpdate = null;
         //action
@@ -161,9 +167,9 @@ public class CompanyServiceTest {
     @Test
     public void test_UpdateCompanyInfo_Success(){
         final Long id = new Long(11);
-        Company company = new Company(id,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(id,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(id)).thenReturn(Optional.of(company));
-        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform","");
+        CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform");
         //action
         String actualResult = companyService.updateCompanyInfo(id,companyInfoUpdate);
         //result
@@ -187,12 +193,38 @@ public class CompanyServiceTest {
     public void test_CompanyExist_DeleteCompany_success(){
         //company exists in database
         final Long id = new Long(11);
-        Company company = new Company(id,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(id,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(id)).thenReturn(Optional.of(company));
         //action
         String actualResult = companyService.deleteCompany(id);
         //result
         Assert.assertEquals(StringConstant.DELETION_SUCCESSFUL,actualResult);
+    }
+
+    @Test
+    public void test_verifyUser_superadmin_success(){
+        //super admin verify user
+        final String username = "superadmin";
+        //action
+        String actualResult = companyService.verifyUser(username);
+        //result
+        Assert.assertEquals(StringConstant.USER_VERIFIED,actualResult);
+        verify(cachingInfo).tokenGenerate(anyString(),anyString());
+        verify(cachingInfo).updateTokenStatus(anyString());
+    }
+
+    @Test
+    public void test_verifyUser_employee_success(){
+        //employee verify user
+        final String username = "google_2";
+        Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
+        when(employeeRepo.getEmployee(username)).thenReturn(employee);
+        //action
+        String actualResult = companyService.verifyUser(username);
+        //result
+        Assert.assertEquals(StringConstant.USER_VERIFIED,actualResult);
+        verify(cachingInfo).tokenGenerate(anyString(),anyString());
+        verify(cachingInfo).updateTokenStatus(anyString());
     }
 
 }

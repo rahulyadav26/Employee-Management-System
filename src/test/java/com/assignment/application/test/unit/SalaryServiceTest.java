@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +50,15 @@ public class SalaryServiceTest {
     @Mock
     private EmployeeRepo employeeRepo;
 
+    @Mock
+    private KafkaTemplate<String, SalaryUpdate> kafkaTemplateSalary;
+
     @Test(expected = RuntimeException.class)
     public void test_CompanyNotExist_AddSalary_fails(){
         //company not exist
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
         //action
         salaryService.addSalary(companyId,employeeId,salary);
     }
@@ -64,8 +68,8 @@ public class SalaryServiceTest {
         //employee not exists
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company("Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company("Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         salaryService.addSalary(companyId,employeeId,salary);
@@ -76,8 +80,8 @@ public class SalaryServiceTest {
         //companyId!=salary.companyId
         final Long companyId = new Long(10L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(employeeRepo.getEmployee(employeeId)).thenReturn(employee);
@@ -90,8 +94,8 @@ public class SalaryServiceTest {
         //employeeId!=salary.employeeId
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_2");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology", "California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(employeeRepo.getEmployee(employeeId)).thenReturn(employee);
@@ -105,7 +109,7 @@ public class SalaryServiceTest {
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_2");
         Salary salary = null;
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(employeeRepo.getEmployee(employeeId)).thenReturn(employee);
@@ -117,8 +121,8 @@ public class SalaryServiceTest {
     public void test_AddSalary_Success(){
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(employeeRepo.getEmployee(employeeId)).thenReturn(employee);
@@ -147,8 +151,8 @@ public class SalaryServiceTest {
         //employee info not exists
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology", "California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -160,8 +164,8 @@ public class SalaryServiceTest {
         //company exists
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(salaryRepo.getSalaryById(employeeId)).thenReturn(salary);
@@ -179,7 +183,7 @@ public class SalaryServiceTest {
         //company not exist
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
         SalaryUpdate salaryUpdate = new SalaryUpdate("0","1","Engineering",11L,100);
         //action
         salaryService.updateSalary(companyId,salaryUpdate);
@@ -190,8 +194,8 @@ public class SalaryServiceTest {
         //company not exist
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Salary salary = new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L);
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         SalaryUpdate salaryUpdate = null;
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -204,9 +208,9 @@ public class SalaryServiceTest {
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
         List<Salary> salaryList = new ArrayList<>();
-        salaryList.add(new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L));
-        salaryList.add(new Salary("google_2","Sergey Brin",1540000d,"44555455333444",11L,1L));
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        salaryList.add(new Salary("google_3",100000d,"12343234323444",11L,1L));
+        salaryList.add(new Salary("google_2",1540000d,"44555455333444",11L,1L));
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         SalaryUpdate salaryUpdate = new SalaryUpdate("0","0","",11L,1000);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(salaryRepo.salaryListComp(companyId)).thenReturn(salaryList);
@@ -225,9 +229,9 @@ public class SalaryServiceTest {
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
         List<Salary> salaryList = new ArrayList<>();
-        salaryList.add(new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L));
-        salaryList.add(new Salary("google_2","Sergey Brin",1540000d,"44555455333444",11L,1L));
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        salaryList.add(new Salary("google_3",100000d,"12343234323444",11L,1L));
+        salaryList.add(new Salary("google_2",1540000d,"44555455333444",11L,1L));
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         SalaryUpdate salaryUpdate = new SalaryUpdate("0","1","",11L,5);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(salaryRepo.salaryListComp(companyId)).thenReturn(salaryList);
@@ -245,7 +249,7 @@ public class SalaryServiceTest {
         //update salary of the department of a company by percentage but department not exists
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         SalaryUpdate salaryUpdate = new SalaryUpdate("1","0","Engineering",11L,5);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -258,10 +262,10 @@ public class SalaryServiceTest {
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
         List<Salary> salaryList = new ArrayList<>();
-        salaryList.add(new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L));
-        salaryList.add(new Salary("google_2","Sergey Brin",1540000d,"44555455333444",11L,1L));
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        salaryList.add(new Salary("google_3",100000d,"12343234323444",11L,1L));
+        salaryList.add(new Salary("google_2",1540000d,"44555455333444",11L,1L));
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        Department department = new Department("Engineering", 11L, "Sundar Pichai");
         SalaryUpdate salaryUpdate = new SalaryUpdate("1","0","engineering",11L,5);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(departmentRepo.getDeptByCompId(companyId,department.getName().toUpperCase())).thenReturn(department);
@@ -282,10 +286,10 @@ public class SalaryServiceTest {
         final Long companyId = new Long(11L);
         final String employeeId = new String("google_3");
         List<Salary> salaryList = new ArrayList<>();
-        salaryList.add(new Salary("google_3","Sundar Pichai",100000d,"12343234323444",11L,1L));
-        salaryList.add(new Salary("google_2","Sergey Brin",1540000d,"44555455333444",11L,1L));
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        salaryList.add(new Salary("google_3",100000d,"12343234323444",11L,1L));
+        salaryList.add(new Salary("google_2",1540000d,"44555455333444",11L,1L));
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
         SalaryUpdate salaryUpdate = new SalaryUpdate("1","1","engineering",11L,10000);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(departmentRepo.getDeptByCompId(companyId,department.getName().toUpperCase())).thenReturn(department);

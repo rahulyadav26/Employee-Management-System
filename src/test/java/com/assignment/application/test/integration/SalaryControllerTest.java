@@ -39,15 +39,14 @@ public class SalaryControllerTest {
     HttpHeaders httpHeaders = new HttpHeaders();
 
     public void setHttpHeaders(HttpHeaders httpHeaders) {
-        httpHeaders.add("username","admin");
-        httpHeaders.add("password","admin");
+        httpHeaders.add("access_token","f9662650-ec3b-4d2e-96fd-6e29b8a77df7");
         this.httpHeaders = httpHeaders;
     }
 
     @Test
     public void test_addSalary_success(){
         setHttpHeaders(httpHeaders);
-        Salary salary = new Salary("google_1","Sergey Brin",100000d,"12343234323444",9L,9L);
+        Salary salary = new Salary("google_1",100000d,"12343234323444",9L,9L);
         HttpEntity<Salary> entity = new HttpEntity<>(salary,httpHeaders);
         ResponseEntity<Salary> responseEntity = testRestTemplate.exchange("http://localhost:" + port +"//9/google_1/salary",
                 HttpMethod.POST,entity,Salary.class);
@@ -55,7 +54,6 @@ public class SalaryControllerTest {
         Assert.assertEquals(salary.getCompanyId(),responseEntity.getBody().getCompanyId());
         Assert.assertEquals(salary.getEmployeeId(),responseEntity.getBody().getEmployeeId());
         Assert.assertEquals(salary.getAccountNo(),responseEntity.getBody().getAccountNo());
-        Assert.assertEquals(salary.getEmployeeName(),responseEntity.getBody().getEmployeeName());
         Assert.assertEquals(salary.getDepartmentId(),responseEntity.getBody().getDepartmentId());
     }
 
@@ -65,8 +63,7 @@ public class SalaryControllerTest {
         HttpEntity<Salary> entity = new HttpEntity<>(null,httpHeaders);
         ResponseEntity<Salary> responseEntity = testRestTemplate.exchange("http://localhost:" + port + "//9/google_3/salary",
                 HttpMethod.GET, entity, Salary.class);
-        Salary salary = new Salary("google_3","Sundar Pichai",10067000d,"12323232345656",9L,9L);
-        Assert.assertEquals(salary.getEmployeeName(),responseEntity.getBody().getEmployeeName());
+        Salary salary = new Salary("google_3",10067000d,"12323232345656",9L,9L);
         Assert.assertEquals(salary.getEmployeeId(),responseEntity.getBody().getEmployeeId());
         Assert.assertEquals(salary.getSalary(),responseEntity.getBody().getSalary());
     }

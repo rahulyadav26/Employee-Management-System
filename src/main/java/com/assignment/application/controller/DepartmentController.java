@@ -1,8 +1,8 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstant;
-import com.assignment.application.entity.Department;
 import com.assignment.application.authenticator.VerifyUser;
+import com.assignment.application.entity.Department;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,9 @@ public class DepartmentController {
     @PostMapping(value = "/{company_id}/department")
     public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
                                                     @RequestBody Department department,
-                                                    @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password) {
+                                                    @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,companyId+"/department","post");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -43,10 +42,9 @@ public class DepartmentController {
     }
 
     @GetMapping(value = "/department")
-    public ResponseEntity<List<Department>> getDepartments(@RequestHeader("username") String username,
-                                                           @RequestHeader("password") String password) {
+    public ResponseEntity<List<Department>> getDepartments(@RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"department","get");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -59,10 +57,9 @@ public class DepartmentController {
     @GetMapping(value = "/{company_id}/department/{id}")
     public ResponseEntity<Department> getDepartment(@PathVariable("id") Long id,
                                                     @PathVariable("company_id") Long companyId,
-                                                    @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password) {
+                                                    @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,companyId+"/department/"+id,"get");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -81,10 +78,9 @@ public class DepartmentController {
     public ResponseEntity<String> updateDepartmentInfo(@PathVariable("id") Long id,
                                                        @PathVariable("company_id") Long companyId,
                                                        @RequestBody DepartmentInfoUpdate departmentInfoUpdate,
-                                                       @RequestHeader("username") String username,
-                                                       @RequestHeader("password") String password) {
+                                                       @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,companyId+"/department/"+id+"/update-department","patch");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -93,6 +89,7 @@ public class DepartmentController {
             }
             return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -100,10 +97,9 @@ public class DepartmentController {
     @DeleteMapping(value = "/{company_id}/department/{id}")
     public ResponseEntity<String> deleteDepartmentOfCompany(@PathVariable("id") Long id,
                                                             @PathVariable("company_id") Long companyId,
-                                                            @RequestHeader("username") String username,
-                                                            @RequestHeader("password") String password) {
+                                                            @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,companyId+"/department/"+id,"delete");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }

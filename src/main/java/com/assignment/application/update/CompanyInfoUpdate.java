@@ -6,8 +6,6 @@ public class CompanyInfoUpdate {
 
     @JsonProperty("industry_type")
     private String industryType;
-    @JsonProperty("employee_count")
-    private String employeeCount;
 
     public String getIndustryType() {
         return industryType;
@@ -17,16 +15,7 @@ public class CompanyInfoUpdate {
         this.industryType = industryType;
     }
 
-    public String getEmployeeCount() {
-        return employeeCount;
-    }
-
-    public void setEmployeeCount(String employeeCount) {
-        this.employeeCount = employeeCount;
-    }
-
-    public CompanyInfoUpdate(String industryType, String employeeCount) {
+    public CompanyInfoUpdate(String industryType) {
         this.industryType = industryType;
-        this.employeeCount = employeeCount;
     }
 }

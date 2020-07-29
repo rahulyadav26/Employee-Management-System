@@ -50,7 +50,7 @@ public class DepartmentServiceTest {
         final Long companyId = new Long(11L);
         Company company = new Company();
         when(companyRepo.findById(companyId)).thenReturn(null);
-        Department department = new Department(1L, "Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        Department department = new Department(1L, "Engineering", 11L,"Sundar Pichai");
         //action
         departmentService.addDepartment(companyId, department);
     }
@@ -59,8 +59,8 @@ public class DepartmentServiceTest {
     public void test_DepartmentExist_AddDepartment_fails() {
         //company department exists in database
         final Long companyId = new Long(11L);
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department(1L, "Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        Department department = new Department(1L, "Engineering", 11L, "Sundar Pichai");
         when((departmentRepo.getDeptByCompId(companyId, department.getName().toUpperCase()))).thenReturn(department);
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -71,8 +71,8 @@ public class DepartmentServiceTest {
     public void test_DepartmentNameEmpty_AddDepartment_fails() {
         //department name is empty
         final Long companyId = new Long(11L);
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department(1L, "", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        Department department = new Department(1L, "", 11L,  "Sundar Pichai");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         departmentService.addDepartment(companyId, department);
@@ -82,8 +82,8 @@ public class DepartmentServiceTest {
     public void test_DepartmentNotBelongToCompany_AddDepartment_fails() {
         //companyId!=department.getCompanyId()
         final Long companyId = new Long(11L);
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department(1L, "Engineering", 10L, 1000L, 10L, 20L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        Department department = new Department(1L, "Engineering", 10L, "Sundar Pichai");
         //action
         departmentService.addDepartment(companyId, department);
     }
@@ -93,8 +93,8 @@ public class DepartmentServiceTest {
     public void test_AddDepartment_Success() {
         //company exist and department doesn't exists also its name is not empty
         final Long companyId = new Long(11L);
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(departmentRepo.save(department)).thenReturn(department);
         //action
@@ -110,8 +110,8 @@ public class DepartmentServiceTest {
     public void test_GetDepartments_Success() {
         //fetch the departments list of a company
         List<Department> departmentList = new ArrayList<>();
-        departmentList.add(new Department("Engineering", 2L, 1000L, 10L, 20L, "Sundar Pichai"));
-        departmentList.add(new Department("Marketing", 1L, 10030L, 10L, 20L, "Satya Nadela"));
+        departmentList.add(new Department("Engineering", 2L, "Sundar Pichai"));
+        departmentList.add(new Department("Marketing", 1L, "Satya Nadela"));
         when(departmentRepo.findAll()).thenReturn(departmentList);
         //action
         List<Department> actualDepartmentList = departmentService.getDepartments();
@@ -125,8 +125,8 @@ public class DepartmentServiceTest {
         //company doesn't exists in database
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai", "", "100", "");
+        Department department = new Department("Engineering", 11L, "Sundar Pichai");
+        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
         when(companyRepo.findById(companyId)).thenReturn(null);
         //action
         departmentService.updateDepartmentInfo(companyId, departmentId, departmentInfoUpdate);
@@ -137,8 +137,8 @@ public class DepartmentServiceTest {
         //department doesn't exists in database
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai", "", "100", "");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
         when(departmentRepo.findById(departmentId)).thenReturn(null);
         //action
         departmentService.updateDepartmentInfo(companyId, departmentId, departmentInfoUpdate);
@@ -149,9 +149,9 @@ public class DepartmentServiceTest {
         //companyId!=department.getCompanyId()
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 2L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai", "", "100", "");
+        Department department = new Department("Engineering", 2L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -163,8 +163,8 @@ public class DepartmentServiceTest {
         //department info update is empty
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         DepartmentInfoUpdate departmentInfoUpdate = null;
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
@@ -177,9 +177,9 @@ public class DepartmentServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
-        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai", "", "100", "");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
+        DepartmentInfoUpdate departmentInfoUpdate = new DepartmentInfoUpdate("Sundar Pichai");
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -196,8 +196,8 @@ public class DepartmentServiceTest {
         //companyId doesn't exists in db
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(null);
         //action
         departmentService.getDepartment(companyId,departmentId);
@@ -208,8 +208,8 @@ public class DepartmentServiceTest {
         //department not exist in db
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(departmentRepo.findById(departmentId)).thenReturn(null);
         //action
         departmentService.getDepartment(companyId,departmentId);
@@ -220,8 +220,8 @@ public class DepartmentServiceTest {
         //companyId!=department.companyId()
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 10L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 10L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -233,8 +233,8 @@ public class DepartmentServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 11L,"Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
@@ -260,7 +260,7 @@ public class DepartmentServiceTest {
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
         Department department = new Department();
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         //action
         departmentService.deleteDepartmentOfCompany(companyId,departmentId);
     }
@@ -270,8 +270,8 @@ public class DepartmentServiceTest {
         //companyId!=department.companyId()
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 10L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 10L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology", "California", "Bill Gates");
         //action
         departmentService.deleteDepartmentOfCompany(companyId,departmentId);
     }
@@ -281,8 +281,8 @@ public class DepartmentServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         final Long departmentId = new Long(1L);
-        Department department = new Department("Engineering", 11L, 1000L, 10L, 20L, "Sundar Pichai");
-        Company company = new Company(companyId, "Google", "Technology", 1000000L, "California", "Bill Gates");
+        Department department = new Department("Engineering", 11L, "Sundar Pichai");
+        Company company = new Company(companyId, "Google", "Technology","California", "Bill Gates");
         when(departmentRepo.findById(departmentId)).thenReturn(Optional.of(department));
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action

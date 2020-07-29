@@ -14,8 +14,6 @@ public class Salary implements Serializable{
     private Long id;
     @Column(name="emp_id" , columnDefinition = "text")
     private String employeeId;
-    @Column(name="emp_name")
-    private String employeeName;
     @Column(name="salary")
     private Double salary;
     @Column(name="acc_no")
@@ -32,19 +30,17 @@ public class Salary implements Serializable{
 
     }
 
-    public Salary(Long id, String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
+    public Salary(Long id, String employeeId,Double salary, String accountNo, Long companyId, Long departmentId) {
         this.id = id;
         this.employeeId = employeeId;
-        this.employeeName = employeeName;
         this.salary = salary;
         this.accountNo = accountNo;
         this.companyId = companyId;
         this.departmentId = departmentId;
     }
 
-    public Salary(String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
+    public Salary(String employeeId,Double salary, String accountNo, Long companyId, Long departmentId) {
         this.employeeId = employeeId;
-        this.employeeName = employeeName;
         this.salary = salary;
         this.accountNo = accountNo;
         this.companyId = companyId;
@@ -65,14 +61,6 @@ public class Salary implements Serializable{
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
     }
 
     public Double getSalary() {

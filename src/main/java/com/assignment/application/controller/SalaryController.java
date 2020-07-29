@@ -2,14 +2,13 @@ package com.assignment.application.controller;
 
 
 import com.assignment.application.Constants.StringConstant;
-import com.assignment.application.entity.Salary;
 import com.assignment.application.authenticator.VerifyUser;
+import com.assignment.application.entity.Salary;
 import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +29,9 @@ public class SalaryController {
     public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
                                                 @RequestBody Salary salary,
-                                                @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password) {
+                                                @RequestHeader("access_token") String token) {
         try {
-            if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
+            if (verifyUser.authorizeUser(token,companyId+"/"+employeeId+"/salary","post") == 1) {
                 Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
                 if (salary == null) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -50,10 +48,9 @@ public class SalaryController {
     @GetMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                 @PathVariable("emp_id") String employeeId,
-                                                @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password) {
+                                                @RequestHeader("access_token") String token) {
         try {
-            if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
+            if (verifyUser.authorizeUser(token,companyId+"/"+employeeId+"/salary","get") == 1) {
                 Salary salary = salaryServiceI.getSalary(companyId, employeeId);
                 if (salary == null) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -67,10 +64,9 @@ public class SalaryController {
     }
 
     @GetMapping(value = "/salary")
-    public ResponseEntity<List<Salary>> getSalaryList(@RequestHeader("username") String username,
-                                                      @RequestHeader("password") String password) {
+    public ResponseEntity<List<Salary>> getSalaryList(@RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"/salary","get");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -87,10 +83,9 @@ public class SalaryController {
     @PatchMapping(value = "{comp_id}/salary-update")
     public ResponseEntity<String> updateSalary(@PathVariable("comp_id") Long companyId,
                                                @RequestBody SalaryUpdate salaryUpdate,
-                                               @RequestHeader("username") String username,
-                                               @RequestHeader("password") String password) {
+                                               @RequestHeader("access_token") String token){
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,companyId+"/salary-update","patch");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }

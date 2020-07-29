@@ -1,7 +1,5 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -11,7 +9,7 @@ public class Employee implements Serializable {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name="name")
     private String name;
@@ -140,5 +138,22 @@ public class Employee implements Serializable {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dob='" + dob + '\'' +
+                ", permanentAdd='" + permanentAdd + '\'' +
+                ", currentAdd='" + currentAdd + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", position='" + position + '\'' +
+                ", departmentId=" + departmentId +
+                ", projectId=" + projectId +
+                ", companyId=" + companyId +
+                ", employeeId='" + employeeId + '\'' +
+                '}';
     }
 }

@@ -5,11 +5,10 @@ import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
 import com.assignment.application.entity.Salary;
-import com.assignment.application.service.CachingInfo;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
-import org.apache.kafka.common.protocol.types.Field;
+import com.assignment.application.service.CachingInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -57,8 +56,8 @@ public class KafkaConsumerListener {
             if (company == null) {
                 return StringConstant.INVALID_CREDENTIALS;
             }
-            cachingInfo.addEmployee(employee, kafkaEmployee.getCompanyId());
-            salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getName(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
+            cachingInfo.addEmployee(employee);
+            salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
             return StringConstant.INFORMATION_SAVED_SUCCESSFULLY;
         }
         Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);

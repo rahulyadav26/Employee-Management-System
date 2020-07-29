@@ -15,7 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,12 @@ public class EmployeeServiceTest {
     @Mock
     private EmployeeRepo employeeRepo;
 
+    @Mock
+    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Mock
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
     @Test(expected = RuntimeException.class)
     public void test_CompanyNotExist_AddEmployee_fails(){
         //company not exist
@@ -52,7 +60,7 @@ public class EmployeeServiceTest {
         //employee info null
         final Long companyId = new Long(11L);
         Employee employee = null;
-        Company company = new Company("Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company("Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         employeeService.addEmployee(companyId,employee);
@@ -63,7 +71,7 @@ public class EmployeeServiceTest {
         //companyId!=employee.companyId
         final Long companyId = new Long(10L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology", "California", "Bill Gates");
         //action
         employeeService.addEmployee(companyId,employee);
     }
@@ -73,15 +81,15 @@ public class EmployeeServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology", "California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
-        when(cachingInfo.addEmployee(employee,companyId)).thenReturn(employee);
+        when(cachingInfo.addEmployee(employee)).thenReturn(employee);
         //action
         Employee actualEmployee = employeeService.addEmployee(companyId,employee);
         //result
         Assert.assertEquals(employee,actualEmployee);
         verify(companyRepo).findById(companyId);
-        verify(cachingInfo).addEmployee(employee,companyId);
+        verify(cachingInfo).addEmployee(employee);
     }
 
     @Test(expected = RuntimeException.class)
@@ -99,7 +107,7 @@ public class EmployeeServiceTest {
         final Long companyId = new Long(11L);
         List<Employee> employeeList = new ArrayList<>();
         employeeList.add(new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,"));
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(cachingInfo.getEmployeeOfComp(companyId)).thenReturn(employeeList);
         //action
@@ -127,7 +135,7 @@ public class EmployeeServiceTest {
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","","1234567890");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         employeeService.updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate);
@@ -139,7 +147,7 @@ public class EmployeeServiceTest {
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
         EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","","1234567890");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(cachingInfo.updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate)).thenReturn(StringConstant.UPDATE_SUCCESSFUL);
         //action
@@ -164,7 +172,7 @@ public class EmployeeServiceTest {
         //employee not exist
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         //action
         employeeService.deleteEmployee(companyId,employee.getEmployeeId());
@@ -175,7 +183,7 @@ public class EmployeeServiceTest {
         //companyId!=employee.companyId
         final Long companyId = new Long(10L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         //action
         employeeService.deleteEmployee(companyId,employee.getEmployeeId());
     }
@@ -185,7 +193,7 @@ public class EmployeeServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
-        Company company = new Company(companyId,"Google", "Technology", 1000000L, "California", "Bill Gates");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(employeeRepo.getEmployee(employee.getEmployeeId())).thenReturn(employee);
         //action

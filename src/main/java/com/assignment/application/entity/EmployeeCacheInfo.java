@@ -1,46 +1,41 @@
 package com.assignment.application.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class KafkaEmployee implements Serializable {
 
-    @JsonProperty(value = "id")
+@Component
+public class EmployeeCacheInfo implements Serializable {
     private Long id;
-    @JsonProperty(value = "name")
-    private String name;
-    @JsonProperty(value = "dob")
-    private String dob;
-    @JsonProperty(value = "permanent_add")
-    private String permanentAdd;
-    @JsonProperty(value = "current_add")
-    private String currentAdd;
-    @JsonProperty(value = "phone_number")
-    private String phoneNumber;
-    @JsonProperty(value = "position")
-    private String position;
-    @JsonProperty(value = "department_id")
-    private Long departmentId;
-    @JsonProperty(value = "project_id")
-    private Long projectId;
-    @JsonProperty(value = "company_id")
-    private Long companyId;
-    @JsonProperty(value = "employee_id")
-    private String employeeId;
-    @JsonProperty(value = "salary")
-    private Double salary;
-    @JsonProperty(value = "acc_no")
-    private String accNo;
 
-    public KafkaEmployee(){
+    private String name;
+
+    private String dob;
+
+    private String permanentAdd;
+
+    private String currentAdd;
+
+    private String phoneNumber;
+
+    private String position;
+
+    private Long departmentId;
+
+    private Long projectId;
+
+    private Long companyId;
+
+    private String employeeId;
+
+    private String role;
+
+    public EmployeeCacheInfo() {
 
     }
 
-    public KafkaEmployee(Long id, String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId, Double salary, String accNo) {
-        this.id = id;
+    public EmployeeCacheInfo(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId, String role) {
         this.name = name;
         this.dob = dob;
         this.permanentAdd = permanentAdd;
@@ -51,8 +46,7 @@ public class KafkaEmployee implements Serializable {
         this.projectId = projectId;
         this.companyId = companyId;
         this.employeeId = employeeId;
-        this.salary = salary;
-        this.accNo = accNo;
+        this.role = role;
     }
 
     public Long getId() {
@@ -143,19 +137,31 @@ public class KafkaEmployee implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public Double getSalary() {
-        return salary;
+    public String getRole() {
+        return role;
     }
 
-    public void setSalary(Double salary) {
-        this.salary = salary;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public String getAccNo() {
-        return accNo;
-    }
-
-    public void setAccNo(String accNo) {
-        this.accNo = accNo;
+    @Override
+    public String toString() {
+        return "EmployeeCacheInfo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dob='" + dob + '\'' +
+                ", permanentAdd='" + permanentAdd + '\'' +
+                ", currentAdd='" + currentAdd + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", position='" + position + '\'' +
+                ", departmentId=" + departmentId +
+                ", projectId=" + projectId +
+                ", companyId=" + companyId +
+                ", employeeId='" + employeeId + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }
+
+

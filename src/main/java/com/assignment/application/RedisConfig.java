@@ -1,20 +1,21 @@
 package com.assignment.application;
 
 import com.assignment.application.other.CustomKeyGenerator;
-import org.springframework.cache.CacheManager;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.web.client.RestTemplate;
+import redis.clients.jedis.JedisPool;
 
 @Configuration
 public class RedisConfig {
+
+    private JedisPool jedisPool;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(){
@@ -27,6 +28,16 @@ public class RedisConfig {
         return new CustomKeyGenerator();
     }
 
+    @Bean
+    public JedisPool getJedisPool() {
+
+        jedisPool = new JedisPool(getPoolConfig(), "localhost",6379);
+        return jedisPool;
+    }
+
+    private GenericObjectPoolConfig getPoolConfig() {
+        return new GenericObjectPoolConfig();
+    }
 
     @Bean
     public RedisTemplate<String,Object> redisTemplate(){
@@ -34,7 +45,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         return redisTemplate;
     }
 

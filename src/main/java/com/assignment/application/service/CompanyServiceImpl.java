@@ -3,16 +3,20 @@ package com.assignment.application.service;
 import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyDatabaseException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class CompanyServiceImpl implements CompanyServiceI {
@@ -25,6 +29,9 @@ public class CompanyServiceImpl implements CompanyServiceI {
 
     @Autowired
     private StringConstant stringConstant;
+
+    @Autowired
+    private EmployeeRepo employeeRepo;
 
     @Override
     public Company createNewCompany(Company company) {
@@ -73,9 +80,6 @@ public class CompanyServiceImpl implements CompanyServiceI {
         if (!companyInfoUpdate.getIndustryType().isEmpty()) {
             company.setIndustryType(companyInfoUpdate.getIndustryType());
         }
-        if (!companyInfoUpdate.getEmployeeCount().isEmpty()) {
-            company.setEmployeeCount(Long.parseLong(companyInfoUpdate.getEmployeeCount()));
-        }
         companyRepo.save(company);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
@@ -87,6 +91,21 @@ public class CompanyServiceImpl implements CompanyServiceI {
             return StringConstant.DELETION_SUCCESSFUL;
         }
         throw new IllegalArgumentException("No such company Exists");
+    }
 
+    @Override
+    public String verifyUser(String username) {
+        if (username.equalsIgnoreCase("superadmin")) {
+            String accessToken = UUID.randomUUID().toString();
+            cachingInfo.tokenGenerate(accessToken, username);
+            cachingInfo.updateTokenStatus(username);
+            return StringConstant.USER_VERIFIED;
+        }
+        Employee employee = employeeRepo.getEmployee(username);
+        String[] employeeId = employee.getEmployeeId().split("_");
+        String accessToken = employeeId[1] + "-" + UUID.randomUUID().toString() + "-" + employee.getCompanyId();
+        cachingInfo.tokenGenerate(accessToken, username);
+        cachingInfo.updateTokenStatus(username);
+        return StringConstant.USER_VERIFIED;
     }
 }

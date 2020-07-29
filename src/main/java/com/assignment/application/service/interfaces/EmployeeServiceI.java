@@ -1,8 +1,7 @@
 package com.assignment.application.service.interfaces;
 
-import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.entity.Employee;
-import org.springframework.http.ResponseEntity;
+import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

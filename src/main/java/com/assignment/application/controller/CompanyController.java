@@ -1,9 +1,9 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
-import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.service.interfaces.CompanyServiceI;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,9 @@ public class CompanyController {
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,
-                                              @RequestHeader("username") String username,
-                                              @RequestHeader("password") String password) {
+                                              @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"company","post");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -45,10 +44,9 @@ public class CompanyController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<Company>> getCompanyList(@RequestHeader("username") String username,
-                                                        @RequestHeader("password") String password) {
+    public ResponseEntity<List<Company>> getCompanyList(@RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"company","get");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -61,10 +59,9 @@ public class CompanyController {
 
     @GetMapping(value = "/{comp_id}/complete-info")
     public ResponseEntity<List<CompleteCompInfo>> getCompleteCompInfo(@PathVariable("comp_id") Long companyId,
-                                                                      @RequestHeader("username") String username,
-                                                                      @RequestHeader("password") String password) {
+                                                                      @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"company/"+companyId+"/complete-info","get");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -82,10 +79,9 @@ public class CompanyController {
     @PatchMapping(value = "/{id}/company-update")
     public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") Long id,
                                                     @RequestBody CompanyInfoUpdate companyInfoUpdate,
-                                                    @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password) {
+                                                    @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"company/"+id+"/company-update","patch");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -101,10 +97,9 @@ public class CompanyController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id,
-                                                @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password) {
+                                                @RequestHeader("access_token") String token) {
         try {
-            int status = verifyUser.authorizeUser(username, password);
+            int status = verifyUser.authorizeUser(token,"company/"+id,"delete");
             if (status == 0) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -115,6 +110,12 @@ public class CompanyController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping(value= "/{comp_id}/signUp")
+    public ResponseEntity<String> verifyUser(@RequestHeader("username") String username){
+        companyServiceI.verifyUser(username);
+        return new ResponseEntity<>(StringConstant.USER_VERIFIED,HttpStatus.OK);
     }
 
 }

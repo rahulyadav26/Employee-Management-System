@@ -4,13 +4,11 @@ import com.assignment.application.Constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.exception.DuplicateDataException;
-import com.assignment.application.exception.EmptyDatabaseException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentServiceI;
 import com.assignment.application.update.DepartmentInfoUpdate;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,15 +57,6 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
         }
         if (!departmentInfoUpdate.getHead().isEmpty()) {
             department.setHead(departmentInfoUpdate.getHead());
-        }
-        if (!departmentInfoUpdate.getEmployeeCount().isEmpty()) {
-            department.setEmployeeCount(Long.parseLong(departmentInfoUpdate.getEmployeeCount()));
-        }
-        if (!departmentInfoUpdate.getOngoingProject().isEmpty()) {
-            department.setOngoingProject(Long.parseLong(departmentInfoUpdate.getOngoingProject()));
-        }
-        if (!departmentInfoUpdate.getCompletedProject().isEmpty()) {
-            department.setCompletedProject(Long.parseLong(departmentInfoUpdate.getCompletedProject()));
         }
         departmentRepo.save(department);
         return StringConstant.UPDATE_SUCCESSFUL;

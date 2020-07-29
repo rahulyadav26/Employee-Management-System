@@ -3,7 +3,6 @@ package com.assignment.application.entity;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Component
 @Entity

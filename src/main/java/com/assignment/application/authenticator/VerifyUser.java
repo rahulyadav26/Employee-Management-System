@@ -1,9 +1,12 @@
 package com.assignment.application.authenticator;
 
+import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
+import com.assignment.application.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,20 +15,29 @@ public class VerifyUser {
     @Autowired
     private EmployeeRepo employeeRepo;
 
-    public int authorizeUser(String username,String password){
-        if(username.equalsIgnoreCase("admin") && username.equalsIgnoreCase("admin")){
-            return 1;
-        }
-        return 0;
-    }
+    @Autowired
+    private CompanyRepo companyRepo;
 
-    public int authorizeEmployee(String username,String password){
-        Employee employee;
-        employee = employeeRepo.getEmployee(username);
-        if(employee==null || !employee.getDob().equalsIgnoreCase(password)){
+    @Autowired
+    private RedisService redisService;
+
+    public int authorizeUser(String token,String url,String type){
+        String cachedInfo = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX + token);
+        if(cachedInfo.indexOf("roles: superadmin")==-1){
+            String[] info = token.split("-");
+            String[] urlSplit = url.split("/");
+            Company company = companyRepo.findById(Long.parseLong(info[info.length-1])).orElse(null);
+            String companyName = company.getName();
+            String employeeId = companyName.toLowerCase() + "_" + info[0];
+            if(urlSplit.length==3 && (urlSplit[2].equalsIgnoreCase("salary") || urlSplit[2].equalsIgnoreCase("update-employee-info")) &&
+                    (type.equalsIgnoreCase("GET") || type.equalsIgnoreCase("PATCH"))){
+                if(urlSplit[1].equalsIgnoreCase(employeeId) && info[info.length-1].equals(urlSplit[0])){
+                    return 1;
+                }
+                return 0;
+            }
             return 0;
         }
         return 1;
     }
-
 }
