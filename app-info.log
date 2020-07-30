@@ -1,15 +1,21 @@
-[INFO ] 2020-07-29 22:19:37.954 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 9474 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-29 22:19:37.971 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-29 22:19:41.819 [main] TaskAppApplication - Started TaskAppApplication in 4.241 seconds (JVM running for 5.104)
-[INFO ] 2020-07-29 22:19:48.212 [http-nio-8081-exec-1] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 22:19:48.212 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-29T16:49:48.141+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Company id not valid for the department","path":""}
-[INFO ] 2020-07-29 22:19:57.448 [http-nio-8081-exec-3] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 22:19:57.448 [http-nio-8081-exec-3] ResponseLogging - Response Body {"date":"2020-07-29T16:49:57.446+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No such company/department exists","path":""}
-[INFO ] 2020-07-29 22:20:12.158 [http-nio-8081-exec-4] AuthInterceptor - total time for request http://localhost:8081//9/department/132 is 21 ms
-[INFO ] 2020-07-29 22:20:12.159 [http-nio-8081-exec-4] ResponseLogging - Request Body 
-[INFO ] 2020-07-29 22:20:12.160 [http-nio-8081-exec-4] ResponseLogging - Response Body {"id":132,"name":"Engineering","companyId":9,"head":"Sundar Pichai"}
-[INFO ] 2020-07-29 22:21:14.938 [http-nio-8081-exec-7] ResponseLogging - Request Body {
-    "head":"Ati Sundar Pichai"
-}
-[INFO ] 2020-07-29 22:21:14.938 [http-nio-8081-exec-7] ResponseLogging - Response Body 
-[INFO ] 2020-07-29 22:21:14.958 [http-nio-8081-exec-7] AuthInterceptor - total time for request http://localhost:8081/error is 15 ms
+[INFO ] 2020-07-30 13:17:13.433 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 13:17:18.411 [main] TaskAppApplication - Started TaskAppApplication in 5.411 seconds (JVM running for 6.727)
+[INFO ] 2020-07-30 13:21:25.357 [http-nio-8081-exec-1] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 13:21:25.358 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:51:25.326+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
+[INFO ] 2020-07-30 13:22:05.687 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5723 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 13:22:05.698 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 13:22:11.037 [main] TaskAppApplication - Started TaskAppApplication in 5.781 seconds (JVM running for 6.688)
+[INFO ] 2020-07-30 13:29:52.375 [http-nio-8081-exec-1] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 13:29:52.376 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:59:52.320+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
+[INFO ] 2020-07-30 13:30:12.292 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5826 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 13:30:12.301 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 13:30:17.048 [main] TaskAppApplication - Started TaskAppApplication in 5.226 seconds (JVM running for 6.213)
+[INFO ] 2020-07-30 13:32:00.712 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_2 is 55332 ms
+[INFO ] 2020-07-30 13:32:00.715 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 13:32:00.715 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful
+[INFO ] 2020-07-30 13:32:40.492 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5857 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 13:32:40.500 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 13:32:44.460 [main] TaskAppApplication - Started TaskAppApplication in 4.352 seconds (JVM running for 5.412)
+[INFO ] 2020-07-30 13:33:14.383 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_3 is 168 ms
+[INFO ] 2020-07-30 13:33:14.386 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 13:33:14.387 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful

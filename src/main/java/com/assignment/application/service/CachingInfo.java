@@ -1,9 +1,8 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.entity.EmployeeCacheInfo;
 import com.assignment.application.entity.Salary;
 import com.assignment.application.exception.DataMismatchException;
 import com.assignment.application.exception.NotExistsException;
@@ -11,7 +10,6 @@ import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +17,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class CachingInfo {

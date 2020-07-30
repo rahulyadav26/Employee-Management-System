@@ -1,35 +1,26 @@
 package com.assignment.application.test.integration;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.TaskAppApplication;
-import com.assignment.application.controller.CompanyController;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
-import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.update.CompanyInfoUpdate;
-import net.bytebuddy.asm.Advice;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.kafka.common.protocol.types.Field;
-import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JsonContentAssert;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TaskAppApplication.class , webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

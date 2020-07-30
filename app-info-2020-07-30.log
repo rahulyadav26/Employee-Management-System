@@ -1,0 +1,44 @@
+[INFO ] 2020-07-30 12:04:32.288 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 12:04:32.299 [http-nio-8081-exec-2] ResponseLogging - Response Body User Verified successfully
+[INFO ] 2020-07-30 12:04:44.436 [http-nio-8081-exec-3] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 12:04:44.436 [http-nio-8081-exec-3] ResponseLogging - Response Body {"date":"2020-07-30T06:34:44.398+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Invalid url or login credentials","path":""}
+[INFO ] 2020-07-30 12:05:27.371 [http-nio-8081-exec-4] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 12:05:27.371 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-30T06:35:27.369+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Not a verified user","path":""}
+[INFO ] 2020-07-30 12:05:38.769 [http-nio-8081-exec-5] AuthInterceptor - total time for request http://localhost:8081//155/apple_10/update-employee-info is 1879 ms
+[INFO ] 2020-07-30 12:05:38.769 [http-nio-8081-exec-5] ResponseLogging - Request Body {
+    "permanent_address":"Lucknow",
+    "current_address":"Lucknow",
+    "phone_number":"",
+    "position":""
+}
+[INFO ] 2020-07-30 12:05:38.770 [http-nio-8081-exec-5] ResponseLogging - Response Body Update Successful
+[INFO ] 2020-07-30 12:06:55.109 [http-nio-8081-exec-8] AuthInterceptor - total time for request http://localhost:8081//company/155/signUp is 3057 ms
+[INFO ] 2020-07-30 12:06:55.110 [http-nio-8081-exec-8] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 12:06:55.111 [http-nio-8081-exec-8] ResponseLogging - Response Body User Verified successfully
+[INFO ] 2020-07-30 12:07:34.734 [http-nio-8081-exec-9] ResponseLogging - Request Body {
+    "permanent_address":"Lucknow",
+    "current_address":"Lucknow",
+    "phone_number":"",
+    "position":""
+}
+[INFO ] 2020-07-30 12:07:34.734 [http-nio-8081-exec-9] ResponseLogging - Response Body {"date":"2020-07-30T06:37:34.730+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Not allowed to access","path":""}
+[INFO ] 2020-07-30 12:11:33.958 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5033 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 12:11:33.969 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 12:11:38.414 [main] TaskAppApplication - Started TaskAppApplication in 4.854 seconds (JVM running for 5.892)
+[INFO ] 2020-07-30 12:19:17.518 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5105 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 12:19:17.534 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 12:19:22.226 [main] TaskAppApplication - Started TaskAppApplication in 5.185 seconds (JVM running for 6.106)
+[INFO ] 2020-07-30 12:41:14.184 [main] CompanyControllerTest - Starting CompanyControllerTest on Vasu-Naman-Verma.local with PID 5328 (started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 12:41:14.192 [main] CompanyControllerTest - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 12:41:18.785 [main] CompanyControllerTest - Started CompanyControllerTest in 4.798 seconds (JVM running for 6.436)
+[INFO ] 2020-07-30 12:41:19.174 [http-nio-auto-1-exec-1] ResponseLogging - Request Body {"id":null,"name":"Apple","industryType":"Technology","headOffice":"California","founder":"Steve Jobs"}
+[INFO ] 2020-07-30 12:41:19.174 [http-nio-auto-1-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:11:19.161+00:00","status":"422 UNPROCESSABLE_ENTITY","error":"Data Already Exists in Database","message":"Company Already Exists","path":""}
+[INFO ] 2020-07-30 12:44:48.682 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_2 is 190 ms
+[INFO ] 2020-07-30 12:44:48.684 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 12:44:48.685 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful
+[INFO ] 2020-07-30 13:03:58.183 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5553 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 13:03:58.195 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 13:04:03.077 [main] TaskAppApplication - Started TaskAppApplication in 5.361 seconds (JVM running for 6.673)
+[INFO ] 2020-07-30 13:04:25.449 [http-nio-8081-exec-1] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 13:04:25.449 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:34:25.427+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
+[INFO ] 2020-07-30 13:17:13.425 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5660 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)

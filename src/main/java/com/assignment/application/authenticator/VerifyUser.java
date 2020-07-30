@@ -1,8 +1,7 @@
 package com.assignment.application.authenticator;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.UnauthorisedAccessException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;

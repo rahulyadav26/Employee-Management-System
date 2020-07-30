@@ -3,8 +3,10 @@ package com.assignment.application.update;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DepartmentInfoUpdate {
+public class DepartmentInfoUpdate implements Serializable {
 
     @JsonProperty(value="head")
     private String head;
@@ -20,4 +22,6 @@ public class DepartmentInfoUpdate {
     public DepartmentInfoUpdate(String head){
         this.head = head;
     }
+
+    public DepartmentInfoUpdate(){}
 }

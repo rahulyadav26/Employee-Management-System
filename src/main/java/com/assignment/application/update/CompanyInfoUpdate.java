@@ -2,7 +2,9 @@ package com.assignment.application.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CompanyInfoUpdate {
+import java.io.Serializable;
+
+public class CompanyInfoUpdate implements Serializable {
 
     @JsonProperty("industry_type")
     private String industryType;
@@ -18,4 +20,6 @@ public class CompanyInfoUpdate {
     public CompanyInfoUpdate(String industryType) {
         this.industryType = industryType;
     }
+
+    public CompanyInfoUpdate(){}
 }

@@ -1,6 +1,6 @@
 package com.assignment.application.test.unit;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.entity.Company;
 import com.assignment.application.exception.UnauthorisedAccessException;
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Optional;
 

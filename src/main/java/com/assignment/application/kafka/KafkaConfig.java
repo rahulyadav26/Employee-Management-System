@@ -1,8 +1,9 @@
 package com.assignment.application.kafka;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
+import com.assignment.application.entity.Salary;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.update.SalaryUpdate;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -80,6 +81,20 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String, SalaryUpdate> kafkaTemplateEmpSalary(){
         return new KafkaTemplate(producerFactoryEmpSalary());
+    }
+
+    @Bean
+    public ProducerFactory<String, Salary> producerFactoryEmpSalaryUpdate(){
+        Map<String,Object> map = new HashMap<>();
+        map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
+        map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<String,Salary>(map);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Salary> kafkaTemplateEmpSalaryUpdate(){
+        return new KafkaTemplate(producerFactoryEmpSalaryUpdate());
     }
 
 

@@ -1,6 +1,7 @@
 package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Salary;
+import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.stereotype.Component;
 
@@ -16,5 +17,7 @@ public interface SalaryServiceI {
     List<Salary> getSalaryList();
 
     String updateSalary(Long companyId, SalaryUpdate salaryUpdate);
+
+    String updateSalaryOfEmployee(Long companyId, String employeeId, SalaryEmployeeUpdate salaryEmployeeUpdate);
 
 }

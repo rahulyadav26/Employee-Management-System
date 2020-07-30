@@ -1,11 +1,8 @@
 package com.assignment.application.test.integration;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.TaskAppApplication;
-import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.update.CompanyInfoUpdate;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -24,7 +21,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)

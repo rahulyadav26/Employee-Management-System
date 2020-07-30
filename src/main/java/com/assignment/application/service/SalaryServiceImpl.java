@@ -1,16 +1,14 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstant;
-import com.assignment.application.entity.Company;
-import com.assignment.application.entity.Department;
-import com.assignment.application.entity.Employee;
-import com.assignment.application.entity.Salary;
+import com.assignment.application.constants.StringConstant;
+import com.assignment.application.entity.*;
 import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.service.interfaces.SalaryServiceI;
+import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -54,7 +52,8 @@ public class SalaryServiceImpl implements SalaryServiceI {
         if(salary==null || salary.getSalary()==null){
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
-        if (!salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID)) {
+        if (!salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) ||
+                !salary.getDepartmentId().equals(employee.getDepartmentId())) {
             throw new DataMismatchException("Either the company id or employee id doesn't matches with the request");
         }
         if(salaryRepo.getSalaryById(employeeID)!=null){
@@ -138,5 +137,28 @@ public class SalaryServiceImpl implements SalaryServiceI {
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
-
+    @Override
+    public String updateSalaryOfEmployee(Long companyId, String employeeId, SalaryEmployeeUpdate salaryEmployeeUpdate) {
+        Company company = companyRepo.findById(companyId).orElse(null);
+        Employee employee = employeeRepo.getEmployee(employeeId);
+        if(company==null){
+            throw new NotExistsException("No such company exists");
+        }
+        if(employee==null){
+            throw new NotExistsException("No such employee exists");
+        }
+        if(salaryEmployeeUpdate ==null || salaryEmployeeUpdate.getValue()==null){
+            throw new InsufficientInformationException("Insufficient data found in request body");
+        }
+        if(!employee.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("No such employee exists in company");
+        }
+        Salary salary = salaryRepo.getSalaryById(employeeId);
+        if(salary==null){
+            throw new NotExistsException("No entry found in database");
+        }
+        salary.setSalary(salaryEmployeeUpdate.getValue());
+        salaryRepo.save(salary);
+        return StringConstant.UPDATE_SUCCESSFUL;
+    }
 }

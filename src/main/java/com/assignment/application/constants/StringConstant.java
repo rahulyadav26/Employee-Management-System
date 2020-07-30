@@ -1,4 +1,4 @@
-package com.assignment.application.Constants;
+package com.assignment.application.constants;
 
 import org.springframework.stereotype.Component;
 

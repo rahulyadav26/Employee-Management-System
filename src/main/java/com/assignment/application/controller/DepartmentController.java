@@ -1,6 +1,6 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.entity.Department;
 import com.assignment.application.service.interfaces.DepartmentServiceI;

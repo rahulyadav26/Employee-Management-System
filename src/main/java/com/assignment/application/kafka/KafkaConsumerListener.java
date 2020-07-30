@@ -1,6 +1,6 @@
 package com.assignment.application.kafka;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.KafkaEmployee;
@@ -9,8 +9,10 @@ import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.service.CachingInfo;
+import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,6 +32,16 @@ public class KafkaConsumerListener {
 
     @Autowired
     private CachingInfo cachingInfo;
+
+    @Autowired
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
+    public final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
+
+    @Autowired
+    private KafkaTemplate<String, Salary> kafkaTemplateSalary;
+
+    public final String SALARY_UPDATE_TOPIC = "SalaryUpdate";
 
 
     @KafkaListener(topics = "employeeAddition", groupId = "employee",
@@ -58,6 +70,7 @@ public class KafkaConsumerListener {
             }
             cachingInfo.addEmployee(employee);
             salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
+            kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
             return StringConstant.INFORMATION_SAVED_SUCCESSFULLY;
         }
         Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
@@ -72,6 +85,7 @@ public class KafkaConsumerListener {
             List<Salary> list = new ArrayList<>();
             list.add(salary);
             cachingInfo.updateSalary(list, company.getId());
+            kafkaTemplateSalary.send(SALARY_UPDATE_TOPIC,salary);
         }
         catch (Exception e){
 

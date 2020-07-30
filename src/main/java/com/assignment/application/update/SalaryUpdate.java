@@ -3,8 +3,10 @@ package com.assignment.application.update;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SalaryUpdate {
+public class SalaryUpdate implements Serializable {
 
     @JsonProperty(value = "type")
     String type;

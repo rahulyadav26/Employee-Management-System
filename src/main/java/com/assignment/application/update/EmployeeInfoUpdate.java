@@ -4,8 +4,10 @@ import com.assignment.application.exception.EmptyUpdateException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EmployeeInfoUpdate {
+public class EmployeeInfoUpdate implements Serializable {
 
     @JsonProperty(value="current_address")
     private String currentAddress;
@@ -61,4 +63,5 @@ public class EmployeeInfoUpdate {
         this.position = position;
         this.phoneNumber = phoneNumber;
     }
+
 }

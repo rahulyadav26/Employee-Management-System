@@ -1,6 +1,6 @@
 package com.assignment.application.test.unit;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
@@ -15,6 +15,7 @@ import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.service.CachingInfo;
 import com.assignment.application.service.SalaryServiceImpl;
+import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,13 +23,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -305,6 +307,91 @@ public class SalaryServiceTest {
         verify(salaryRepo).salaryListCompDept(companyId,department.getId());
         verify(departmentRepo).getDeptByCompId(companyId,department.getName().toUpperCase());
         verify(cachingInfo).updateSalary(salaryList,companyId);
+    }
+
+    @Test(expected = NotExistsException.class)
+    public void test_CompanyNotExists_UpdateSalaryOfEmployee_fails(){
+        //company not exist
+        final Long companyId = new Long(11L);
+        final String employeeId = new String("google_3");
+        SalaryEmployeeUpdate salary = new SalaryEmployeeUpdate(1223d);
+        //action
+        salaryService.updateSalaryOfEmployee(companyId,employeeId,salary);
+    }
+
+    @Test(expected = NotExistsException.class)
+    public void test_DepartmentNotExists_UpdateSalaryOfEmployee_fails(){
+        //department not exist
+        final Long companyId = new Long(11L);
+        final String employeeId = new String("google_3");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        SalaryEmployeeUpdate salary = new SalaryEmployeeUpdate(1223d);
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        //action
+        salaryService.updateSalaryOfEmployee(companyId,employeeId,salary);
+    }
+
+    @Test(expected = InsufficientInformationException.class)
+    public void test_SalaryEmployeeUpdate_UpdateSalaryOfEmployee_fails(){
+        //salary employee update is null
+        final Long companyId = new Long(11L);
+        final String employeeId = new String("google_3");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        SalaryEmployeeUpdate salary = null;
+        Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        when(employeeRepo.getEmployee(anyString())).thenReturn(employee);
+        //action
+        salaryService.updateSalaryOfEmployee(companyId,employeeId,salary);
+    }
+
+    @Test(expected = DataMismatchException.class)
+    public void test_CompanyIdMismatch_UpdateSalaryOfEmployee_fails(){
+        //company id mismatch
+        final Long companyId = new Long(10L);
+        final String employeeId = new String("google_3");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        SalaryEmployeeUpdate salary = new SalaryEmployeeUpdate(1223d);
+        Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        when(employeeRepo.getEmployee(anyString())).thenReturn(employee);
+        //action
+        salaryService.updateSalaryOfEmployee(companyId,employeeId,salary);
+    }
+
+    @Test(expected = NotExistsException.class)
+    public void test_employeeSalaryNotPresent_UpdateSalaryOfEmployee_fails(){
+        //employee salary not present in database
+        final Long companyId = new Long(11L);
+        final String employeeId = new String("google_3");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        SalaryEmployeeUpdate salary = new SalaryEmployeeUpdate(1223d);
+        Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3");
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        when(employeeRepo.getEmployee(anyString())).thenReturn(employee);
+        //action
+        salaryService.updateSalaryOfEmployee(companyId,employeeId,salary);
+    }
+
+    @Test
+    public void test_UpdateSalaryOfEmployee_Success(){
+        //assumption
+        final Long companyId = new Long(11L);
+        final String employeeId = new String("google_3");
+        Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
+        SalaryEmployeeUpdate salaryEmployeeUpdate = new SalaryEmployeeUpdate(1223d);
+        Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3");
+        Salary salary = new Salary("google_3",100000d,"12343234323444",11L,1L);
+        when(companyRepo.findById(anyLong())).thenReturn(Optional.of(company));
+        when(employeeRepo.getEmployee(anyString())).thenReturn(employee);
+        when(salaryRepo.getSalaryById(anyString())).thenReturn(salary);
+        //action
+        String actualResult = salaryService.updateSalaryOfEmployee(companyId,employeeId,salaryEmployeeUpdate);
+        //result
+        Assert.assertEquals(StringConstant.UPDATE_SUCCESSFUL,actualResult);
+        verify(companyRepo).findById(anyLong());
+        verify(employeeRepo).getEmployee(anyString());
+        verify(salaryRepo).getSalaryById(anyString());
     }
 
 }

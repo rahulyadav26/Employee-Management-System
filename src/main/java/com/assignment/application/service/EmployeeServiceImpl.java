@@ -1,6 +1,6 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.DataMismatchException;
@@ -102,7 +102,9 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
             throw new DataMismatchException("Company Id not valid for the given employee");
         }
         employeeRepo.delete(employee);
+        String[] str = employeeId.split("_");
         redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED + employeeId);
+        redisService.findAndDelete(StringConstant.ACCESS_TOKEN_REGEX + str[1],Long.toString(companyId));
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }

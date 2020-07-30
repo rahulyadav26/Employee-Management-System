@@ -1,7 +1,7 @@
 package com.assignment.application.test.unit;
 
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.entity.Employee;
@@ -10,15 +10,12 @@ import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.CachingInfo;
 import com.assignment.application.service.CompanyServiceImpl;
-import com.assignment.application.service.RedisService;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;

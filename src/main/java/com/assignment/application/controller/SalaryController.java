@@ -1,9 +1,10 @@
 package com.assignment.application.controller;
 
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.constants.StringConstant;
 import com.assignment.application.authenticator.VerifyUser;
 import com.assignment.application.entity.Salary;
+import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.service.interfaces.SalaryServiceI;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,16 @@ public class SalaryController {
                                                @RequestHeader("access_token") String token) {
         verifyUser.authorizeUser(token, companyId + "/salary-update", "patch");
         salaryServiceI.updateSalary(companyId, salaryUpdate);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
+    }
+
+    @PatchMapping(value = "{comp_id}/{emp_id}/update-salary")
+    public ResponseEntity<String> updateSalaryOfEmployee(@PathVariable("comp_id") Long companyId,
+                                                         @PathVariable("emp_id") String employeeId,
+                                               @RequestBody SalaryEmployeeUpdate salaryEmployeeUpdate,
+                                               @RequestHeader("access_token") String token) {
+        verifyUser.authorizeUser(token, companyId +"/" +employeeId + "/update-salary", "patch");
+        salaryServiceI.updateSalaryOfEmployee(companyId,employeeId, salaryEmployeeUpdate);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 }
