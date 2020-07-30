@@ -1,7 +1,7 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.authenticator.VerifyUser;
+import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -20,7 +20,7 @@ public class EmployeeController {
 
 
     @Autowired
-    private VerifyUser verifyUser;
+    private VerifyUsers verifyUsers;
 
     public final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
 
@@ -28,7 +28,7 @@ public class EmployeeController {
     public ResponseEntity<Employee> addEmployee(@PathVariable("company_id") Long companyId,
                                                 @RequestBody Employee employee,
                                                 @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, companyId + "/employee", "post");
+        verifyUsers.authorizeUser(token, companyId + "/employee", "post");
         Employee employeeToBeAdded = employeeServiceI.addEmployee(companyId, employee);
         return new ResponseEntity<>(employeeToBeAdded, HttpStatus.OK);
 
@@ -37,7 +37,7 @@ public class EmployeeController {
     @GetMapping(value = "{company_id}/employee")
     public ResponseEntity<List<Employee>> getEmployeesOfComp(@PathVariable("company_id") Long companyId,
                                                              @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, companyId + "/employee", "get");
+        verifyUsers.authorizeUser(token, companyId + "/employee", "get");
         List<Employee> employeeList = employeeServiceI.getEmployeesOfComp(companyId);
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
 
@@ -45,7 +45,7 @@ public class EmployeeController {
 
     @GetMapping(value = "/employee")
     public ResponseEntity<List<Employee>> getEmployees(@RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, "employee", "get");
+        verifyUsers.authorizeUser(token, "employee", "get");
         List<Employee> employeeList = employeeServiceI.getEmployees();
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
 
@@ -56,7 +56,7 @@ public class EmployeeController {
                                                      @PathVariable("company_id") Long companyId,
                                                      @RequestBody EmployeeInfoUpdate employeeInfoUpdate,
                                                      @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, companyId + "/" + employeeId + "/update-employee-info", "patch");
+        verifyUsers.authorizeUser(token, companyId + "/" + employeeId + "/update-employee-info", "patch");
         employeeServiceI.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class EmployeeController {
     public ResponseEntity<String> deleteEmployee(@PathVariable("company_id") Long companyId,
                                                  @PathVariable("emp_id") String empId,
                                                  @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, companyId + "/" + empId, "delete");
+        verifyUsers.authorizeUser(token, companyId + "/" + empId, "delete");
         employeeServiceI.deleteEmployee(companyId, empId);
         return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }

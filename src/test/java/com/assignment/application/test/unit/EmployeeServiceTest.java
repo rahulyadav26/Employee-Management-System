@@ -130,7 +130,7 @@ public class EmployeeServiceTest {
         //company not exist
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"goole_3,");
-        EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","","1234567890");
+        EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","1234567890");
         //action
         employeeService.updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate);
     }
@@ -152,7 +152,7 @@ public class EmployeeServiceTest {
         //assumption
         final Long companyId = new Long(11L);
         Employee employee = new Employee("Sundar Pichai","1/1/1995","California","California","12334567770","CEO",1L,1L,11L,"google_3,");
-        EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","","1234567890");
+        EmployeeInfoUpdate employeeInfoUpdate = new EmployeeInfoUpdate("Califonia","","1234567890");
         Company company = new Company(companyId,"Google", "Technology","California", "Bill Gates");
         when(companyRepo.findById(companyId)).thenReturn(Optional.of(company));
         when(cachingInfo.updateEmployeeInfo(employee.getEmployeeId(),companyId,employeeInfoUpdate)).thenReturn(StringConstant.UPDATE_SUCCESSFUL);

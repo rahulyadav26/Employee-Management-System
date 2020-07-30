@@ -1,9 +1,10 @@
 package com.assignment.application.test.unit;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.authenticator.VerifyUser;
+import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.entity.Company;
-import com.assignment.application.exception.UnauthorisedAccessException;
+import com.assignment.application.exception.AuthenticationException;
+import com.assignment.application.exception.UnauthorisedException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.RedisService;
@@ -19,10 +20,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VerifyUserTest {
+public class VerifyUsersTest {
 
     @InjectMocks
-    private VerifyUser verifyUser;
+    private VerifyUsers verifyUsers;
 
     @Mock
     private EmployeeRepo employeeRepo;
@@ -40,13 +41,13 @@ public class VerifyUserTest {
         String cachedInfo = "roles: superadmin";
         when(redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token)).thenReturn(cachedInfo);
         //action
-        int actualResult = verifyUser.authorizeUser(token,"/company","post");
+        int actualResult = verifyUsers.authorizeUser(token,"/company","post");
         //result
         Assert.assertEquals(1,actualResult);
         verify(redisService).getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token);
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = UnauthorisedException.class)
     public void test_employeeUrlNotAuthorized_AuthorizeUser_fails(){
         //url employee can't access
         String token = "2-f2345650-ec3b-4d2e-96fd-6e34dca77df7-9";
@@ -56,13 +57,13 @@ public class VerifyUserTest {
         when(redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token)).thenReturn(cachedInfo);
         String url = "/company/9/complete-info";
         //action
-        int actualResult = verifyUser.authorizeUser(token,url,"post");
+        int actualResult = verifyUsers.authorizeUser(token,url,"post");
         //result
         verify(redisService).getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token);
         verify(companyRepo).findById(anyLong());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = UnauthorisedException.class)
     public void test_EmployeeIdNotMatcheswithToken_AuthorizeUser_fails(){
         //employee Id not matches with token
         String token = "9-f2345650-ec3b-4d2e-96fd-6e34dca77df7-9";
@@ -72,13 +73,13 @@ public class VerifyUserTest {
         when(redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token)).thenReturn(cachedInfo);
         String url = "/9/google_1/salary";
         //action
-        int actualResult = verifyUser.authorizeUser(token,url,"post");
+        int actualResult = verifyUsers.authorizeUser(token,url,"post");
         //result
         verify(redisService).getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token);
         verify(companyRepo).findById(anyLong());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = UnauthorisedException.class)
     public void test_CompanyIdNotMatcheswithToken_AuthorizeUser_fails(){
         //employee Id not matches with token
         String token = "2-f2345650-ec3b-4d2e-96fd-6e34dca77df7-2";
@@ -88,7 +89,7 @@ public class VerifyUserTest {
         when(redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token)).thenReturn(cachedInfo);
         String url = "/9/google_2/salary";
         //action
-        int actualResult = verifyUser.authorizeUser(token,url,"post");
+        int actualResult = verifyUsers.authorizeUser(token,url,"post");
         //result
         verify(redisService).getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token);
         verify(companyRepo).findById(anyLong());
@@ -104,7 +105,7 @@ public class VerifyUserTest {
         when(redisService.getKeyValue(anyString())).thenReturn(cachedInfo);
         String url = "9/google_2/salary";
         //action
-        int actualResult = verifyUser.authorizeUser(token,url,"get");
+        int actualResult = verifyUsers.authorizeUser(token,url,"get");
         //result
         Assert.assertEquals(1,actualResult);
         verify(redisService).getKeyValue(StringConstant.ACCESS_TOKEN_REGEX+token);

@@ -1,11 +1,12 @@
 package com.assignment.application.kafka;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.entity.Company;
-import com.assignment.application.entity.Employee;
-import com.assignment.application.entity.KafkaEmployee;
-import com.assignment.application.entity.Salary;
+import com.assignment.application.entity.*;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.InsufficientInformationException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.service.CachingInfo;
@@ -31,6 +32,9 @@ public class KafkaConsumerListener {
     private CompanyRepo companyRepo;
 
     @Autowired
+    private DepartmentRepo departmentRepo;
+
+    @Autowired
     private CachingInfo cachingInfo;
 
     @Autowired
@@ -47,9 +51,20 @@ public class KafkaConsumerListener {
     @KafkaListener(topics = "employeeAddition", groupId = "employee",
             containerFactory = "concurrentKafkaListenerContainerFactory")
     public String consumerEmployeeInfo(KafkaEmployee kafkaEmployee) {
-        Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
-        if(kafkaEmployee==null){
+        if (kafkaEmployee == null) {
             return StringConstant.INVALID_CREDENTIALS;
+        }
+        Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
+        Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
+        Department department = departmentRepo.findById(kafkaEmployee.getDepartmentId()).orElse(null);
+        if (company == null || department==null) {
+            throw new NotExistsException("No such company exists");
+        }
+        if(!department.getCompanyId().equals(company.getId())){
+            throw new DataMismatchException("Company Id not valid for the department");
+        }
+        if(kafkaEmployee.getEmployeeId().isEmpty()){
+            throw new  InsufficientInformationException("Employee id is missing");
         }
         if (employee == null) {
             employee = new Employee();
@@ -64,33 +79,19 @@ public class KafkaConsumerListener {
             employee.setEmployeeId(kafkaEmployee.getEmployeeId());
             employee.setProjectId(kafkaEmployee.getProjectId());
             employee.setDob(kafkaEmployee.getDob());
-            Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
-            if (company == null) {
-                return StringConstant.INVALID_CREDENTIALS;
-            }
             cachingInfo.addEmployee(employee);
             salaryRepo.save(new Salary(kafkaEmployee.getEmployeeId(), kafkaEmployee.getSalary(), kafkaEmployee.getAccNo(), kafkaEmployee.getCompanyId(), kafkaEmployee.getDepartmentId()));
             kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
             return StringConstant.INFORMATION_SAVED_SUCCESSFULLY;
         }
-        Company company = companyRepo.findById(kafkaEmployee.getCompanyId()).orElse(null);
-        if (company == null) {
-            return StringConstant.INVALID_CREDENTIALS;
-        }
-        try {
-            Salary salary;
-            salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
-            salaryRepo.deleteById(salary.getId());
-            salary.setSalary(kafkaEmployee.getSalary());
-            List<Salary> list = new ArrayList<>();
-            list.add(salary);
-            cachingInfo.updateSalary(list, company.getId());
-            kafkaTemplateSalary.send(SALARY_UPDATE_TOPIC,salary);
-        }
-        catch (Exception e){
-
-        }
-
+        Salary salary;
+        salary = salaryRepo.getSalaryById(kafkaEmployee.getEmployeeId());
+        salaryRepo.deleteById(salary.getId());
+        salary.setSalary(kafkaEmployee.getSalary());
+        List<Salary> list = new ArrayList<>();
+        list.add(salary);
+        cachingInfo.updateSalary(list, company.getId());
+        kafkaTemplateSalary.send(SALARY_UPDATE_TOPIC, salary);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 

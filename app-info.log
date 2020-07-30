@@ -1,21 +1,21 @@
-[INFO ] 2020-07-30 13:17:13.433 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 13:17:18.411 [main] TaskAppApplication - Started TaskAppApplication in 5.411 seconds (JVM running for 6.727)
-[INFO ] 2020-07-30 13:21:25.357 [http-nio-8081-exec-1] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 13:21:25.358 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:51:25.326+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
-[INFO ] 2020-07-30 13:22:05.687 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5723 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 13:22:05.698 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 13:22:11.037 [main] TaskAppApplication - Started TaskAppApplication in 5.781 seconds (JVM running for 6.688)
-[INFO ] 2020-07-30 13:29:52.375 [http-nio-8081-exec-1] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 13:29:52.376 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:59:52.320+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
-[INFO ] 2020-07-30 13:30:12.292 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5826 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 13:30:12.301 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 13:30:17.048 [main] TaskAppApplication - Started TaskAppApplication in 5.226 seconds (JVM running for 6.213)
-[INFO ] 2020-07-30 13:32:00.712 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_2 is 55332 ms
-[INFO ] 2020-07-30 13:32:00.715 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 13:32:00.715 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful
-[INFO ] 2020-07-30 13:32:40.492 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5857 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 13:32:40.500 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 13:32:44.460 [main] TaskAppApplication - Started TaskAppApplication in 4.352 seconds (JVM running for 5.412)
-[INFO ] 2020-07-30 13:33:14.383 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_3 is 168 ms
-[INFO ] 2020-07-30 13:33:14.386 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 13:33:14.387 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful
+[INFO ] 2020-07-30 22:20:07.509 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//155/apple_11/salary is 7793 ms
+[INFO ] 2020-07-30 22:20:07.539 [http-nio-8081-exec-2] ResponseLogging - Request Body {
+    "employeeId":"apple_11",
+    "salary":123454004,
+    "accountNo":"1234564327",
+    "companyId":155,
+    "departmentId":156
+}
+[INFO ] 2020-07-30 22:20:07.539 [http-nio-8081-exec-2] ResponseLogging - Response Body {"id":200,"employeeId":"apple_11","salary":1.23454004E8,"accountNo":"1234564327","companyId":155,"departmentId":156}
+[INFO ] 2020-07-30 22:20:25.336 [http-nio-8081-exec-3] AuthInterceptor - total time for request http://localhost:8081//salary is 3905 ms
+[INFO ] 2020-07-30 22:20:25.337 [http-nio-8081-exec-3] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 22:20:25.337 [http-nio-8081-exec-3] ResponseLogging - Response Body [{"id":1,"employeeId":"oyo_1","salary":1030000.0,"accountNo":"235676543234567","companyId":2,"departmentId":6},{"id":195,"employeeId":"google_3","salary":100000.0,"accountNo":"12343234323444","companyId":9,"departmentId":132},{"id":197,"employeeId":"google_2","salary":1.12000454E8,"accountNo":"3456432123456432","companyId":9,"departmentId":132},{"id":167,"employeeId":"apple_5","salary":1.26123194804E7,"accountNo":"123456432134567","companyId":155,"departmentId":157},{"id":165,"employeeId":"apple_10","salary":12500.0,"accountNo":"123456432134567","companyId":155,"departmentId":156},{"id":166,"employeeId":"apple_3","salary":1.248754404E7,"accountNo":"123456432134567","companyId":155,"departmentId":158},{"id":169,"employeeId":"apple_2","salary":1.248754404E7,"accountNo":"123456432134567","companyId":155,"departmentId":156},{"id":200,"employeeId":"apple_11","salary":1.23454004E8,"accountNo":"1234564327","companyId":155,"departmentId":156},{"id":5,"employeeId":"oyo_3","salary":1516680.55,"accountNo":"2345643245643","companyId":2,"departmentId":4},{"id":4,"employeeId":"oyo_4","salary":1000.0,"accountNo":"235676543234567","companyId":2,"departmentId":5},{"id":3,"employeeId":"microsoft_3","salary":1000000.0,"accountNo":"235676543234567","companyId":1,"departmentId":5}]
+[INFO ] 2020-07-30 22:20:48.783 [http-nio-8081-exec-4] ResponseLogging - Request Body {
+    "value":2500
+}
+[INFO ] 2020-07-30 22:20:48.783 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-30T16:50:48.773+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"No such employee exists in company","path":""}
+[INFO ] 2020-07-30 22:21:07.683 [http-nio-8081-exec-5] AuthInterceptor - total time for request http://localhost:8081//155/apple_10/update-salary is 3812 ms
+[INFO ] 2020-07-30 22:21:07.685 [http-nio-8081-exec-5] ResponseLogging - Request Body {
+    "value":2500
+}
+[INFO ] 2020-07-30 22:21:07.685 [http-nio-8081-exec-5] ResponseLogging - Response Body Update Successful

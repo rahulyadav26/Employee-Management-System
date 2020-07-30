@@ -53,7 +53,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
         if (!salary.getEmployeeId().equals(employeeID) || !salary.getCompanyId().equals(companyID) ||
-                !salary.getDepartmentId().equals(employee.getDepartmentId())) {
+                !salary.getDepartmentId().equals(employee.getDepartmentId()) || !employee.getCompanyId().equals(companyID)) {
             throw new DataMismatchException("Either the company id or employee id doesn't matches with the request");
         }
         if(salaryRepo.getSalaryById(employeeID)!=null){
@@ -68,6 +68,9 @@ public class SalaryServiceImpl implements SalaryServiceI {
         Salary salary = salaryRepo.getSalaryById(employeeId);
         if (salary == null || company==null) {
             throw new NotExistsException("Either the company or salary of employee is not present");
+        }
+        if(!salary.getCompanyId().equals(companyId)){
+            throw new DataMismatchException("Company Id not valid for this employee");
         }
         return salary;
     }

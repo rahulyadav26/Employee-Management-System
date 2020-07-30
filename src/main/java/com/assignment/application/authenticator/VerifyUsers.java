@@ -2,7 +2,8 @@ package com.assignment.application.authenticator;
 
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.exception.UnauthorisedAccessException;
+import com.assignment.application.exception.AuthenticationException;
+import com.assignment.application.exception.UnauthorisedException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.RedisService;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VerifyUser {
+public class VerifyUsers {
 
     @Autowired
     private EmployeeRepo employeeRepo;
@@ -34,9 +35,9 @@ public class VerifyUser {
                 if(urlSplit[1].equalsIgnoreCase(employeeId) && info[info.length-1].equals(urlSplit[0])){
                     return 1;
                 }
-                throw new UnauthorisedAccessException("Not allowed to access");
+                throw new UnauthorisedException("Not allowed to access");
             }
-            throw new UnauthorisedAccessException("Not allowed to access");
+            throw new UnauthorisedException("Not allowed to access");
         }
         return 1;
     }

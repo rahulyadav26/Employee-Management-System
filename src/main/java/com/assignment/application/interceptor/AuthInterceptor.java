@@ -3,11 +3,10 @@ package com.assignment.application.interceptor;
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.NotExistsException;
-import com.assignment.application.exception.UnauthorisedAccessException;
+import com.assignment.application.exception.AuthenticationException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.RedisService;
-import com.sun.xml.internal.ws.wsdl.DispatchException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             String userName = request.getHeader("username");
             String password = request.getHeader("password");
             if (userName == null || password == null) {
-                throw new UnauthorisedAccessException("Username and password not found");
+                throw new AuthenticationException("Username and password not found");
             }
             String decodedPassword = new String(Base64.getDecoder().decode(password));
             if (userName.equalsIgnoreCase("superadmin")) {
@@ -55,9 +54,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     if (checkIfExist == null) {
                         return true;
                     }
-                    throw new UnauthorisedAccessException("User already verified");
+                    throw new AuthenticationException("User already verified");
                 }
-                throw new UnauthorisedAccessException("Password is incorrect");
+                throw new AuthenticationException("Password is incorrect");
             }
             Employee employee = employeeRepo.getEmployee(userName);
             if (employee == null) {
@@ -69,15 +68,15 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                     companyId != 0 && employee.getCompanyId().equals(companyId)) {
                 return true;
             }
-            throw new UnauthorisedAccessException("Invalid url or login credentials");
+            throw new AuthenticationException("Invalid url or login credentials");
         }
         String accessToken = request.getHeader("access_token");
         if (accessToken == null) {
-            throw new UnauthorisedAccessException("No access token found");
+            throw new AuthenticationException("No access token found");
         }
         String cachedToken = redisService.getKeyValue(StringConstant.ACCESS_TOKEN_REGEX + accessToken);
         if (cachedToken == null) {
-            throw new UnauthorisedAccessException("Not a verified user");
+            throw new AuthenticationException("Not a verified user");
         }
         return true;
     }

@@ -12,10 +12,10 @@ import java.util.Date;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UnauthorisedAccessException.class)
-    public ResponseEntity<?> unauthorizedAccessException(UnauthorisedAccessException exception, WebRequest request){
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> authenticationException(AuthenticationException exception, WebRequest request){
         ErrorDetails errorDetails = new ErrorDetails(new Date(), HttpStatus.UNAUTHORIZED.toString(),
-                "Unauthorized Access",exception.getMessage(),request.getContextPath());
+                "User not authenticated",exception.getMessage(),request.getContextPath());
         return new ResponseEntity<>(errorDetails,HttpStatus.UNAUTHORIZED);
     }
 
@@ -58,6 +58,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> dataMisMatchException(DataMismatchException exception,WebRequest request){
         ErrorDetails errorDetails = new ErrorDetails(new Date(),HttpStatus.CONFLICT.toString(),
                 "Not valid data sent in request",exception.getMessage(),request.getContextPath());
+        return new ResponseEntity<>(errorDetails,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UnauthorisedException.class)
+    public ResponseEntity<?> unauthorisedException(UnauthorisedException exception,WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(),HttpStatus.FORBIDDEN.toString(),
+                "User not authorised",exception.getMessage(),request.getContextPath());
         return new ResponseEntity<>(errorDetails,HttpStatus.CONFLICT);
     }
 

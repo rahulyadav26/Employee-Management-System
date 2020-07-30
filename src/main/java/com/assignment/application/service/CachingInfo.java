@@ -57,9 +57,6 @@ public class CachingInfo {
         if (!employeeInfoUpdate.getPermanentAddress().isEmpty()) {
             employee.setPermanentAdd(employeeInfoUpdate.getPermanentAddress());
         }
-        if (!employeeInfoUpdate.getPosition().isEmpty()) {
-            employee.setPosition(employeeInfoUpdate.getPosition());
-        }
         if (!employeeInfoUpdate.getPhoneNumber().isEmpty()) {
             employee.setPhoneNumber(employeeInfoUpdate.getPhoneNumber());
         }

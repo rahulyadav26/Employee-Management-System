@@ -1,7 +1,7 @@
 package com.assignment.application.controller;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.authenticator.VerifyUser;
+import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.service.interfaces.CompanyServiceI;
@@ -22,14 +22,14 @@ public class CompanyController {
     private CompanyServiceI companyServiceI;
 
     @Autowired
-    private VerifyUser verifyUser;
+    private VerifyUsers verifyUsers;
 
 
     @PostMapping(value = "")
     public ResponseEntity<Company> addCompany(@RequestBody Company company,
                                               @RequestHeader("access_token") String token) {
 
-        verifyUser.authorizeUser(token, "company", "post");
+        verifyUsers.authorizeUser(token, "company", "post");
         Company companyToBeAdded = companyServiceI.createNewCompany(company);
         return new ResponseEntity<>(companyToBeAdded, HttpStatus.OK);
 
@@ -37,7 +37,7 @@ public class CompanyController {
 
     @GetMapping(value = "")
     public ResponseEntity<List<Company>> getCompanyList(@RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, "company", "get");
+        verifyUsers.authorizeUser(token, "company", "get");
         return new ResponseEntity<>(companyServiceI.getCompanyList(), HttpStatus.OK);
     }
 
@@ -45,7 +45,7 @@ public class CompanyController {
     @GetMapping(value = "/{comp_id}/complete-info")
     public ResponseEntity<List<CompleteCompInfo>> getCompleteCompInfo(@PathVariable("comp_id") Long companyId,
                                                                       @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, "company/" + companyId + "/complete-info", "get");
+        verifyUsers.authorizeUser(token, "company/" + companyId + "/complete-info", "get");
         List<CompleteCompInfo> objectList = companyServiceI.getCompleteCompInfo(companyId);
         return new ResponseEntity<>(objectList, HttpStatus.OK);
     }
@@ -54,7 +54,7 @@ public class CompanyController {
     public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") Long id,
                                                     @RequestBody CompanyInfoUpdate companyInfoUpdate,
                                                     @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, "company/" + id + "/company-update", "patch");
+        verifyUsers.authorizeUser(token, "company/" + id + "/company-update", "patch");
         companyServiceI.updateCompanyInfo(id,companyInfoUpdate);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class CompanyController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id,
                                                 @RequestHeader("access_token") String token) {
-        verifyUser.authorizeUser(token, "company/" + id, "delete");
+        verifyUsers.authorizeUser(token, "company/" + id, "delete");
         companyServiceI.deleteCompany(id);
         return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }

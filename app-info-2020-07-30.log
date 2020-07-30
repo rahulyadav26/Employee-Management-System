@@ -1,44 +1,49 @@
-[INFO ] 2020-07-30 12:04:32.288 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 12:04:32.299 [http-nio-8081-exec-2] ResponseLogging - Response Body User Verified successfully
-[INFO ] 2020-07-30 12:04:44.436 [http-nio-8081-exec-3] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 12:04:44.436 [http-nio-8081-exec-3] ResponseLogging - Response Body {"date":"2020-07-30T06:34:44.398+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Invalid url or login credentials","path":""}
-[INFO ] 2020-07-30 12:05:27.371 [http-nio-8081-exec-4] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 12:05:27.371 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-30T06:35:27.369+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Not a verified user","path":""}
-[INFO ] 2020-07-30 12:05:38.769 [http-nio-8081-exec-5] AuthInterceptor - total time for request http://localhost:8081//155/apple_10/update-employee-info is 1879 ms
-[INFO ] 2020-07-30 12:05:38.769 [http-nio-8081-exec-5] ResponseLogging - Request Body {
+[INFO ] 2020-07-30 22:15:09.529 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 11669 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 22:15:09.547 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 22:15:13.790 [main] TaskAppApplication - Started TaskAppApplication in 4.648 seconds (JVM running for 5.654)
+[INFO ] 2020-07-30 22:15:16.373 [http-nio-8081-exec-2] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 22:15:16.373 [http-nio-8081-exec-2] ResponseLogging - Response Body {"date":"2020-07-30T16:45:16.322+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Company Id not valid for the given employee","path":""}
+[INFO ] 2020-07-30 22:15:29.820 [http-nio-8081-exec-3] ResponseLogging - Request Body {
     "permanent_address":"Lucknow",
     "current_address":"Lucknow",
-    "phone_number":"",
-    "position":""
+    "phone_number":""
 }
-[INFO ] 2020-07-30 12:05:38.770 [http-nio-8081-exec-5] ResponseLogging - Response Body Update Successful
-[INFO ] 2020-07-30 12:06:55.109 [http-nio-8081-exec-8] AuthInterceptor - total time for request http://localhost:8081//company/155/signUp is 3057 ms
-[INFO ] 2020-07-30 12:06:55.110 [http-nio-8081-exec-8] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 12:06:55.111 [http-nio-8081-exec-8] ResponseLogging - Response Body User Verified successfully
-[INFO ] 2020-07-30 12:07:34.734 [http-nio-8081-exec-9] ResponseLogging - Request Body {
+[INFO ] 2020-07-30 22:15:29.821 [http-nio-8081-exec-3] ResponseLogging - Response Body {"date":"2020-07-30T16:45:29.819+00:00","status":"403 FORBIDDEN","error":"User not authorised","message":"Not allowed to access","path":""}
+[INFO ] 2020-07-30 22:15:51.398 [http-nio-8081-exec-4] ResponseLogging - Request Body {
     "permanent_address":"Lucknow",
     "current_address":"Lucknow",
-    "phone_number":"",
-    "position":""
+    "phone_number":""
 }
-[INFO ] 2020-07-30 12:07:34.734 [http-nio-8081-exec-9] ResponseLogging - Response Body {"date":"2020-07-30T06:37:34.730+00:00","status":"401 UNAUTHORIZED","error":"Unauthorized Access","message":"Not allowed to access","path":""}
-[INFO ] 2020-07-30 12:11:33.958 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5033 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 12:11:33.969 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 12:11:38.414 [main] TaskAppApplication - Started TaskAppApplication in 4.854 seconds (JVM running for 5.892)
-[INFO ] 2020-07-30 12:19:17.518 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5105 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 12:19:17.534 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 12:19:22.226 [main] TaskAppApplication - Started TaskAppApplication in 5.185 seconds (JVM running for 6.106)
-[INFO ] 2020-07-30 12:41:14.184 [main] CompanyControllerTest - Starting CompanyControllerTest on Vasu-Naman-Verma.local with PID 5328 (started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 12:41:14.192 [main] CompanyControllerTest - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 12:41:18.785 [main] CompanyControllerTest - Started CompanyControllerTest in 4.798 seconds (JVM running for 6.436)
-[INFO ] 2020-07-30 12:41:19.174 [http-nio-auto-1-exec-1] ResponseLogging - Request Body {"id":null,"name":"Apple","industryType":"Technology","headOffice":"California","founder":"Steve Jobs"}
-[INFO ] 2020-07-30 12:41:19.174 [http-nio-auto-1-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:11:19.161+00:00","status":"422 UNPROCESSABLE_ENTITY","error":"Data Already Exists in Database","message":"Company Already Exists","path":""}
-[INFO ] 2020-07-30 12:44:48.682 [http-nio-8081-exec-2] AuthInterceptor - total time for request http://localhost:8081//9/google_2 is 190 ms
-[INFO ] 2020-07-30 12:44:48.684 [http-nio-8081-exec-2] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 12:44:48.685 [http-nio-8081-exec-2] ResponseLogging - Response Body Deletion Successful
-[INFO ] 2020-07-30 13:03:58.183 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5553 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
-[INFO ] 2020-07-30 13:03:58.195 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
-[INFO ] 2020-07-30 13:04:03.077 [main] TaskAppApplication - Started TaskAppApplication in 5.361 seconds (JVM running for 6.673)
-[INFO ] 2020-07-30 13:04:25.449 [http-nio-8081-exec-1] ResponseLogging - Request Body 
-[INFO ] 2020-07-30 13:04:25.449 [http-nio-8081-exec-1] ResponseLogging - Response Body {"date":"2020-07-30T07:34:25.427+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"No employee token found","path":""}
-[INFO ] 2020-07-30 13:17:13.425 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 5660 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 22:15:51.398 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-30T16:45:51.397+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Company Id is not valid for the given employee","path":""}
+[INFO ] 2020-07-30 22:16:05.360 [http-nio-8081-exec-5] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 22:16:05.361 [http-nio-8081-exec-5] ResponseLogging - Response Body {"date":"2020-07-30T16:46:05.359+00:00","status":"404 NOT_FOUND","error":"Not found in database","message":"Either the company or salary of employee is not present","path":""}
+[INFO ] 2020-07-30 22:16:44.691 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 11726 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 22:16:44.700 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 22:16:48.970 [main] TaskAppApplication - Started TaskAppApplication in 4.675 seconds (JVM running for 5.583)
+[INFO ] 2020-07-30 22:16:55.113 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 11739 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 22:16:55.121 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 22:17:01.402 [main] TaskAppApplication - Started TaskAppApplication in 6.806 seconds (JVM running for 8.019)
+[INFO ] 2020-07-30 22:17:07.446 [http-nio-8081-exec-1] AuthInterceptor - total time for request http://localhost:8081//155/apple_2/salary is 1937 ms
+[INFO ] 2020-07-30 22:17:07.449 [http-nio-8081-exec-1] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 22:17:07.449 [http-nio-8081-exec-1] ResponseLogging - Response Body {"id":169,"employeeId":"apple_2","salary":1.248754404E7,"accountNo":"123456432134567","companyId":155,"departmentId":156}
+[INFO ] 2020-07-30 22:17:22.184 [http-nio-8081-exec-3] ResponseLogging - Request Body 
+[INFO ] 2020-07-30 22:17:22.185 [http-nio-8081-exec-3] ResponseLogging - Response Body {"date":"2020-07-30T16:47:22.175+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Company Id not valid for this employee","path":""}
+[INFO ] 2020-07-30 22:17:52.988 [http-nio-8081-exec-4] ResponseLogging - Request Body {
+    "employeeId":"apple_11",
+    "salary":123454004,
+    "accountNo":"1234564327",
+    "companyId":155,
+    "departmentId":9
+}
+[INFO ] 2020-07-30 22:17:52.989 [http-nio-8081-exec-4] ResponseLogging - Response Body {"date":"2020-07-30T16:47:46.589+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Either the company id or employee id doesn't matches with the request","path":""}
+[INFO ] 2020-07-30 22:18:14.229 [http-nio-8081-exec-5] ResponseLogging - Request Body {
+    "employeeId":"apple_11",
+    "salary":123454004,
+    "accountNo":"1234564327",
+    "companyId":155,
+    "departmentId":158
+}
+[INFO ] 2020-07-30 22:18:14.230 [http-nio-8081-exec-5] ResponseLogging - Response Body {"date":"2020-07-30T16:48:14.227+00:00","status":"409 CONFLICT","error":"Not valid data sent in request","message":"Either the company id or employee id doesn't matches with the request","path":""}
+[INFO ] 2020-07-30 22:19:41.907 [main] TaskAppApplication - Starting TaskAppApplication on Vasu-Naman-Verma.local with PID 11775 (/Users/rahulkumar/TaskApp/target/classes started by rahulkumar in /Users/rahulkumar/TaskApp)
+[INFO ] 2020-07-30 22:19:41.915 [main] TaskAppApplication - No active profile set, falling back to default profiles: default
+[INFO ] 2020-07-30 22:19:49.830 [main] TaskAppApplication - Started TaskAppApplication in 8.405 seconds (JVM running for 9.344)

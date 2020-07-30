@@ -2,7 +2,7 @@ package com.assignment.application.test.unit;
 
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.NotExistsException;
-import com.assignment.application.exception.UnauthorisedAccessException;
+import com.assignment.application.exception.AuthenticationException;
 import com.assignment.application.interceptor.AuthInterceptor;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import sun.awt.UNIXToolkit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +70,7 @@ public class AuthInterceptorTest {
         verify(companyRepo).existsById(anyLong());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsNotPostTokenMissing_PreHandle_fails() throws Exception{
         //request is not of post type and access token doesn't exists in header
         HttpServletResponse response = new MockHttpServletResponse();
@@ -81,7 +80,7 @@ public class AuthInterceptorTest {
         authInterceptor.preHandle(request, response,handler);
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsNotPostTokenNotInCache_PreHandle_fails() throws Exception{
         //request is not of post type and access token doesn't exists in cache
         HttpServletResponse response = new MockHttpServletResponse();
@@ -91,7 +90,7 @@ public class AuthInterceptorTest {
         authInterceptor.preHandle(request, response,handler);
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsOfPostTokenNotInCache_PreHandle_Success() throws Exception{
         //request is of post type and access token not exists in cache
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -137,7 +136,7 @@ public class AuthInterceptorTest {
         verify(redisService).getKeyValue(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUp_PreHandle_fails() throws Exception{
         //request is of post type and url is of signup but headers are missing
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -152,7 +151,7 @@ public class AuthInterceptorTest {
         verify(authInterceptor).validateUrl(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpCompanyNotExist_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp but company not exists
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -165,7 +164,7 @@ public class AuthInterceptorTest {
         //result
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpUserIsSuperAdmin_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp and user is superadmin but password not matches
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -182,7 +181,7 @@ public class AuthInterceptorTest {
         verify(authInterceptor).validateUrl(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpUserIsSuperAdminPasswordCorrect_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp and user is superadmin and password matches. Admin token exists in cache
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -236,7 +235,7 @@ public class AuthInterceptorTest {
         verify(employeeRepo).getEmployee(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpUserIsEmployeeTokenExists_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp and user is employee and exists in db and token exists in cache
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -258,7 +257,7 @@ public class AuthInterceptorTest {
         verify(redisService).getKeyValue(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpUserIsEmployeeTokenNotExists_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp and user is employee and exists in db
         // and token not exists in cache. Password not matches
@@ -280,7 +279,7 @@ public class AuthInterceptorTest {
         verify(redisService).getKeyValue(anyString());
     }
 
-    @Test(expected = UnauthorisedAccessException.class)
+    @Test(expected = AuthenticationException.class)
     public void test_RequestIsPostUrlIsSignUpUserIsEmployeeTokenNotExistsCompanyIdNotMatches_PreHandle_fails() throws Exception{
         //request is of post type and url is of signUp and user is employee and exists in db
         // and token not exists in cache. Password matches but companyId not mached

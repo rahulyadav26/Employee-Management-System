@@ -2,12 +2,14 @@ package com.assignment.application.service;
 
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
+import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.DataMismatchException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.exception.InsufficientInformationException;
 import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeServiceI;
 import com.assignment.application.update.EmployeeInfoUpdate;
@@ -33,6 +35,9 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
     private RedisService redisService;
 
     @Autowired
+    private DepartmentRepo departmentRepo;
+
+    @Autowired
     private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
 
     @Autowired
@@ -52,6 +57,10 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         }
         if (!employee.getCompanyId().equals(companyId)) {
             throw new DataMismatchException("Company Id is not valid for the given employee");
+        }
+        Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
+        if(department==null || !department.getCompanyId().equals(companyId)){
+            throw new NotExistsException("Nosuch department exists for such company");
         }
         Employee employeeTemp = cachingInfo.addEmployee(employee);
         kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
