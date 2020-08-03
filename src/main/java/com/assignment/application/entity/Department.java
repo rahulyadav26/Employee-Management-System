@@ -2,37 +2,75 @@ package com.assignment.application.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="department")
+@Table(name = "department")
 public class Department implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
-    private String name;
-    @Column(name="comp_id")
+
+    @Column(name = "company_id")
     private Long companyId;
-    @Column(name="head")
+
+    @Column(name = "department_id")
+    private Long departmentId;
+
+    @Column(name = "head")
     private String head;
 
-    public Department(){
+    @Column(name = "created_at")
+    private Date createdAt;
 
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    @Column(name = "created_by")
+    private String createdBy = "0";
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "is_active")
+    private Long isActive = 1L;
+
+    @OneToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Company company;
+
+    @OneToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private DepartmentList departmentList;
+
+    public Department() {
     }
 
-    public Department(Long id, String name, Long companyId,String head) {
+    public Department(Long companyId, Long departmentId, String head, Date createdAt, Date updatedAt, String createdBy,
+                      String updatedBy, Long isActive) {
+        this.companyId = companyId;
+        this.departmentId = departmentId;
+        this.head = head;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+        this.isActive = isActive;
+    }
+
+    public Department(Long id, Long companyId, Long departmentId, String head, Date createdAt, Date updatedAt,
+                      String createdBy, String updatedBy, Long isActive) {
         this.id = id;
-        this.name = name;
         this.companyId = companyId;
+        this.departmentId = departmentId;
         this.head = head;
-    }
-
-    public Department(String name, Long companyId, String head) {
-        this.name = name;
-        this.companyId = companyId;
-        this.head = head;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -43,14 +81,6 @@ public class Department implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Long getCompanyId() {
         return companyId;
     }
@@ -59,11 +89,59 @@ public class Department implements Serializable {
         this.companyId = companyId;
     }
 
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
     public String getHead() {
         return head;
     }
 
     public void setHead(String head) {
         this.head = head;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Long getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Long isActive) {
+        this.isActive = isActive;
     }
 }

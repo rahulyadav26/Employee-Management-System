@@ -7,32 +7,37 @@ import java.io.Serializable;
 @Component
 public class CompleteCompInfo implements Serializable {
 
-
     private String employeeName;
+
     private String employeeId;
+
     private Long companyId;
+
     private String departmentName;
+
     private Long departmentId;
+
     private Double salary;
-    private Long projectId;
-    private String accountNo;
+
     private String currentAdd;
+
     private String permanentAdd;
+
     private String phoneNumber;
 
-    public CompleteCompInfo(){
+    public CompleteCompInfo() {
 
     }
 
-    public CompleteCompInfo(String employeeName, String employeeId, Long companyId, String departmentName, Long departmentId, Double salary, String accountNo,Long projectId,String phoneNumber,String currentAdd, String permanentAdd) {
+    public CompleteCompInfo(String employeeName, String employeeId, Long companyId, String departmentName,
+                            Long departmentId, Double salary, String phoneNumber, String currentAdd,
+                            String permanentAdd) {
         this.employeeName = employeeName;
         this.employeeId = employeeId;
         this.companyId = companyId;
         this.departmentName = departmentName;
         this.departmentId = departmentId;
         this.salary = salary;
-        this.projectId = projectId;
-        this.accountNo = accountNo;
         this.currentAdd = currentAdd;
         this.permanentAdd = permanentAdd;
         this.phoneNumber = phoneNumber;
@@ -84,22 +89,6 @@ public class CompleteCompInfo implements Serializable {
 
     public void setSalary(Double salary) {
         this.salary = salary;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
     }
 
     public String getCurrentAdd() {

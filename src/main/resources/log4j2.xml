@@ -6,13 +6,13 @@
                 <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
             <Policies>
-                <SizeBasedTriggeringPolicy size="5 KB" />
+                <SizeBasedTriggeringPolicy size="5 KB"/>
             </Policies>
         </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="com.assignment.application" level="info" additivity="true">
-            <appender-ref ref="fileLogger" level="info" />
+            <appender-ref ref="fileLogger" level="info"/>
         </Logger>
     </Loggers>
 </Configuration>

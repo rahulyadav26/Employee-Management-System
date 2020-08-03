@@ -40,78 +40,77 @@ public class KafkaConfig {
     @Autowired
     private StringConstant stringConstant;
 
-
     @Bean
-    public ProducerFactory<String,EmployeeInfoUpdate> producerFactoryEmpUpdate(){
-        Map<String,Object> map = new HashMap<>();
+    public ProducerFactory<String, EmployeeInfoUpdate> producerFactoryEmpUpdate() {
+        Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<String,EmployeeInfoUpdate>(map);
+        return new DefaultKafkaProducerFactory<String, EmployeeInfoUpdate>(map);
     }
 
     @Bean
-    public KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmpUpdate(){
+    public KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmpUpdate() {
         return new KafkaTemplate(producerFactoryEmpUpdate());
     }
 
     @Bean
-    public ProducerFactory<String, Employee> producerFactoryEmp(){
-        Map<String,Object> map = new HashMap<>();
+    public ProducerFactory<String, Employee> producerFactoryEmp() {
+        Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<String,Employee>(map);
+        return new DefaultKafkaProducerFactory<String, Employee>(map);
     }
 
     @Bean
-    public KafkaTemplate<String, Employee> kafkaTemplateEmp(){
+    public KafkaTemplate<String, Employee> kafkaTemplateEmp() {
         return new KafkaTemplate(producerFactoryEmp());
     }
 
     @Bean
-    public ProducerFactory<String, SalaryUpdate> producerFactoryEmpSalary(){
-        Map<String,Object> map = new HashMap<>();
+    public ProducerFactory<String, SalaryUpdate> producerFactoryEmpSalary() {
+        Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<String,SalaryUpdate>(map);
+        return new DefaultKafkaProducerFactory<String, SalaryUpdate>(map);
     }
 
     @Bean
-    public KafkaTemplate<String, SalaryUpdate> kafkaTemplateEmpSalary(){
+    public KafkaTemplate<String, SalaryUpdate> kafkaTemplateEmpSalary() {
         return new KafkaTemplate(producerFactoryEmpSalary());
     }
 
     @Bean
-    public ProducerFactory<String, Salary> producerFactoryEmpSalaryUpdate(){
-        Map<String,Object> map = new HashMap<>();
+    public ProducerFactory<String, Salary> producerFactoryEmpSalaryUpdate() {
+        Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<String,Salary>(map);
+        return new DefaultKafkaProducerFactory<String, Salary>(map);
     }
 
     @Bean
-    public KafkaTemplate<String, Salary> kafkaTemplateEmpSalaryUpdate(){
+    public KafkaTemplate<String, Salary> kafkaTemplateEmpSalaryUpdate() {
         return new KafkaTemplate(producerFactoryEmpSalaryUpdate());
     }
 
-
     @Bean
-    public ConsumerFactory<String, KafkaEmployee> consumerFactory(){
-        Map<String,Object> map = new HashMap<>();
+    public ConsumerFactory<String, KafkaEmployee> consumerFactory() {
+        Map<String, Object> map = new HashMap<>();
         map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonSerializer.class);
-        map.put(ConsumerConfig.GROUP_ID_CONFIG,"employee");
-        ErrorHandlingDeserializer<KafkaEmployee> errorHandlingDeserializer = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(KafkaEmployee.class));
+        map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        map.put(ConsumerConfig.GROUP_ID_CONFIG, "employee");
+        ErrorHandlingDeserializer<KafkaEmployee> errorHandlingDeserializer =
+                new ErrorHandlingDeserializer<>(new JsonDeserializer<>(KafkaEmployee.class));
 
-        return new DefaultKafkaConsumerFactory<>(map,new StringDeserializer(),errorHandlingDeserializer);
+        return new DefaultKafkaConsumerFactory<>(map, new StringDeserializer(), errorHandlingDeserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,KafkaEmployee> concurrentKafkaListenerContainerFactory(){
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaEmployee> concurrentKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory containerFactory = new ConcurrentKafkaListenerContainerFactory();
         containerFactory.setConsumerFactory(consumerFactory());
         containerFactory.setErrorHandler(new KafkaErrorHandler());

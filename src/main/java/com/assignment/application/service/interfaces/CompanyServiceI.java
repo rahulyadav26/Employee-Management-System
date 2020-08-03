@@ -3,19 +3,18 @@ package com.assignment.application.service.interfaces;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteCompInfo;
 import com.assignment.application.update.CompanyInfoUpdate;
-import org.apache.kafka.common.protocol.types.Field;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public interface CompanyServiceI {
 
     Company createNewCompany(Company company);
 
-    List<Company> getCompanyList();
+    Page<Company> getCompanyList(Pageable pageable);
 
-    List<CompleteCompInfo> getCompleteCompInfo(Long companyId);
+    Page<CompleteCompInfo> getCompleteCompInfo(Long companyId, Pageable pageable);
 
     String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
 

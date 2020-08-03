@@ -19,7 +19,8 @@ public class ResponseLogging extends OncePerRequestFilter {
     private static final Logger LOG = LogManager.getLogger(ResponseLogging.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         HttpServletRequest request = httpServletRequest;
         HttpServletResponse response = httpServletResponse;

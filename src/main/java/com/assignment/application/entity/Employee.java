@@ -1,55 +1,91 @@
 package com.assignment.application.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="employee")
+@Table(name = "employee")
 public class Employee implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
+
+    @Column(name = "name")
     private String name;
-    @Column(name="dob")
+
+    @Column(name = "dob")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private String dob;
-    @Column(name="permanent_add")
-    private String permanentAdd;
-    @Column(name="current_add")
-    private String currentAdd;
-    @Column(name="phone_number")
+
+    @Column(name = "permanent_address")
+    private String permanentAddress;
+
+    @Column(name = "current_address")
+    private String currentAddress;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name="position")
-    private String position;
-    @Column(name="dept_id")
+
+    @Column(name = "employee_type")
+    private String employeeType = "fte";
+
+    @Column(name = "department_id")
     private Long departmentId;
-    @Column(name="project_id")
-    private Long projectId;
-    @Column(name="comp_id")
-    private Long companyId;
-    @Column(name="emp_id" , columnDefinition = "text")
+
+    @Column(name = "employee_id")
     private String employeeId;
+
+    @Column(name = "role_name")
+    private String roleName = "employee";
+
+    @Column(name = "is_active")
+    private Long isActive = 1L;
+
+    @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date createdAt;
+
+    @Column(name = "created_by")
+    private String createdBy = "0";
+
+    @Column(name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date updatedAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
     @OneToOne
-    @JoinColumn(name="dept_id", referencedColumnName = "id",insertable=false, updatable=false)
+    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Department department;
 
-    public Employee(){
+    public Employee() {
 
     }
 
-    public Employee(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
+    public Employee(Long id, String name, String dob, String permanentAddress, String currentAddress,
+                    String phoneNumber, String employeeType, Long departmentId, String employeeId, String roleName,
+                    Long isActive, Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
+        this.id = id;
         this.name = name;
         this.dob = dob;
-        this.permanentAdd = permanentAdd;
-        this.currentAdd = currentAdd;
+        this.permanentAddress = permanentAddress;
+        this.currentAddress = currentAddress;
         this.phoneNumber = phoneNumber;
-        this.position = position;
+        this.employeeType = employeeType;
         this.departmentId = departmentId;
-        this.projectId = projectId;
-        this.companyId = companyId;
         this.employeeId = employeeId;
+        this.roleName = roleName;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
     }
 
     public Long getId() {
@@ -76,20 +112,20 @@ public class Employee implements Serializable {
         this.dob = dob;
     }
 
-    public String getPermanentAdd() {
-        return permanentAdd;
+    public String getPermanentAddress() {
+        return permanentAddress;
     }
 
-    public void setPermanentAdd(String permanentAdd) {
-        this.permanentAdd = permanentAdd;
+    public void setPermanentAddress(String permanentAddress) {
+        this.permanentAddress = permanentAddress;
     }
 
-    public String getCurrentAdd() {
-        return currentAdd;
+    public String getCurrentAddress() {
+        return currentAddress;
     }
 
-    public void setCurrentAdd(String currentAdd) {
-        this.currentAdd = currentAdd;
+    public void setCurrentAddress(String currentAddress) {
+        this.currentAddress = currentAddress;
     }
 
     public String getPhoneNumber() {
@@ -100,12 +136,12 @@ public class Employee implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPosition() {
-        return position;
+    public String getEmployeeType() {
+        return employeeType;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setEmployeeType(String employeeType) {
+        this.employeeType = employeeType;
     }
 
     public Long getDepartmentId() {
@@ -116,22 +152,6 @@ public class Employee implements Serializable {
         this.departmentId = departmentId;
     }
 
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
     public String getEmployeeId() {
         return employeeId;
     }
@@ -140,20 +160,72 @@ public class Employee implements Serializable {
         this.employeeId = employeeId;
     }
 
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Long getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Long isActive) {
+        this.isActive = isActive;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dob='" + dob + '\'' +
-                ", permanentAdd='" + permanentAdd + '\'' +
-                ", currentAdd='" + currentAdd + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", position='" + position + '\'' +
-                ", departmentId=" + departmentId +
-                ", projectId=" + projectId +
-                ", companyId=" + companyId +
-                ", employeeId='" + employeeId + '\'' +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", dob='" + dob + '\'' +
+               ", permanentAddress='" + permanentAddress + '\'' +
+               ", currentAddress='" + currentAddress + '\'' +
+               ", phoneNumber='" + phoneNumber + '\'' +
+               ", employeeType='" + employeeType + '\'' +
+               ", departmentId=" + departmentId +
+               ", employeeId='" + employeeId + '\'' +
+               ", roleName='" + roleName + '\'' +
+               ", isActive=" + isActive +
+               ", createdAt=" + createdAt +
+               ", createdBy='" + createdBy + '\'' +
+               ", updatedAt=" + updatedAt +
+               ", updatedBy='" + updatedBy + '\'' +
+               '}';
     }
 }

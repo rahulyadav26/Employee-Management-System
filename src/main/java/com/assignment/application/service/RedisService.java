@@ -24,46 +24,45 @@ public class RedisService {
     @Autowired
     private JedisConnectionFactory jedisConnectionFactory;
 
-    public String getKeyValue(String regex){
+    public String getKeyValue(String regex) {
         Jedis jedis = jedisPool.getResource();
-        String token = jedis.get(regex);
-        return token;
+        return jedis.get(regex);
     }
 
-    public String deleteKey(String regex){
+    public String deleteKey(String regex) {
         Jedis jedis = jedisPool.getResource();
         jedis.del(regex);
         return StringConstant.DELETION_SUCCESSFUL;
     }
 
-    public String findAndDelete(String regex,String companyId){
+    public String findAndDelete(String regex, String companyId) {
         Set<String> keySet = getKeys(regex);
-        if(keySet.isEmpty()){
-            throw new NotExistsException("No employee token found");
+        if (keySet.isEmpty()) {
+            return "";
         }
         Iterator<String> iterator = keySet.iterator();
-        int track=0;
-        while (iterator.hasNext()){
+        int track = 0;
+        while (iterator.hasNext()) {
             String token = iterator.next();
             String[] tokenSplit = token.split("::");
             String[] fetchEmpToken = tokenSplit[1].split("-");
-            if(fetchEmpToken[fetchEmpToken.length-1].equals(companyId)){
+            if (fetchEmpToken[fetchEmpToken.length - 1].equals(companyId)) {
                 deleteKey(token);
                 track++;
                 break;
             }
         }
-        if(track==0){
+        if (track == 0) {
             throw new NotExistsException("No such employee exists");
         }
         return StringConstant.DELETION_SUCCESSFUL;
     }
 
-    public Set<String> getKeys(String regex){
+    public Set<String> getKeys(String regex) {
         Jedis jedis = jedisPool.getResource();
         Set<String> keySet = new HashSet<>();
         ScanParams scanParams = new ScanParams();
-        scanParams.match(regex+"*");
+        scanParams.match(regex + "*");
         String nextIndex = "0";
         do {
             ScanResult<String> scanResult = jedis.scan(nextIndex, scanParams);
@@ -71,7 +70,8 @@ public class RedisService {
             nextIndex = scanResult.getCursor();
             keySet.addAll(keys);
 
-        } while (!nextIndex.equals("0"));
+        }
+        while (!nextIndex.equals("0"));
 
         return keySet;
 

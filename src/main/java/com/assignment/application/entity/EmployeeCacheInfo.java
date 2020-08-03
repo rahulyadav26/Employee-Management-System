@@ -1,9 +1,6 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
-
 
 public class EmployeeCacheInfo implements Serializable {
     private Long id;
@@ -34,7 +31,9 @@ public class EmployeeCacheInfo implements Serializable {
 
     }
 
-    public EmployeeCacheInfo(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId, String role) {
+    public EmployeeCacheInfo(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber,
+                             String position, Long departmentId, Long projectId, Long companyId, String employeeId,
+                             String role) {
         this.name = name;
         this.dob = dob;
         this.permanentAdd = permanentAdd;
@@ -147,19 +146,19 @@ public class EmployeeCacheInfo implements Serializable {
     @Override
     public String toString() {
         return "EmployeeCacheInfo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dob='" + dob + '\'' +
-                ", permanentAdd='" + permanentAdd + '\'' +
-                ", currentAdd='" + currentAdd + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", position='" + position + '\'' +
-                ", departmentId=" + departmentId +
-                ", projectId=" + projectId +
-                ", companyId=" + companyId +
-                ", employeeId='" + employeeId + '\'' +
-                ", role='" + role + '\'' +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", dob='" + dob + '\'' +
+               ", permanentAdd='" + permanentAdd + '\'' +
+               ", currentAdd='" + currentAdd + '\'' +
+               ", phoneNumber='" + phoneNumber + '\'' +
+               ", position='" + position + '\'' +
+               ", departmentId=" + departmentId +
+               ", projectId=" + projectId +
+               ", companyId=" + companyId +
+               ", employeeId='" + employeeId + '\'' +
+               ", role='" + role + '\'' +
+               '}';
     }
 }
 

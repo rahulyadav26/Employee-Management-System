@@ -2,21 +2,21 @@ package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Employee;
 import com.assignment.application.update.EmployeeInfoUpdate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public interface EmployeeServiceI {
 
     Employee addEmployee(Long id, Employee employee);
 
-    List<Employee> getEmployeesOfComp(Long companyId);
+    Page<Employee> getEmployeesOfComp(Long companyId, Pageable pageable);
 
-    List<Employee> getEmployees();
+    Page<Employee> getEmployees(Pageable pageable);
 
     String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate);
 
-    String deleteEmployee(Long companyId,String employeeId);
+    String deleteEmployee(Long companyId, String employeeId);
 
 }

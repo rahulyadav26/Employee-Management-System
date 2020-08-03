@@ -1,41 +1,77 @@
 package com.assignment.application.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="company_info")
-public class Company {
+@Table(name = "company_info")
+public class Company implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
+
+    @Column(name = "name")
     private String name;
-    @Column(name="industry_type")
+
+    @Column(name = "industry_type")
     private String industryType;
-    @Column(name="head_office")
+
+    @Column(name = "head_office")
     private String headOffice;
-    @Column(name="founder")
+
+    @Column(name = "founder")
     private String founder;
 
-    public Company(){
+    @Column(name = "is_active")
+    private Long isActive = 1L;
 
+    @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date createdAt;
+
+    @Column(name = "created_by")
+    private String createdBy = "0";
+
+    @Column(name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date updatedAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    public Company() {
     }
 
-    public Company(Long id, String name, String industryType,String headOffice, String founder) {
+    public Company(String name, String industryType, String headOffice, String founder, Long isActive, Date createdAt,
+                   String createdBy, Date updatedAt, String updatedBy) {
+        this.name = name;
+        this.industryType = industryType;
+        this.headOffice = headOffice;
+        this.founder = founder;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
+    }
+
+    public Company(Long id, String name, String industryType, String headOffice, String founder, Long isActive,
+                   Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
         this.id = id;
         this.name = name;
         this.industryType = industryType;
         this.headOffice = headOffice;
         this.founder = founder;
-    }
-
-    public Company(String name, String industryType,String headOffice, String founder) {
-        this.name = name;
-        this.industryType = industryType;
-        this.headOffice = headOffice;
-        this.founder = founder;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.updatedAt = updatedAt;
+        this.updatedBy = updatedBy;
     }
 
     public Long getId() {
@@ -62,7 +98,6 @@ public class Company {
         this.industryType = industryType;
     }
 
-
     public String getHeadOffice() {
         return headOffice;
     }
@@ -79,4 +114,43 @@ public class Company {
         this.founder = founder;
     }
 
+    public Long getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Long isActive) {
+        this.isActive = isActive;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 }

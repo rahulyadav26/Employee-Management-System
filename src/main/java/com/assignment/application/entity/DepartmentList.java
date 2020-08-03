@@ -5,22 +5,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "salary")
-public class Salary implements Serializable {
+@Table(name = "department_list")
+public class DepartmentList implements Serializable {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "employee_id", columnDefinition = "text")
-    private String employeeId;
-
-    @Column(name = "salary")
-    private Double salary;
-
-    @Column(name = "is_current")
-    private Long isCurrent = 1L;
+    @Column(name = "department_name")
+    private String departmentName;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -34,20 +28,21 @@ public class Salary implements Serializable {
     @Column(name = "updated_by")
     private String updatedBy;
 
-    @OneToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
-    private Employee employee;
-
-    public Salary() {
-
+    public DepartmentList() {
     }
 
-    public Salary(Long id, String employeeId, Double salary, Long isCurrent, Date createdAt, Date updatedAt,
-                  String createdBy, String updatedBy) {
+    public DepartmentList(String departmentName, Date createdAt, Date updatedAt, String createdBy, String updatedBy) {
+        this.departmentName = departmentName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
+
+    public DepartmentList(Long id, String departmentName, Date createdAt, Date updatedAt, String createdBy,
+                          String updatedBy) {
         this.id = id;
-        this.employeeId = employeeId;
-        this.salary = salary;
-        this.isCurrent = isCurrent;
+        this.departmentName = departmentName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.createdBy = createdBy;
@@ -62,28 +57,12 @@ public class Salary implements Serializable {
         this.id = id;
     }
 
-    public String getEmployeeId() {
-        return employeeId;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public Double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public Long getIsCurrent() {
-        return isCurrent;
-    }
-
-    public void setIsCurrent(Long isCurrent) {
-        this.isCurrent = isCurrent;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public Date getCreatedAt() {
@@ -117,4 +96,5 @@ public class Salary implements Serializable {
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
+
 }

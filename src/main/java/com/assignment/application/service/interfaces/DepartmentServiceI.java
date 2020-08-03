@@ -1,21 +1,23 @@
 package com.assignment.application.service.interfaces;
 
 import com.assignment.application.entity.Department;
-import com.assignment.application.update.DepartmentInfoUpdate;
+import com.assignment.application.update.DepartmentUpdate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public interface DepartmentServiceI {
 
-    Department addDepartment(Long companyId,Department department);
+    Department addDepartment(Long companyId, Department department);
 
-    List<Department> getDepartments();
+    Page<Department> getDepartments(Pageable pageable);
 
-    Department getDepartment(Long companyId,Long id);
+    Page<Department> getDepartmentsOfCompany(Long companyId, Pageable pageable);
 
-    String updateDepartmentInfo(Long companyId, Long id, DepartmentInfoUpdate departmentInfoUpdate);
+    Department getDepartment(Long companyId, Long id);
+
+    String updateDepartmentInfo(Long companyId, Long id, DepartmentUpdate departmentUpdate);
 
     String deleteDepartmentOfCompany(Long id, Long companyId);
 

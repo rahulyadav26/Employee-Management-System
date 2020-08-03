@@ -1,15 +1,17 @@
 package com.assignment.application.entity;
 
-import org.apache.kafka.common.protocol.types.Field;
-
 import java.util.Date;
 
 public class ErrorDetails {
 
     private Date date;
+
     private String status;
+
     private String error;
+
     private String message;
+
     private String path;
 
     public ErrorDetails(Date date, String status, String error, String message, String path) {

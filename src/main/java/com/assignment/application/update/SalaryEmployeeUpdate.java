@@ -15,14 +15,14 @@ public class SalaryEmployeeUpdate implements Serializable {
         this.value = value;
     }
 
+    public SalaryEmployeeUpdate() {
+    }
+
     public Double getValue() {
         return value;
     }
 
     public void setValue(Double value) {
         this.value = value;
-    }
-
-    public SalaryEmployeeUpdate() {
     }
 }
