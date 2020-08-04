@@ -1,6 +1,11 @@
 package com.assignment.application.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,6 +13,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "company_info")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Company implements Serializable {
 
     @Id
@@ -32,6 +41,7 @@ public class Company implements Serializable {
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @UpdateTimestamp
     private Date createdAt;
 
     @Column(name = "created_by")
@@ -44,8 +54,6 @@ public class Company implements Serializable {
     @Column(name = "updated_by")
     private String updatedBy;
 
-    public Company() {
-    }
 
     public Company(String name, String industryType, String headOffice, String founder, Long isActive, Date createdAt,
                    String createdBy, Date updatedAt, String updatedBy) {
@@ -57,100 +65,6 @@ public class Company implements Serializable {
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
-    }
-
-    public Company(Long id, String name, String industryType, String headOffice, String founder, Long isActive,
-                   Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
-        this.id = id;
-        this.name = name;
-        this.industryType = industryType;
-        this.headOffice = headOffice;
-        this.founder = founder;
-        this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIndustryType() {
-        return industryType;
-    }
-
-    public void setIndustryType(String industryType) {
-        this.industryType = industryType;
-    }
-
-    public String getHeadOffice() {
-        return headOffice;
-    }
-
-    public void setHeadOffice(String headOffice) {
-        this.headOffice = headOffice;
-    }
-
-    public String getFounder() {
-        return founder;
-    }
-
-    public void setFounder(String founder) {
-        this.founder = founder;
-    }
-
-    public Long getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Long isActive) {
-        this.isActive = isActive;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 }

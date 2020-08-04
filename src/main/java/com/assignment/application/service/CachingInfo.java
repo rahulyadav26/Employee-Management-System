@@ -1,7 +1,7 @@
 package com.assignment.application.service;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
@@ -36,7 +36,7 @@ public class CachingInfo {
     private SalaryRepo salaryRepo;
 
     //@Cacheable(value = "companyCompleteInfo", key = "#companyId", condition = "#result==null")
-    public Page<CompleteCompInfo> getCompanyCompleteInfo(Long companyId, Pageable pageable) {
+    public Page<CompleteInfo> getCompanyCompleteInfo(Long companyId, Pageable pageable) {
         return companyRepo.getCompanyCompleteInfo(companyId, pageable);
     }
 

@@ -3,7 +3,7 @@
 //
 //import com.assignment.application.constants.StringConstant;
 //import com.assignment.application.entity.Company;
-//import com.assignment.application.entity.CompleteCompInfo;
+//import com.assignment.application.entity.CompleteInfo;
 //import com.assignment.application.entity.Employee;
 //import com.assignment.application.exception.*;
 //import com.assignment.application.repo.CompanyRepo;
@@ -138,7 +138,7 @@
 ////    public void test_IdNotExist_GetCompleteCompInfo_fails(){
 ////        //no such company exists
 ////        final Long id = new Long(11);
-////        List<CompleteCompInfo> completeCompInfos = new ArrayList<>();
+////        List<CompleteInfo> completeCompInfos = new ArrayList<>();
 ////        when(companyRepo.findById(id)).thenReturn(null);
 ////        //action
 ////        companyService.getCompleteCompInfo(id);
@@ -149,13 +149,13 @@
 ////    public void test_IdExist_GetCompleteCompInfo_Success(){
 ////        //no such company exists
 ////        final Long id = new Long(11);
-////        List<CompleteCompInfo> completeCompInfos = new ArrayList<>();
+////        List<CompleteInfo> completeCompInfos = new ArrayList<>();
 ////        Company company = new Company(id,"Google", "Technology","California", "Bill Gates");
-////        completeCompInfos.add(new CompleteCompInfo("Sundar Pichai","google_3",11L,"Engineering",2L,(double)1000000,"123454323454",null,"1234567890","California","Chennai"));
+////        completeCompInfos.add(new CompleteInfo("Sundar Pichai","google_3",11L,"Engineering",2L,(double)1000000,"123454323454",null,"1234567890","California","Chennai"));
 ////        when(companyRepo.findById(id)).thenReturn(Optional.of(company));
 ////        when(cachingInfo.getCompanyCompleteInfo(id)).thenReturn(completeCompInfos);
 ////        //action
-////        List<CompleteCompInfo> actualResult = companyService.getCompleteCompInfo(id);
+////        List<CompleteInfo> actualResult = companyService.getCompleteCompInfo(id);
 ////        //result
 ////        Assert.assertEquals(completeCompInfos.size(),actualResult.size());
 ////        Assert.assertEquals(completeCompInfos.get(0),actualResult.get(0));

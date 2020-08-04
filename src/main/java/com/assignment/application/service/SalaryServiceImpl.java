@@ -10,7 +10,7 @@ import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
-import com.assignment.application.service.interfaces.SalaryServiceI;
+import com.assignment.application.service.interfaces.SalaryService;
 import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class SalaryServiceImpl implements SalaryServiceI {
+public class SalaryServiceImpl implements SalaryService {
 
     public final String SALARY_UPDATE_TOPIC = "SalaryUpdate";
 
@@ -63,12 +63,11 @@ public class SalaryServiceImpl implements SalaryServiceI {
         if (salary == null || salary.getSalary() == null) {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
-        List<Salary> checkSalary = salaryRepo.getSalaryById(employeeID);
+        List<Salary> checkSalary = salaryRepo.getSalaryByEmployeeId(employeeID);
         if (!checkSalary.isEmpty()) {
             throw new DuplicateDataException("Employee salary exists you can update the salary using update url");
         }
         salary.setIsCurrent(1L);
-        salary.setCreatedAt(new Date());
         salary.setCreatedBy("0");
         salary.setEmployeeId(employeeID);
         return salaryRepo.save(salary);
@@ -78,7 +77,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
     public Page<Salary> getSalary(Long companyId, String employeeId, Pageable pageable) {
         Company company = companyRepo.findById(companyId).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeId);
-        Page<Salary> salary = salaryRepo.getSalaryById(employeeId, pageable);
+        Page<Salary> salary = salaryRepo.getSalaryByEmployeeId(employeeId, pageable);
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException("Company not exists in database");
         }
@@ -179,7 +178,7 @@ public class SalaryServiceImpl implements SalaryServiceI {
         if (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyId)) {
             throw new NotExistsException("Company id is not valid for the employee");
         }
-        List<Salary> salary = salaryRepo.getSalaryById(employeeId);
+        List<Salary> salary = salaryRepo.getSalaryByEmployeeId(employeeId);
         if (salary.isEmpty()) {
             throw new NotExistsException("No entry found in database");
         }

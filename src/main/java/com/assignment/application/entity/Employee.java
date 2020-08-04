@@ -1,6 +1,7 @@
 package com.assignment.application.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -48,6 +49,7 @@ public class Employee implements Serializable {
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @UpdateTimestamp
     private Date createdAt;
 
     @Column(name = "created_by")

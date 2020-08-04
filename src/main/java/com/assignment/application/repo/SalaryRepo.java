@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface SalaryRepo extends JpaRepository<Salary, Long> {
 
-    @Query("Select sal from Salary sal where sal.employeeId=?1")
-    Page<Salary> getSalaryById(String empId, Pageable pageable);
+    //@Query("Select sal from Salary sal where sal.employeeId=?1")
+    Page<Salary> getSalaryByEmployeeId(String empId, Pageable pageable);
 
     @Query("Select sal from Salary sal where sal.employeeId=?1")
-    List<Salary> getSalaryById(String empId);
+    List<Salary> getSalaryByEmployeeId(String empId);
 
     @Query(value = "Select sal from Salary sal where sal.companyId=?1", nativeQuery = true)
     List<Salary> salaryListComp(Long compId);

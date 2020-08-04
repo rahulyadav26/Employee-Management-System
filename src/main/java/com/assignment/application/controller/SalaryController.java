@@ -4,9 +4,10 @@ import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.dto.SalaryDTO;
 import com.assignment.application.entity.Salary;
-import com.assignment.application.service.interfaces.SalaryServiceI;
+import com.assignment.application.service.interfaces.SalaryService;
 import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
+import com.assignment.application.util.SalaryUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,13 +24,13 @@ import java.util.stream.Collectors;
 public class SalaryController {
 
     @Autowired
-    private SalaryServiceI salaryServiceI;
+    private SalaryService salaryService;
 
     @Autowired
     private VerifyUsers verifyUsers;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private SalaryUtil salaryUtil;
 
     @PostMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<SalaryDTO> addSalaryInfo(@PathVariable("comp_id") Long companyId,
@@ -38,33 +39,28 @@ public class SalaryController {
                                                    @RequestHeader("access_token") String token) {
 
         verifyUsers.authorizeUser(token, companyId + "/" + employeeId + "/salary", "post");
-        Salary salary = convertToEntity(salaryDTO);
-        salary = salaryServiceI.addSalary(companyId, employeeId, salary);
-        salaryDTO = convertToDTO(salary);
-        return new ResponseEntity<>(salaryDTO, HttpStatus.OK);
+        Salary salary = salaryUtil.convertToEntity(salaryDTO);
+        salary = salaryService.addSalary(companyId, employeeId, salary);
+        return new ResponseEntity<>(salaryUtil.convertToDTO(salary), HttpStatus.OK);
     }
 
     @GetMapping(value = "{comp_id}/{emp_id}/salary")
     public ResponseEntity<List<SalaryDTO>> getSalaryInfo(@PathVariable("comp_id") Long companyId,
                                                          @PathVariable("emp_id") String employeeId,
                                                          @RequestHeader("access_token") String token,
-                                                         @RequestParam(defaultValue = "0") Integer pageNo,
-                                                         @RequestParam(defaultValue = "10") Integer pageSize) {
+                                                         Pageable pageable) {
         verifyUsers.authorizeUser(token, companyId + "/" + employeeId + "/salary", "get");
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Salary> salary = salaryServiceI.getSalary(companyId, employeeId, pageable);
-        return new ResponseEntity<>(salary.stream().map(this::convertToDTO).collect(Collectors.toList()),
+        Page<Salary> salary = salaryService.getSalary(companyId, employeeId, pageable);
+        return new ResponseEntity<>(salary.stream().map(salaryEntity -> salaryUtil.convertToDTO(salaryEntity)).collect(Collectors.toList()),
                                     HttpStatus.OK);
     }
 
     @GetMapping(value = "/salary")
     public ResponseEntity<List<SalaryDTO>> getSalaryList(@RequestHeader("access_token") String token,
-                                                         @RequestParam(defaultValue = "0") Integer pageNo,
-                                                         @RequestParam(defaultValue = "10") Integer pageSize) {
+                                                         Pageable pageable) {
         verifyUsers.authorizeUser(token, "/salary", "get");
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Salary> salaryList = salaryServiceI.getSalaryList(pageable);
-        return new ResponseEntity<>(salaryList.stream().map(this::convertToDTO).collect(Collectors.toList()),
+        Page<Salary> salaryList = salaryService.getSalaryList(pageable);
+        return new ResponseEntity<>(salaryList.stream().map(salary -> salaryUtil.convertToDTO(salary)).collect(Collectors.toList()),
                                     HttpStatus.OK);
     }
 
@@ -74,7 +70,7 @@ public class SalaryController {
                                                @RequestBody SalaryUpdate salaryUpdate,
                                                @RequestHeader("access_token") String token) {
         verifyUsers.authorizeUser(token, companyId + "/salary-update", "patch");
-        salaryServiceI.updateSalary(companyId, salaryUpdate);
+        salaryService.updateSalary(companyId, salaryUpdate);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 
@@ -84,15 +80,8 @@ public class SalaryController {
                                                          @RequestBody SalaryEmployeeUpdate salaryEmployeeUpdate,
                                                          @RequestHeader("access_token") String token) {
         verifyUsers.authorizeUser(token, companyId + "/" + employeeId + "/update-salary", "patch");
-        salaryServiceI.updateSalaryOfEmployee(companyId, employeeId, salaryEmployeeUpdate);
+        salaryService.updateSalaryOfEmployee(companyId, employeeId, salaryEmployeeUpdate);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 
-    public Salary convertToEntity(SalaryDTO salaryDTO) {
-        return modelMapper.map(salaryDTO, Salary.class);
-    }
-
-    public SalaryDTO convertToDTO(Salary salary) {
-        return modelMapper.map(salary, SalaryDTO.class);
-    }
 }

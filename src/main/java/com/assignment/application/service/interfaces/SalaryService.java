@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface SalaryServiceI {
+public interface SalaryService {
 
     Salary addSalary(Long companyId, String employeeId, Salary salary);
 

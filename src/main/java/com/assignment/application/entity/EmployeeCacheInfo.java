@@ -1,7 +1,16 @@
 package com.assignment.application.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeCacheInfo implements Serializable {
     private Long id;
 
@@ -27,9 +36,6 @@ public class EmployeeCacheInfo implements Serializable {
 
     private String role;
 
-    public EmployeeCacheInfo() {
-
-    }
 
     public EmployeeCacheInfo(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber,
                              String position, Long departmentId, Long projectId, Long companyId, String employeeId,
@@ -44,102 +50,6 @@ public class EmployeeCacheInfo implements Serializable {
         this.projectId = projectId;
         this.companyId = companyId;
         this.employeeId = employeeId;
-        this.role = role;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-
-    public String getPermanentAdd() {
-        return permanentAdd;
-    }
-
-    public void setPermanentAdd(String permanentAdd) {
-        this.permanentAdd = permanentAdd;
-    }
-
-    public String getCurrentAdd() {
-        return currentAdd;
-    }
-
-    public void setCurrentAdd(String currentAdd) {
-        this.currentAdd = currentAdd;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
         this.role = role;
     }
 

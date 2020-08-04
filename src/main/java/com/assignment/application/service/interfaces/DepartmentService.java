@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface DepartmentServiceI {
+public interface DepartmentService {
 
     Department addDepartment(Long companyId, Department department);
 

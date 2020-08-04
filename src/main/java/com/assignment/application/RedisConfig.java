@@ -2,6 +2,7 @@ package com.assignment.application;
 
 import com.assignment.application.other.CustomKeyGenerator;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +17,15 @@ public class RedisConfig {
 
     private JedisPool jedisPool;
 
+    @Value("${spring.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.redis.port}")
+    private Integer redisPort;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration("localhost", 6379);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -30,7 +37,7 @@ public class RedisConfig {
     @Bean
     public JedisPool getJedisPool() {
 
-        jedisPool = new JedisPool(getPoolConfig(), "localhost", 6379);
+        jedisPool = new JedisPool(getPoolConfig(), redisHost, redisPort);
         return jedisPool;
     }
 

@@ -8,7 +8,7 @@ import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentListRepo;
 import com.assignment.application.repo.DepartmentRepo;
-import com.assignment.application.service.interfaces.DepartmentServiceI;
+import com.assignment.application.service.interfaces.DepartmentService;
 import com.assignment.application.update.DepartmentUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class DepartmentServiceImpl implements DepartmentServiceI {
+public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     private DepartmentRepo departmentRepo;
@@ -59,7 +59,6 @@ public class DepartmentServiceImpl implements DepartmentServiceI {
             return departmentRepo.save(checkDepartment);
         }
         department.setCompanyId(companyId);
-        department.setCreatedAt(new Date());
         department.setCreatedBy("0");
         return departmentRepo.save(department);
 

@@ -2,7 +2,7 @@ package com.assignment.application.service;
 
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyUpdateException;
@@ -10,7 +10,7 @@ import com.assignment.application.exception.InsufficientInformationException;
 import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.EmployeeRepo;
-import com.assignment.application.service.interfaces.CompanyServiceI;
+import com.assignment.application.service.interfaces.CompanyService;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class CompanyServiceImpl implements CompanyServiceI {
+public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     private CompanyRepo companyRepo;
@@ -53,6 +53,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
             companyRepo.save(checkCompany);
             return checkCompany;
         }
+        company.setCreatedBy("0");
         companyRepo.save(company);
         return company;
     }
@@ -64,7 +65,7 @@ public class CompanyServiceImpl implements CompanyServiceI {
 
     //to do
     @Override
-    public Page<CompleteCompInfo> getCompleteCompInfo(Long companyId, Pageable pageable) {
+    public Page<CompleteInfo> getCompleteCompInfo(Long companyId, Pageable pageable) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);

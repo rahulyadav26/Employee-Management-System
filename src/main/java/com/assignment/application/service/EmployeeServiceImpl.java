@@ -10,7 +10,7 @@ import com.assignment.application.exception.*;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
-import com.assignment.application.service.interfaces.EmployeeServiceI;
+import com.assignment.application.service.interfaces.EmployeeService;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Component
-public class EmployeeServiceImpl implements EmployeeServiceI {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepo employeeRepo;
@@ -75,13 +75,14 @@ public class EmployeeServiceImpl implements EmployeeServiceI {
         }
         if (checkEmployee != null) {
             checkEmployee.setIsActive(1L);
+            checkEmployee.setUpdatedAt(new Date());
+            checkEmployee.setUpdatedBy("0");
             employeeRepo.save(checkEmployee);
             return checkEmployee;
         }
         //Employee employeeTemp = cachingInfo.addEmployee(employee);
         //kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
         employee.setEmployeeId(UUID.randomUUID().toString());
-        employee.setCreatedAt(new Date());
         employee.setCreatedBy("0");
         employee.setIsActive(1L);
         employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));

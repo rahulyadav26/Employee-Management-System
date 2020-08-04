@@ -1,11 +1,22 @@
 package com.assignment.application.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "department_list")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DepartmentList implements Serializable {
 
     @Id
@@ -17,6 +28,8 @@ public class DepartmentList implements Serializable {
     private String departmentName;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @UpdateTimestamp
     private Date createdAt;
 
     @Column(name = "updated_at")
@@ -28,9 +41,6 @@ public class DepartmentList implements Serializable {
     @Column(name = "updated_by")
     private String updatedBy;
 
-    public DepartmentList() {
-    }
-
     public DepartmentList(String departmentName, Date createdAt, Date updatedAt, String createdBy, String updatedBy) {
         this.departmentName = departmentName;
         this.createdAt = createdAt;
@@ -38,63 +48,4 @@ public class DepartmentList implements Serializable {
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
     }
-
-    public DepartmentList(Long id, String departmentName, Date createdAt, Date updatedAt, String createdBy,
-                          String updatedBy) {
-        this.id = id;
-        this.departmentName = departmentName;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
 }

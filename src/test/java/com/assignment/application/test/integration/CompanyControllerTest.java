@@ -3,7 +3,7 @@ package com.assignment.application.test.integration;
 import com.assignment.application.TaskAppApplication;
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -58,11 +58,11 @@ public class CompanyControllerTest {
     public void test_GetCompleteCompInfo_success() {
         setHttpHeaders(httpHeaders);
         HttpEntity<String> entity = new HttpEntity<>(null, httpHeaders);
-        List<CompleteCompInfo> companyList = new ArrayList<>();
-        ResponseEntity<List<CompleteCompInfo>> responseEntity =
+        List<CompleteInfo> companyList = new ArrayList<>();
+        ResponseEntity<List<CompleteInfo>> responseEntity =
                 testRestTemplate.exchange("http://localhost:" + port + "//company/9/complete-info",
                                           HttpMethod.GET, entity,
-                                          new ParameterizedTypeReference<List<CompleteCompInfo>>() {});
+                                          new ParameterizedTypeReference<List<CompleteInfo>>() {});
         Assert.assertEquals(2, responseEntity.getBody().size());
     }
 
@@ -74,7 +74,7 @@ public class CompanyControllerTest {
         this.restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
         CompanyInfoUpdate companyInfoUpdate = new CompanyInfoUpdate("Search Engine Platform");
         HttpEntity<CompanyInfoUpdate> entity = new HttpEntity<>(companyInfoUpdate, httpHeaders);
-        List<CompleteCompInfo> companyList = new ArrayList<>();
+        List<CompleteInfo> companyList = new ArrayList<>();
         ResponseEntity<String> responseEntity =
                 restTemplate.exchange("http://localhost:" + port + "//company/9/company-update",
                                       HttpMethod.PATCH, entity, String.class);
@@ -85,7 +85,7 @@ public class CompanyControllerTest {
     //    public void test_DeleteCompany_success(){
     //        setHttpHeaders(httpHeaders);
     //        HttpEntity<String> entity = new HttpEntity<>(null,httpHeaders);
-    //        List<CompleteCompInfo> companyList = new ArrayList<>();
+    //        List<CompleteInfo> companyList = new ArrayList<>();
     //        ResponseEntity<String> responseEntity = testRestTemplate.exchange("http://localhost:" + port + "//company/15",
     //                HttpMethod.DELETE, entity, String.class);
     //        Assert.assertEquals(StringConstant.DELETION_SUCCESSFUL,responseEntity.getBody());

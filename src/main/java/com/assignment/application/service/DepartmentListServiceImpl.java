@@ -6,7 +6,7 @@ import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.InsufficientInformationException;
 import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.DepartmentListRepo;
-import com.assignment.application.service.interfaces.DepartmentListServiceI;
+import com.assignment.application.service.interfaces.DepartmentListService;
 import com.assignment.application.update.DepartmentInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class DepartmentListServiceImpl implements DepartmentListServiceI {
+public class DepartmentListServiceImpl implements DepartmentListService {
 
     @Autowired
     private DepartmentListRepo departmentListRepo;
@@ -32,7 +32,6 @@ public class DepartmentListServiceImpl implements DepartmentListServiceI {
         if (checkDepartment != null) {
             throw new DuplicateDataException("Department already exists in database");
         }
-        departmentList.setCreatedAt(new Date());
         departmentListRepo.save(departmentList);
         return departmentList;
     }
