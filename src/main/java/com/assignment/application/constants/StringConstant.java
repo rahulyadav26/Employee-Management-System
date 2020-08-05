@@ -2,7 +2,6 @@ package com.assignment.application.constants;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public class StringConstant {
 
     public static final String FAILED = "Failed";
@@ -32,6 +31,30 @@ public class StringConstant {
     public static final String COMPANY_ID_NOT_VALID_FOR_DEPARTMENT = "Company id not valid for the department";
 
     public static final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
+
+    public static final String ACCESS_TOKEN = "access_token";
+
+    public static final String COMPANY_ID = "company_id";
+
+    public static final String START_TIME = "start_time";
+
+    public static final String GET = "get";
+
+    public static final String POST = "post";
+
+    public static final String DELETE = "delete";
+
+    public static final String PATCH = "patch";
+
+    public static final String COMPANY = "company";
+
+    public static final String DEPARTMENT = "/department";
+
+    public static final String DEPARTMENT_LIST = "department-list";
+
+    public static final String SALARY = "/salary";
+
+    public static final String EMPLOYEE = "/employee";
 
     private StringConstant() {
     }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface DepartmentService {
 
-    Department addDepartment(Long companyId, Department department);
+    Department addDepartment(Long companyId, Department department,String userId);
 
     Page<Department> getDepartments(Pageable pageable);
 
@@ -17,8 +17,8 @@ public interface DepartmentService {
 
     Department getDepartment(Long companyId, Long id);
 
-    String updateDepartmentInfo(Long companyId, Long id, DepartmentUpdate departmentUpdate);
+    String updateDepartmentInfo(Long companyId, Long id, DepartmentUpdate departmentUpdate, String userId);
 
-    String deleteDepartmentOfCompany(Long id, Long companyId);
+    String deleteDepartmentOfCompany(Long id, Long companyId,String userId);
 
 }

@@ -8,6 +8,7 @@ import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.service.interfaces.CompanyService;
 import com.assignment.application.update.CompanyInfoUpdate;
 import com.assignment.application.util.CompanyUtil;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +34,10 @@ public class CompanyController {
     private CompanyUtil companyUtil;
 
     @PostMapping(value = "")
-    public ResponseEntity<CompanyDTO> addCompany(@RequestBody CompanyDTO companyDTO,
-                                                 @RequestHeader("access_token") String token) {
+    public ResponseEntity<CompanyDTO> addCompany(@RequestBody @Valid CompanyDTO companyDTO,
+                                                 @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
 
-        verifyUsers.authorizeUser(token, "company", "post");
+        verifyUsers.authorizeUser(token, "/" + StringConstant.COMPANY, StringConstant.POST);
         Company company = companyUtil.convertToEntity(companyDTO);
         company = companyService.createNewCompany(company);
         return new ResponseEntity<>(companyUtil.convertToDTO(company), HttpStatus.OK);
@@ -43,45 +45,46 @@ public class CompanyController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<CompanyDTO>> getCompanyList(@RequestHeader("access_token") String token,
+    public ResponseEntity<List<CompanyDTO>> getCompanyList(@RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token,
                                                            Pageable pageable) {
-        verifyUsers.authorizeUser(token, "company", "get");
+        verifyUsers.authorizeUser(token,"/" + StringConstant.COMPANY, StringConstant.GET);
         Page<Company> companyList = companyService.getCompanyList(pageable);
-        List<CompanyDTO> companyDTOList = companyList.stream().map(companyDTO->companyUtil.convertToDTO(companyDTO)).collect(Collectors.toList());
+        List<CompanyDTO> companyDTOList = companyList.stream()
+                                                     .map(companyDTO -> companyUtil.convertToDTO(companyDTO))
+                                                     .collect(Collectors.toList());
         return new ResponseEntity<>(companyDTOList, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{comp_id}/complete-info")
-    public ResponseEntity<List<CompleteInfo>> getCompleteCompInfo(@PathVariable("comp_id") Long companyId,
-                                                                  @RequestHeader("access_token") String token,
-                                                                  Pageable pageable) {
-        verifyUsers.authorizeUser(token, "company/" + companyId + "/complete-info", "get");
+    @GetMapping(value = "/{company_id}/complete-info")
+    public ResponseEntity<List<CompleteInfo>> getCompleteCompInfo(
+            @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+            @RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token,
+            Pageable pageable) {
+        verifyUsers.authorizeUser(token,  StringConstant.COMPANY + "/" + companyId + "/complete-info", StringConstant.GET);
         Page<CompleteInfo> objectList = companyService.getCompleteCompInfo(companyId, pageable);
         return new ResponseEntity<>(objectList.toList(), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/{id}/company-update")
-    public ResponseEntity<String> updateCompanyInfo(@PathVariable("id") Long id,
-                                                    @RequestBody CompanyInfoUpdate companyInfoUpdate,
-                                                    @RequestHeader("access_token") String token) {
-        verifyUsers.authorizeUser(token, "company/" + id + "/company-update", "patch");
-        companyService.updateCompanyInfo(id, companyInfoUpdate);
+    @PatchMapping(value = "/{company_id}/company-update")
+    public ResponseEntity<String> updateCompanyInfo(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long id,
+                                                    @RequestBody @Valid CompanyInfoUpdate companyInfoUpdate,
+                                                    @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId = verifyUsers.authorizeUser(token, StringConstant.COMPANY + "/" + id + "/company-update", StringConstant.PATCH);
+        companyService.updateCompanyInfo(id, companyInfoUpdate,userId);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id,
-                                                @RequestHeader("access_token") String token) {
-        verifyUsers.authorizeUser(token, "company/" + id, "delete");
+    @DeleteMapping(value = "/{company_id}")
+    public ResponseEntity<String> deleteCompany(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long id,
+                                                @RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token) {
+        verifyUsers.authorizeUser(token, StringConstant.COMPANY + "/" + id, StringConstant.DELETE);
         companyService.deleteCompany(id);
         return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }
 
-    //part of deploayble set 2
-    @PostMapping(value = "/{comp_id}/signUp")
+    @PostMapping(value = "/{company_id}/signUp")
     public ResponseEntity<String> verifyUser(@RequestHeader("username") String username) {
-        companyService.verifyUser(username);
-        return new ResponseEntity<>(StringConstant.USER_VERIFIED, HttpStatus.OK);
+        return new ResponseEntity<>("Your access token is " + companyService.verifyUser(username), HttpStatus.OK);
     }
 
 }

@@ -13,6 +13,8 @@ import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.CompanyService;
 import com.assignment.application.update.CompanyInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -28,9 +30,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     private CachingInfo cachingInfo;
-
-    @Autowired
-    private StringConstant stringConstant;
 
     @Autowired
     private EmployeeRepo employeeRepo;
@@ -54,6 +53,7 @@ public class CompanyServiceImpl implements CompanyService {
             return checkCompany;
         }
         company.setCreatedBy("0");
+        company.setCreatedAt(new Date());
         companyRepo.save(company);
         return company;
     }
@@ -63,7 +63,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepo.findAll(pageable);
     }
 
-    //to do
     @Override
     public Page<CompleteInfo> getCompleteCompInfo(Long companyId, Pageable pageable) {
         Company company = companyRepo.findById(companyId).orElse(null);
@@ -75,7 +74,9 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#id"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#id")})
+    public String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate, String userId) {
 
         Company company = companyRepo.findById(id).orElse(null);
         if (company == null || company.getIsActive() == 0) {
@@ -88,13 +89,14 @@ public class CompanyServiceImpl implements CompanyService {
         company.setIndustryType(companyInfoUpdate.getIndustryType());
         Date date = new Date();
         company.setUpdatedAt(date);
-        company.setUpdatedBy("0");
+        company.setUpdatedBy(userId);
         companyRepo.save(company);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Override
-    //@CacheEvict(value = "companyCompleteInfo", key = "#companyId")
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#id"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#id")})
     public String deleteCompany(Long id) {
         Company company = companyRepo.findById(id).orElse(null);
         if (company != null && company.getIsActive() == 1) {
@@ -108,20 +110,20 @@ public class CompanyServiceImpl implements CompanyService {
         throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);
     }
 
-    //part of deployable set 2
     @Override
     public String verifyUser(String username) {
         if (username.equalsIgnoreCase("superadmin")) {
             String accessToken = UUID.randomUUID().toString();
             cachingInfo.tokenGenerate(accessToken, username);
             cachingInfo.updateTokenStatus(username);
-            return StringConstant.USER_VERIFIED;
+            return accessToken;
         }
         Employee employee = employeeRepo.getEmployee(username);
-        String[] employeeId = employee.getEmployeeId().split("_");
-        //String accessToken = employeeId[1] + "-" + UUID.randomUUID().toString() + "-" + employee.getCompanyId();
-        //  cachingInfo.tokenGenerate(accessToken, username);
+        String[] employeeId = employee.getEmployeeId().split("-");
+        String accessToken =
+                employeeId[0] + "-" + UUID.randomUUID().toString() + "-" + employeeId[employeeId.length - 1];
+        cachingInfo.tokenGenerate(accessToken, username);
         cachingInfo.updateTokenStatus(username);
-        return StringConstant.USER_VERIFIED;
+        return accessToken;
     }
 }

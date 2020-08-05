@@ -35,7 +35,7 @@ public class RedisService {
         return StringConstant.DELETION_SUCCESSFUL;
     }
 
-    public String findAndDelete(String regex, String companyId) {
+    public String findAndDelete(String regex, String identifier) {
         Set<String> keySet = getKeys(regex);
         if (keySet.isEmpty()) {
             return "";
@@ -46,7 +46,7 @@ public class RedisService {
             String token = iterator.next();
             String[] tokenSplit = token.split("::");
             String[] fetchEmpToken = tokenSplit[1].split("-");
-            if (fetchEmpToken[fetchEmpToken.length - 1].equals(companyId)) {
+            if (fetchEmpToken[fetchEmpToken.length - 1].equals(identifier)) {
                 deleteKey(token);
                 track++;
                 break;

@@ -11,6 +11,8 @@ import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.service.interfaces.DepartmentService;
 import com.assignment.application.update.DepartmentUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -27,16 +29,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     private CompanyRepo companyRepo;
 
     @Autowired
-    private StringConstant stringConstant;
-
-    @Autowired
     private CachingInfo cachingInfo;
 
     @Autowired
     private DepartmentListRepo departmentListRepo;
 
     @Override
-    public Department addDepartment(Long companyId, Department department) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public Department addDepartment(Long companyId, Department department, String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException("No such company exists");
@@ -55,11 +56,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (checkDepartment != null) {
             checkDepartment.setIsActive(1L);
             checkDepartment.setUpdatedAt(new Date());
-            checkDepartment.setUpdatedBy("0");
+            checkDepartment.setUpdatedBy(userId);
             return departmentRepo.save(checkDepartment);
         }
         department.setCompanyId(companyId);
-        department.setCreatedBy("0");
+        department.setCreatedBy(userId);
+        department.setCreatedAt(new Date());
         return departmentRepo.save(department);
 
     }
@@ -92,7 +94,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public String updateDepartmentInfo(Long companyId, Long id, DepartmentUpdate departmentUpdate) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public String updateDepartmentInfo(Long companyId, Long id, DepartmentUpdate departmentUpdate, String userId) {
         Department department = departmentRepo.findById(id).orElse(null);
         Company company = companyRepo.findById(companyId).orElse(null);
         if (department == null || company == null || company.getIsActive() == 0 || department.getIsActive() == 0) {
@@ -112,28 +116,26 @@ public class DepartmentServiceImpl implements DepartmentService {
                 throw new NotExistsException("Company given in request body not exists");
             }
             department.setCompanyId(departmentUpdate.getCompanyId());
-            department.setUpdatedAt(new Date());
-            department.setUpdatedBy("0");
         }
         if (departmentUpdate.getDepartmentId() != null) {
             if (!departmentListRepo.existsById(department.getDepartmentId())) {
                 throw new NotExistsException("Department given in request body not exists");
             }
             department.setCompanyId(departmentUpdate.getDepartmentId());
-            department.setUpdatedAt(new Date());
-            department.setUpdatedBy("0");
         }
         if (departmentUpdate.getHead() != null || !departmentUpdate.getHead().equals("")) {
             department.setHead(departmentUpdate.getHead());
-            department.setUpdatedAt(new Date());
-            department.setUpdatedBy("0");
         }
+        department.setUpdatedAt(new Date());
+        department.setUpdatedBy(userId);
         departmentRepo.save(department);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
     @Override
-    public String deleteDepartmentOfCompany(Long departmentId, Long companyId) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public String deleteDepartmentOfCompany(Long departmentId, Long companyId, String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         Department department = departmentRepo.findById(departmentId).orElse(null);
         if (department == null || company == null || department.getIsActive() == 0 || company.getIsActive() == 0) {
@@ -144,9 +146,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         department.setIsActive(0L);
         department.setUpdatedAt(new Date());
-        department.setUpdatedBy("0");
+        department.setUpdatedBy(userId);
         departmentRepo.save(department);
-        //cachingInfo.deleteDepartment(companyId,departmentId);
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }

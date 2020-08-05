@@ -16,7 +16,7 @@ public interface CompanyService {
 
     Page<CompleteInfo> getCompleteCompInfo(Long companyId, Pageable pageable);
 
-    String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate);
+    String updateCompanyInfo(Long id, CompanyInfoUpdate companyInfoUpdate,String userId);
 
     String deleteCompany(Long id);
 

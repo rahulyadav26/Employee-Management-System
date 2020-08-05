@@ -32,6 +32,7 @@ public class DepartmentListServiceImpl implements DepartmentListService {
         if (checkDepartment != null) {
             throw new DuplicateDataException("Department already exists in database");
         }
+        departmentList.setCreatedAt(new Date());
         departmentListRepo.save(departmentList);
         return departmentList;
     }

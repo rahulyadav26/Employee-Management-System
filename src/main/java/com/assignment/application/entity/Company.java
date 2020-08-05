@@ -41,7 +41,6 @@ public class Company implements Serializable {
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @UpdateTimestamp
     private Date createdAt;
 
     @Column(name = "created_by")

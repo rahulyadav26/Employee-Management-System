@@ -6,17 +6,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+
 @Component
 public interface EmployeeService {
 
-    Employee addEmployee(Long id, Employee employee);
+    Employee addEmployee(Long id, Employee employee, String userId);
 
     Page<Employee> getEmployeesOfComp(Long companyId, Pageable pageable);
 
     Page<Employee> getEmployees(Pageable pageable);
 
-    String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate);
+    String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate, String userId);
 
-    String deleteEmployee(Long companyId, String employeeId);
+    String deleteEmployee(Long companyId, String employeeId, String userId);
 
 }

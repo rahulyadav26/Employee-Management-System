@@ -37,8 +37,6 @@ public class KafkaConfig {
 
     private static final Logger LOG = LogManager.getLogger(KafkaConfig.class);
 
-    @Autowired
-    private StringConstant stringConstant;
 
     @Bean
     public ProducerFactory<String, EmployeeInfoUpdate> producerFactoryEmpUpdate() {

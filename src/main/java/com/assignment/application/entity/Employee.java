@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -49,7 +50,6 @@ public class Employee implements Serializable {
 
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @UpdateTimestamp
     private Date createdAt;
 
     @Column(name = "created_by")

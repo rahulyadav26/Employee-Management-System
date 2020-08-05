@@ -4,24 +4,27 @@ import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
-import com.assignment.application.enums.EmployeeType;
-import com.assignment.application.enums.RoleName;
-import com.assignment.application.exception.*;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.EmptyUpdateException;
+import com.assignment.application.exception.InsufficientInformationException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
 import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeService;
 import com.assignment.application.update.EmployeeInfoUpdate;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Component
@@ -48,8 +51,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
 
+    @SneakyThrows
     @Override
-    public Employee addEmployee(Long companyId, Employee employee) {
+    public Employee addEmployee(Long companyId, Employee employee, String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);
@@ -67,28 +71,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (department == null || !department.getCompanyId().equals(companyId) || department.getIsActive() == 0) {
             throw new NotExistsException("No such department exists for such company");
         }
-        Employee checkEmployee =
-                employeeRepo.getEmployee(Base64.getEncoder().encodeToString(employee.getDob().getBytes()),
-                                         employee.getName().toUpperCase(), employee.getPhoneNumber());
-        if (checkEmployee != null && checkEmployee.getIsActive() == 1) {
-            throw new DuplicateDataException("Data Already Exists in database");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date minDate = formatter.parse("2002-01-01");
+        Date empDOB = formatter.parse(employee.getDob());
+        if (empDOB.compareTo(minDate) > 0) {
+            throw new InsufficientInformationException("Maximum dob can be 2002-01-01");
         }
-        if (checkEmployee != null) {
-            checkEmployee.setIsActive(1L);
-            checkEmployee.setUpdatedAt(new Date());
-            checkEmployee.setUpdatedBy("0");
-            employeeRepo.save(checkEmployee);
-            return checkEmployee;
-        }
-        //Employee employeeTemp = cachingInfo.addEmployee(employee);
-        //kafkaTemplateEmployee.send(EMPLOYEE_INFORMATION_TOPIC, employee);
-        employee.setEmployeeId(UUID.randomUUID().toString());
-        employee.setCreatedBy("0");
-        employee.setIsActive(1L);
-        employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
-        employee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
-        employee.setDob(Base64.getEncoder().encodeToString(employee.getDob().getBytes()));
-        return employeeRepo.save(employee);
+        //        kafkaTemplateEmployee.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employee);
+        return cachingInfo.addEmployee(companyId,employee, userId);
     }
 
     @Override
@@ -98,6 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new NotExistsException("No such company exists");
         }
         List<Long> departmentList = departmentRepo.getDepartmentOfCompany(companyId);
+        cachingInfo.getEmployeeOfComp(departmentList, companyId);
         return employeeRepo.getEmployeesOfCompany(departmentList, pageable);
     }
 
@@ -107,21 +98,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
+    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate,
+                                     String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException("No such company exists");
         }
-        if (employeeInfoUpdate == null) {
-            throw new EmptyUpdateException("Employee Update information is null");
+        if (employeeInfoUpdate == null || employeeInfoUpdate.getCurrentAddress() == null ||
+            employeeInfoUpdate.getCurrentAddress().isEmpty() || employeeInfoUpdate.getPermanentAddress() == null ||
+            employeeInfoUpdate.getPermanentAddress().isEmpty()) {
+            throw new EmptyUpdateException("Check Employee Update information");
         }
-        cachingInfo.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate);
         //kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
-        return StringConstant.UPDATE_SUCCESSFUL;
+        return cachingInfo.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate, userId);
     }
 
     @Override
-    public String deleteEmployee(Long companyId, String employeeId) {
+    public String deleteEmployee(Long companyId, String employeeId, String userId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
@@ -134,10 +127,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyId)) {
             throw new DataMismatchException("Company Id not valid for the given employee");
         }
-        cachingInfo.deleteEmployee(companyId, employeeId);
-        //        String[] str = employeeId.split("_");
-        //        redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED + employeeId);
-        //        redisService.findAndDelete(StringConstant.ACCESS_TOKEN_REGEX + str[1],Long.toString(companyId));
+        cachingInfo.deleteEmployee(companyId, employeeId, userId);
+        redisService.deleteKey(StringConstant.ACCESS_TOKEN_GENERATED + employeeId);
+        String[] employeeIdSplit = employeeId.split("-");
+        redisService.findAndDelete(StringConstant.ACCESS_TOKEN_REGEX + employeeIdSplit[0],
+                                   employeeIdSplit[employeeIdSplit.length - 1]);
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }
