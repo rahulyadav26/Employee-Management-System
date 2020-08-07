@@ -49,27 +49,32 @@ public class CachingInfo {
     }
 
     @Cacheable(value = "companyEmployeeList", key = "#companyId", condition = "#result==null")
-    public List<Employee> getEmployeeOfComp(List<Long> departments,Long companyId) {
+    public List<Employee> getEmployeeOfComp(List<Long> departments, Long companyId) {
         return employeeRepo.getEmployeesOfCompany(departments);
     }
 
-    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
-    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate, String userId) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate,
+                                     String userId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
         if (employee == null || employee.getIsActive() == 0) {
             throw new NotExistsException("No such employee exists");
         }
+        if((employee.getDepartmentId()==0 && companyId!=0) || (employee.getDepartmentId()!=0 && companyId==0)){
+            throw new DataMismatchException("Company Id not valid for employee");
+        }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive() == 0) {
+        if (employee.getDepartmentId()!=0 && (department == null || department.getIsActive() == 0)) {
             throw new NotExistsException("No such department exists");
         }
-        if (!department.getCompanyId().equals(companyId)) {
+        if (companyId!=0 && (!department.getCompanyId().equals(companyId))) {
             throw new DataMismatchException("Company Id is not valid for the given employee");
         }
-        if (employeeInfoUpdate.getCurrentAddress()!=null && !employeeInfoUpdate.getCurrentAddress().isEmpty()) {
+        if (employeeInfoUpdate.getCurrentAddress() != null && !employeeInfoUpdate.getCurrentAddress().isEmpty()) {
             employee.setCurrentAddress(employeeInfoUpdate.getCurrentAddress());
         }
-        if (employeeInfoUpdate.getCurrentAddress()!=null && !employeeInfoUpdate.getPermanentAddress().isEmpty()) {
+        if (employeeInfoUpdate.getCurrentAddress() != null && !employeeInfoUpdate.getPermanentAddress().isEmpty()) {
             employee.setPermanentAddress(employeeInfoUpdate.getPermanentAddress());
         }
         employee.setUpdatedAt(new Date());
@@ -78,11 +83,11 @@ public class CachingInfo {
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
-    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
-    public Employee addEmployee(Long companyId,Employee employee,String userId) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public Employee addEmployee(Long companyId, Employee employee, String userId) {
         Employee checkEmployee =
-                employeeRepo.getEmployee(Base64.getEncoder().encodeToString(employee.getDob().getBytes()),
-                                         employee.getName().toUpperCase(), employee.getPhoneNumber());
+                employeeRepo.getEmployeeByUniqueId(employee.getUniqueId());
         if (checkEmployee != null && checkEmployee.getIsActive() == 1) {
             throw new DuplicateDataException("Data Already Exists in database");
         }
@@ -119,13 +124,13 @@ public class CachingInfo {
         return str;
     }
 
-    @Cacheable(value = "generated" , key = "#employeeId")
+    @Cacheable(value = "generated", key = "#employeeId")
     public String updateTokenStatus(String employeeId) {
         return "true";
     }
 
-
-    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
     public String deleteEmployee(Long companyId, String employeeId, String userId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
         employee.setIsActive(0L);

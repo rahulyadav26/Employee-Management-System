@@ -47,18 +47,22 @@ public class VerifyUsers {
     public String employeeRole(Employee employee, String url, String type) {
         String[] urlSplit = url.split("/");
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive() == 0) {
+        if (employee.getDepartmentId() != 0 && (department == null || department.getIsActive() == 0)) {
             throw new NotExistsException("Not a valid user");
         }
-        Company company = companyRepo.findById(department.getCompanyId()).orElse(null);
-        if (company == null || company.getIsActive() == 0) {
+        Company company = null;
+        if (employee.getDepartmentId()!=0) {
+            companyRepo.findById(department.getCompanyId()).orElse(null);
+        }
+        if (employee.getDepartmentId() != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException("Not a valid user");
         }
         if (urlSplit.length == 3 &&
             (urlSplit[2].equalsIgnoreCase("salary") || urlSplit[2].equalsIgnoreCase("update-employee-info")) &&
             (type.equalsIgnoreCase("GET") || type.equalsIgnoreCase("PATCH"))) {
             if (urlSplit[1].equalsIgnoreCase(employee.getEmployeeId()) &&
-                urlSplit[0].equals(Long.toString(company.getId()))) {
+                ((urlSplit[0].equals("0") && employee.getDepartmentId()==0) ||
+                 (company!=null && urlSplit[0].equals(Long.toString(company.getId()))))) {
                 return employee.getEmployeeId();
             }
             throw new UnauthorisedException("Not allowed to access");

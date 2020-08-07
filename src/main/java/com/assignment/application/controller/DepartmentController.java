@@ -82,8 +82,9 @@ public class DepartmentController {
                                                        @RequestBody @Valid DepartmentUpdate departmentUpdate,
                                                        @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
         String userId = verifyUser.authorizeUser(token,
-                                 companyId + StringConstant.DEPARTMENT + "/" + departmentId + "/update-department",
-                                 StringConstant.PATCH);
+                                                 companyId + StringConstant.DEPARTMENT + "/" + departmentId +
+                                                 "/update-department",
+                                                 StringConstant.PATCH);
         departmentService.updateDepartmentInfo(companyId, departmentId, departmentUpdate, userId);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
@@ -93,7 +94,8 @@ public class DepartmentController {
                                                             @PathVariable(StringConstant.COMPANY_ID)
                                                             @NonNull Long companyId,
                                                             @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
-        String userId = verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT + "/" + id, StringConstant.DELETE);
+        String userId = verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT + "/" + id,
+                                                 StringConstant.DELETE);
         departmentService.deleteDepartmentOfCompany(id, companyId, userId);
         return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }

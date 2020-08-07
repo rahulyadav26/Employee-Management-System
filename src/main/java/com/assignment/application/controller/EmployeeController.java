@@ -4,6 +4,7 @@ import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.dto.EmployeeDTO;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.exception.UnauthorisedException;
 import com.assignment.application.service.interfaces.EmployeeService;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import com.assignment.application.util.EmployeeUtil;
@@ -36,6 +37,9 @@ public class EmployeeController {
                                                    @RequestBody @Valid EmployeeDTO employeeDTO,
                                                    @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
         String userId = verifyUsers.authorizeUser(token, companyId + StringConstant.EMPLOYEE, StringConstant.POST);
+        if(!userId.equals("0") && employeeDTO.getEmployeeType().equals("1")){
+            throw new UnauthorisedException("Not allowed to access");
+        }
         Employee employee = employeeUtil.convertToEntity(employeeDTO);
         employee = employeeService.addEmployee(companyId, employee, userId);
         return new ResponseEntity<>(employeeUtil.convertToDTO(employee), HttpStatus.OK);

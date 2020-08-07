@@ -1,11 +1,6 @@
 package com.assignment.application.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,11 +8,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "company_info")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Company implements Serializable {
+public class Company implements Serializable{
 
     @Id
     @Column(name = "id")
@@ -40,19 +34,16 @@ public class Company implements Serializable {
     private Long isActive = 1L;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
     @Column(name = "created_by")
     private String createdBy = "0";
 
     @Column(name = "updated_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
 
     @Column(name = "updated_by")
     private String updatedBy;
-
 
     public Company(String name, String industryType, String headOffice, String founder, Long isActive, Date createdAt,
                    String createdBy, Date updatedAt, String updatedBy) {

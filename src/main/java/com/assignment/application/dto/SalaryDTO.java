@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -24,7 +25,7 @@ public class SalaryDTO implements Serializable {
     @NotNull
     private Double salary;
 
-    @JsonProperty(value = "is_current")
-    private Long isCurrent;
+    @JsonProperty(value = "created_at")
+    private Date createdAt;
 
 }

@@ -24,6 +24,8 @@ import java.util.Base64;
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
+    private final Logger LOG = LogManager.getLogger(AuthInterceptor.class);
+
     @Autowired
     private EmployeeRepo employeeRepo;
 
@@ -36,9 +38,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private CompanyRepo companyRepo;
 
-    private final Logger LOG = LogManager.getLogger(AuthInterceptor.class);
-
-    private Long companyId = 0L;
+    private Long companyId = -1L;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -61,7 +61,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
                 }
                 throw new AuthenticationException("Password is incorrect");
             }
-            return authenticateCredential(userName,password);
+            return authenticateCredential(userName, password);
         }
         String accessToken = request.getHeader("access_token");
         return tokenAlreadyGenerated(accessToken);
@@ -84,7 +84,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
         Company company = companyRepo.findById(Long.parseLong(urlInfo[1])).orElse(null);
-        if (company != null && company.getIsActive()==1) {
+        if (urlInfo[1].equals("0") || (company != null && company.getIsActive() == 1)) {
             companyId = Long.parseLong(urlInfo[1]);
             return true;
         }
@@ -102,23 +102,24 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    public boolean authenticateCredential(String userName,String password){
+    public boolean authenticateCredential(String userName, String password) {
         Employee employee = employeeRepo.getEmployee(userName);
-        if (employee == null || employee.getIsActive()==0) {
+        if (employee == null || employee.getIsActive() == 0) {
             throw new NotExistsException("No such employee exists");
         }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive()==0) {
+        if (employee.getDepartmentId() != 0 && (department == null || department.getIsActive() == 0)) {
             throw new NotExistsException("Department doesn't exists");
         }
         String checkIfExist =
                 redisService.getKeyValue(StringConstant.ACCESS_TOKEN_GENERATED + employee.getEmployeeId());
         if (checkIfExist == null && employee.getEmployeeId().equalsIgnoreCase(userName) &&
-            employee.getDob().equalsIgnoreCase(password) && companyId != 0 &&
-            department.getCompanyId().equals(companyId)) {
+            employee.getDob().equalsIgnoreCase(password) && !companyId.equals(-1) &&
+            ((employee.getDepartmentId() == 0 && companyId == 0) ||
+             (employee.getDepartmentId() != 0 && department.getCompanyId().equals(companyId)))) {
             return true;
         }
-        if(checkIfExist!=null){
+        if (checkIfExist != null) {
             throw new AuthenticationException("Access token already generated");
         }
         throw new AuthenticationException("Invalid url or login credentials");

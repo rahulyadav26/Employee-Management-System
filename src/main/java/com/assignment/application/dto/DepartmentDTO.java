@@ -33,5 +33,4 @@ public class DepartmentDTO implements Serializable {
         this.head = head;
     }
 
-
 }

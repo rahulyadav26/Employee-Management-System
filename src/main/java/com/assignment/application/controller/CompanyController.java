@@ -45,9 +45,10 @@ public class CompanyController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<CompanyDTO>> getCompanyList(@RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token,
-                                                           Pageable pageable) {
-        verifyUsers.authorizeUser(token,"/" + StringConstant.COMPANY, StringConstant.GET);
+    public ResponseEntity<List<CompanyDTO>> getCompanyList(
+            @RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token,
+            Pageable pageable) {
+        verifyUsers.authorizeUser(token, "/" + StringConstant.COMPANY, StringConstant.GET);
         Page<Company> companyList = companyService.getCompanyList(pageable);
         List<CompanyDTO> companyDTOList = companyList.stream()
                                                      .map(companyDTO -> companyUtil.convertToDTO(companyDTO))
@@ -60,7 +61,8 @@ public class CompanyController {
             @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
             @RequestHeader(StringConstant.ACCESS_TOKEN) @Valid String token,
             Pageable pageable) {
-        verifyUsers.authorizeUser(token,  StringConstant.COMPANY + "/" + companyId + "/complete-info", StringConstant.GET);
+        verifyUsers.authorizeUser(token, StringConstant.COMPANY + "/" + companyId + "/complete-info",
+                                  StringConstant.GET);
         Page<CompleteInfo> objectList = companyService.getCompleteCompInfo(companyId, pageable);
         return new ResponseEntity<>(objectList.toList(), HttpStatus.OK);
     }
@@ -69,8 +71,9 @@ public class CompanyController {
     public ResponseEntity<String> updateCompanyInfo(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long id,
                                                     @RequestBody @Valid CompanyInfoUpdate companyInfoUpdate,
                                                     @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
-        String userId = verifyUsers.authorizeUser(token, StringConstant.COMPANY + "/" + id + "/company-update", StringConstant.PATCH);
-        companyService.updateCompanyInfo(id, companyInfoUpdate,userId);
+        String userId = verifyUsers.authorizeUser(token, StringConstant.COMPANY + "/" + id + "/company-update",
+                                                  StringConstant.PATCH);
+        companyService.updateCompanyInfo(id, companyInfoUpdate, userId);
         return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 

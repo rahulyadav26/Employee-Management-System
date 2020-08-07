@@ -18,9 +18,9 @@ public interface CompanyRepo extends JpaRepository<Company, Long> {
     List<Company> findAll();
 
     @Query(value = "Select new com.assignment.application.entity.CompleteInfo(emp.name as employeeName,emp.employeeId as employeeId,comp.id as companyId,deptList.departmentName as departmentName," +
-                   "emp.departmentId as departmentId,sal.salary as salary,emp.phoneNumber as phoneNumber,emp.currentAddress as currentAddress,emp.permanentAddress as permanentAddress) " +
+                   "emp.departmentId as departmentId,sal.salary as salary,emp.uniqueId as uniqueId,emp.currentAddress as currentAddress,emp.permanentAddress as permanentAddress) " +
                    "from Salary sal join sal.employee emp join emp.department dept join dept.departmentList deptList join dept.company comp where dept.companyId=?1 and dept.isActive=1 " +
-                   "and emp.isActive=1 and sal.isCurrent=1")
+                   "and emp.isActive=1 and sal.createdAt in (Select sala.createdAt from Salary sala where sala.updatedAt is null and sal.employeeId=sala.employeeId)")
     Page<CompleteInfo> getCompanyCompleteInfo(Long companyId, Pageable pageable);
 
 }

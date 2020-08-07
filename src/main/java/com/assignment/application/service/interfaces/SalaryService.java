@@ -10,14 +10,15 @@ import org.springframework.stereotype.Component;
 @Component
 public interface SalaryService {
 
-    Salary addSalary(Long companyId, String employeeId, Salary salary , String userId);
+    Salary addSalary(Long companyId, String employeeId, Salary salary, String userId);
 
     Page<Salary> getSalary(Long companyId, String employeeId, Pageable pageable);
 
     Page<Salary> getSalaryList(Pageable pageable);
 
-    String updateSalary(Long companyId, SalaryUpdate salaryUpdate,String userId);
+    String updateSalary(Long companyId, SalaryUpdate salaryUpdate, String userId);
 
-    String updateSalaryOfEmployee(Long companyId, String employeeId, SalaryEmployeeUpdate salaryEmployeeUpdate,String userId);
+    String updateSalaryOfEmployee(Long companyId, String employeeId, SalaryEmployeeUpdate salaryEmployeeUpdate,
+                                  String userId);
 
 }

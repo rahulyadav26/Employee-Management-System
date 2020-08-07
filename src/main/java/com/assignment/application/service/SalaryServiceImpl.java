@@ -28,8 +28,6 @@ import java.util.List;
 @Component
 public class SalaryServiceImpl implements SalaryService {
 
-    public final String SALARY_UPDATE_TOPIC = "SalaryUpdate";
-
     @Autowired
     private SalaryRepo salaryRepo;
 
@@ -54,14 +52,15 @@ public class SalaryServiceImpl implements SalaryService {
     public Salary addSalary(Long companyID, String employeeID, Salary salary, String userId) {
         Company company = companyRepo.findById(companyID).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeID);
-        if (company == null || company.getIsActive() == 0) {
+        if (companyID != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);
         }
         if (employee == null || employee.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_EMPLOYEE_EXISTS);
         }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyID)) {
+        if (companyID != 0 &&
+            (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyID))) {
             throw new NotExistsException(
                     "Either department for employee is not valid or employee doesn't belong to the specified company");
         }
@@ -72,7 +71,6 @@ public class SalaryServiceImpl implements SalaryService {
         if (checkSalary != null) {
             throw new DuplicateDataException("Employee salary exists you can update the salary using update url");
         }
-        salary.setIsCurrent(1L);
         salary.setCreatedBy(userId);
         salary.setEmployeeId(employeeID);
         salary.setCreatedAt(new Date());
@@ -84,17 +82,17 @@ public class SalaryServiceImpl implements SalaryService {
         Company company = companyRepo.findById(companyId).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeId);
         Page<Salary> salary = salaryRepo.getSalaryByEmployeeId(employeeId, pageable);
-        if (company == null || company.getIsActive() == 0) {
+        if (companyId != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException("Company not exists in database");
         }
         if (employee == null || employee.getIsActive() == 0 || salary.getTotalElements() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_EMPLOYEE_EXISTS);
         }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive() == 0) {
+        if (companyId != 0 && (department == null || department.getIsActive() == 0)) {
             throw new NotExistsException("Department not exists");
         }
-        if (!department.getCompanyId().equals(companyId)) {
+        if (companyId != 0 && !department.getCompanyId().equals(companyId)) {
             throw new DataMismatchException("Company Id not valid for this employee");
         }
         return salary;
@@ -139,7 +137,7 @@ public class SalaryServiceImpl implements SalaryService {
                                          String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if (company == null || company.getIsActive() == 0) {
+        if (companyId != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);
         }
         if (employee == null || employee.getIsActive() == 0) {
@@ -149,7 +147,8 @@ public class SalaryServiceImpl implements SalaryService {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
-        if (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyId)) {
+        if (companyId != 0 &&
+            (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyId))) {
             throw new NotExistsException("Company id is not valid for the employee");
         }
         List<Salary> salary = salaryRepo.getSalaryByEmployeeId(employeeId);
@@ -158,7 +157,6 @@ public class SalaryServiceImpl implements SalaryService {
         }
         Salary currentSalary = salaryRepo.getCurrentSalaryById(employeeId);
         if (currentSalary != null) {
-            currentSalary.setIsCurrent(0L);
             currentSalary.setUpdatedAt(new Date());
             currentSalary.setUpdatedBy(userId);
             salaryEmployeeUpdate.setValue(currentSalary.getSalary() + salaryEmployeeUpdate.getValue());
@@ -205,7 +203,7 @@ public class SalaryServiceImpl implements SalaryService {
         } else {
             throw new InsufficientInformationException("Subtype not valid");
         }
-        //kafkaTemplateSalary.send(SALARY_UPDATE_TOPIC, salaryUpdate);
+        kafkaTemplateSalary.send(StringConstant.SALARY_UPDATE_TOPIC, salaryUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 

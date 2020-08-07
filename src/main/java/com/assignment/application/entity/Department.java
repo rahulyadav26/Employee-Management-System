@@ -1,12 +1,5 @@
 package com.assignment.application.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -30,7 +23,6 @@ public class Department implements Serializable {
     private String head;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
     @Column(name = "updated_at")

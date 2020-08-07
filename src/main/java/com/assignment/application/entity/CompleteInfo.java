@@ -31,5 +31,5 @@ public class CompleteInfo implements Serializable {
 
     private String permanentAdd;
 
-    private String phoneNumber;
+    private String uniqueId;
 }

@@ -29,8 +29,6 @@ public class EmployeeDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty(value = "dob")
-    @NotNull(message = "DOB cannot be null")
-    @NotEmpty(message = "DOB cannot be empty")
     private LocalDate dob;
 
     @JsonProperty(value = "permanent_address")
@@ -39,10 +37,14 @@ public class EmployeeDTO {
     @JsonProperty(value = "current_address")
     private String currentAddress;
 
-    @JsonProperty(value = "phone_number")
-    private String phoneNumber;
+    @JsonProperty(value = "unique_id")
+    @NotNull
+    @NotEmpty
+    private String uniqueId;
 
     @JsonProperty(value = "employee_type")
+    @NotEmpty
+    @NotNull
     private String employeeType;
 
     @JsonProperty(value = "department_id")

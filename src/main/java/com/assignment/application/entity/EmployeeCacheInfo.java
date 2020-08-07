@@ -1,14 +1,10 @@
 package com.assignment.application.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeCacheInfo implements Serializable {
@@ -35,7 +31,6 @@ public class EmployeeCacheInfo implements Serializable {
     private String employeeId;
 
     private String role;
-
 
     public EmployeeCacheInfo(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber,
                              String position, Long departmentId, Long projectId, Long companyId, String employeeId,

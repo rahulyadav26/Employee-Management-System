@@ -1,12 +1,5 @@
 package com.assignment.application.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,11 +19,7 @@ public class Salary implements Serializable {
     @Column(name = "salary")
     private Double salary;
 
-    @Column(name = "is_current")
-    private Long isCurrent = 1L;
-
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
     @Column(name = "updated_at")
@@ -50,12 +39,11 @@ public class Salary implements Serializable {
 
     }
 
-    public Salary(Long id, String employeeId, Double salary, Long isCurrent, Date createdAt, Date updatedAt,
+    public Salary(Long id, String employeeId, Double salary, Date createdAt, Date updatedAt,
                   String createdBy, String updatedBy) {
         this.id = id;
         this.employeeId = employeeId;
         this.salary = salary;
-        this.isCurrent = isCurrent;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.createdBy = createdBy;
@@ -84,14 +72,6 @@ public class Salary implements Serializable {
 
     public void setSalary(Double salary) {
         this.salary = salary;
-    }
-
-    public Long getIsCurrent() {
-        return isCurrent;
-    }
-
-    public void setIsCurrent(Long isCurrent) {
-        this.isCurrent = isCurrent;
     }
 
     public Date getCreatedAt() {

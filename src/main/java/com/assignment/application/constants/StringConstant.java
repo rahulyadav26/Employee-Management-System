@@ -1,7 +1,5 @@
 package com.assignment.application.constants;
 
-import org.springframework.stereotype.Component;
-
 public class StringConstant {
 
     public static final String FAILED = "Failed";
@@ -31,6 +29,8 @@ public class StringConstant {
     public static final String COMPANY_ID_NOT_VALID_FOR_DEPARTMENT = "Company id not valid for the department";
 
     public static final String EMPLOYEE_INFORMATION_TOPIC = "EmployeeInformation";
+
+    public static final String SALARY_UPDATE_TOPIC = "SalaryUpdate";
 
     public static final String ACCESS_TOKEN = "access_token";
 

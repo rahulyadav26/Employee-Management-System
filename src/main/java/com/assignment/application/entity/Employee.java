@@ -1,10 +1,13 @@
 package com.assignment.application.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,11 +33,11 @@ public class Employee implements Serializable {
     @Column(name = "current_address")
     private String currentAddress;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(name = "unique_id")
+    private String uniqueId;
 
     @Column(name = "employee_type")
-    private String employeeType = "fte";
+    private String employeeType = "1";
 
     @Column(name = "department_id")
     private Long departmentId;
@@ -49,14 +52,12 @@ public class Employee implements Serializable {
     private Long isActive = 1L;
 
     @Column(name = "created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
 
     @Column(name = "created_by")
     private String createdBy = "0";
 
     @Column(name = "updated_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
 
     @Column(name = "updated_by")
@@ -64,6 +65,7 @@ public class Employee implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Department department;
 
     public Employee() {
@@ -71,14 +73,14 @@ public class Employee implements Serializable {
     }
 
     public Employee(Long id, String name, String dob, String permanentAddress, String currentAddress,
-                    String phoneNumber, String employeeType, Long departmentId, String employeeId, String roleName,
+                    String uniqueId, String employeeType, Long departmentId, String employeeId, String roleName,
                     Long isActive, Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.permanentAddress = permanentAddress;
         this.currentAddress = currentAddress;
-        this.phoneNumber = phoneNumber;
+        this.uniqueId = uniqueId;
         this.employeeType = employeeType;
         this.departmentId = departmentId;
         this.employeeId = employeeId;
@@ -130,12 +132,12 @@ public class Employee implements Serializable {
         this.currentAddress = currentAddress;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public String getEmployeeType() {
@@ -218,7 +220,7 @@ public class Employee implements Serializable {
                ", dob='" + dob + '\'' +
                ", permanentAddress='" + permanentAddress + '\'' +
                ", currentAddress='" + currentAddress + '\'' +
-               ", phoneNumber='" + phoneNumber + '\'' +
+               ", uniqueId='" + uniqueId + '\'' +
                ", employeeType='" + employeeType + '\'' +
                ", departmentId=" + departmentId +
                ", employeeId='" + employeeId + '\'' +

@@ -43,7 +43,8 @@ public class DepartmentListController {
 
     @GetMapping(value = "")
     public ResponseEntity<List<DepartmentListDTO>> getDepartments(Pageable pageable,
-                                                                  @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+                                                                  @RequestHeader(StringConstant.ACCESS_TOKEN)
+                                                                          String token) {
         verifyUsers.authorizeUser(token, StringConstant.DEPARTMENT_LIST, StringConstant.GET);
         Page<DepartmentList> departmentLists = departmentListService.getDepartments(pageable);
         List<DepartmentListDTO> departmentListDTOS =
