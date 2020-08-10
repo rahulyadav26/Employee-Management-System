@@ -90,7 +90,7 @@ public class KafkaConsumerListener {
     public String updateSalary(KafkaEmployee kafkaEmployee) {
         Employee employee = employeeRepo.getEmployee(kafkaEmployee.getEmployeeId());
         if (employee != null && employee.getIsActive() != 0) {
-            if (kafkaEmployee.getDepartmentId() == null || kafkaEmployee.getDepartmentId() == 0) {
+            if (employee.getDepartmentId() == null || employee.getDepartmentId() == 0) {
                 return salaryService.updateSalaryOfEmployee(0L, kafkaEmployee.getEmployeeId(),
                                                             new SalaryEmployeeUpdate(kafkaEmployee.getSalary()), "0");
             }

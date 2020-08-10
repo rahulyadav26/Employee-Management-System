@@ -37,7 +37,7 @@ public class Employee implements Serializable {
     private String uniqueId;
 
     @Column(name = "employee_type")
-    private String employeeType = "1";
+    private String employeeType;
 
     @Column(name = "department_id")
     private Long departmentId;
@@ -46,10 +46,10 @@ public class Employee implements Serializable {
     private String employeeId;
 
     @Column(name = "role_name")
-    private String roleName = "employee";
+    private String roleName;
 
     @Column(name = "is_active")
-    private Long isActive = 1L;
+    private Long isActive;
 
     @Column(name = "created_at")
     private Date createdAt;

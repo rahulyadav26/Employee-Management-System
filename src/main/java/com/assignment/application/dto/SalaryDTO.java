@@ -1,5 +1,6 @@
 package com.assignment.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class SalaryDTO implements Serializable {
     private Double salary;
 
     @JsonProperty(value = "created_at")
+    @JsonFormat(timezone = "Asia/Kolkata")
     private Date createdAt;
 
 }

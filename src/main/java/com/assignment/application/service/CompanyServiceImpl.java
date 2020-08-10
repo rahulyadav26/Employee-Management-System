@@ -49,6 +49,8 @@ public class CompanyServiceImpl implements CompanyService {
             checkCompany.setIsActive(1L);
             checkCompany.setUpdatedBy("0");
             checkCompany.setUpdatedAt(new Date());
+            checkCompany.setIndustryType(company.getIndustryType());
+            checkCompany.setHeadOffice(company.getHeadOffice());
             companyRepo.save(checkCompany);
             return checkCompany;
         }

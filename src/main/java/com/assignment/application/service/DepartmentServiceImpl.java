@@ -57,6 +57,8 @@ public class DepartmentServiceImpl implements DepartmentService {
             checkDepartment.setIsActive(1L);
             checkDepartment.setUpdatedAt(new Date());
             checkDepartment.setUpdatedBy(userId);
+            checkDepartment.setHead(department.getHead());
+            checkDepartment.setDepartmentId(department.getDepartmentId());
             return departmentRepo.save(checkDepartment);
         }
         department.setCompanyId(companyId);

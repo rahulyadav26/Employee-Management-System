@@ -4,6 +4,7 @@ import com.assignment.application.constants.StringConstant;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
+import com.assignment.application.enums.EmployeeType;
 import com.assignment.application.exception.DataMismatchException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.exception.InsufficientInformationException;
@@ -79,6 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employee.getEmployeeType().equals("1") && (department == null ||
                                                         !department.getCompanyId().equals(companyId) ||
                                                         department.getIsActive() == 0)) {
+            employee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
             throw new NotExistsException("No such department exists for such company");
         }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -115,9 +117,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (companyId != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException("No such company exists");
         }
-        if (employeeInfoUpdate == null || employeeInfoUpdate.getCurrentAddress() == null ||
-            employeeInfoUpdate.getCurrentAddress().isEmpty() || employeeInfoUpdate.getPermanentAddress() == null ||
-            employeeInfoUpdate.getPermanentAddress().isEmpty()) {
+        if (employeeInfoUpdate == null || ((employeeInfoUpdate.getCurrentAddress() == null ||
+            employeeInfoUpdate.getCurrentAddress().isEmpty()) && (employeeInfoUpdate.getPermanentAddress() == null ||
+            employeeInfoUpdate.getPermanentAddress().isEmpty()))) {
             throw new EmptyUpdateException("Check Employee Update information");
         }
         //kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);

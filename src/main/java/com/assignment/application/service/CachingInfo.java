@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import javax.management.relation.Role;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CachingInfo {
         if (employeeInfoUpdate.getCurrentAddress() != null && !employeeInfoUpdate.getCurrentAddress().isEmpty()) {
             employee.setCurrentAddress(employeeInfoUpdate.getCurrentAddress());
         }
-        if (employeeInfoUpdate.getCurrentAddress() != null && !employeeInfoUpdate.getPermanentAddress().isEmpty()) {
+        if (employeeInfoUpdate.getPermanentAddress() != null && !employeeInfoUpdate.getPermanentAddress().isEmpty()) {
             employee.setPermanentAddress(employeeInfoUpdate.getPermanentAddress());
         }
         employee.setUpdatedAt(new Date());
@@ -95,22 +96,31 @@ public class CachingInfo {
             checkEmployee.setIsActive(1L);
             checkEmployee.setUpdatedAt(new Date());
             checkEmployee.setUpdatedBy(userId);
+            checkEmployee.setDepartmentId(employee.getDepartmentId());
+            checkEmployee.setRoleName(employee.getRoleName());
+            if(employee.getEmployeeType().equals("0")) {
+                employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+            }
+            else{
+                employee.setRoleName(RoleName.EMPLOYEE.toString());
+            }
+            checkEmployee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
             employeeRepo.save(checkEmployee);
             return checkEmployee;
         }
         employee.setEmployeeId(UUID.randomUUID().toString());
         employee.setCreatedBy(userId);
         employee.setIsActive(1L);
-        employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+        if(employee.getEmployeeType().equals("0")) {
+            employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+        }
+        else{
+            employee.setRoleName(RoleName.EMPLOYEE.toString());
+        }
         employee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
         employee.setDob(Base64.getEncoder().encodeToString(employee.getDob().getBytes()));
         employee.setCreatedAt(new Date());
         return employeeRepo.save(employee);
-    }
-
-    //@CacheEvict(value = "companyCompleteInfo", key = "#companyId")
-    public void updateSalary(List<Salary> salaryList, Long companyId) {
-        salaryRepo.saveAll(salaryList);
     }
 
     @Cacheable(value = "accessToken", key = "#token")

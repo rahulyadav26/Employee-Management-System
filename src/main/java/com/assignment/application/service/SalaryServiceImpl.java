@@ -64,7 +64,7 @@ public class SalaryServiceImpl implements SalaryService {
             throw new NotExistsException(
                     "Either department for employee is not valid or employee doesn't belong to the specified company");
         }
-        if (salary == null || salary.getSalary() == null) {
+        if (salary == null || salary.getSalary() == null || salary.getSalary()<=0) {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
         Salary checkSalary = salaryRepo.getCurrentSalaryById(employeeID);
@@ -114,7 +114,7 @@ public class SalaryServiceImpl implements SalaryService {
         }
         if (salaryUpdate == null || salaryUpdate.getValue() == null || salaryUpdate.getType() == null ||
             salaryUpdate.getType().isEmpty() || salaryUpdate.getSubType() == null ||
-            salaryUpdate.getSubType().isEmpty()) {
+            salaryUpdate.getSubType().isEmpty() || salaryUpdate.getValue() == null || salaryUpdate.getValue() <= 0L) {
             throw new EmptyUpdateException("Salary Update info is not valid");
         }
         if (salaryUpdate.getType().equals("1") && salaryUpdate.getDepartmentId() == null) {
@@ -143,7 +143,8 @@ public class SalaryServiceImpl implements SalaryService {
         if (employee == null || employee.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_EMPLOYEE_EXISTS);
         }
-        if (salaryEmployeeUpdate == null || salaryEmployeeUpdate.getValue() == null) {
+        if (salaryEmployeeUpdate == null || salaryEmployeeUpdate.getValue() == null ||
+            salaryEmployeeUpdate.getValue() <= 0L) {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
