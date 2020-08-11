@@ -3,6 +3,7 @@ package com.assignment.application.controller;
 import com.assignment.application.authenticator.VerifyUsers;
 import com.assignment.application.constants.StringConstant;
 import com.assignment.application.dto.CompanyDTO;
+import com.assignment.application.entity.AccessToken;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.service.interfaces.CompanyService;
@@ -86,8 +87,8 @@ public class CompanyController {
     }
 
     @PostMapping(value = "/{company_id}/signUp")
-    public ResponseEntity<String> verifyUser(@RequestHeader("username") String username) {
-        return new ResponseEntity<>("Your access token is " + companyService.verifyUser(username), HttpStatus.OK);
+    public ResponseEntity<AccessToken> verifyUser(@RequestHeader("username") String username) {
+        return new ResponseEntity<>(companyService.verifyUser(username), HttpStatus.OK);
     }
 
 }

@@ -58,13 +58,16 @@ public class SalaryServiceImpl implements SalaryService {
         if (employee == null || employee.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_EMPLOYEE_EXISTS);
         }
+        if (companyID == 0 && !employee.getDepartmentId().equals(0)) {
+            throw new DataMismatchException("Company is not valid for this employee");
+        }
         Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
         if (companyID != 0 &&
             (department == null || department.getIsActive() == 0 || !department.getCompanyId().equals(companyID))) {
             throw new NotExistsException(
                     "Either department for employee is not valid or employee doesn't belong to the specified company");
         }
-        if (salary == null || salary.getSalary() == null || salary.getSalary()<=0) {
+        if (salary == null || salary.getSalary() == null || salary.getSalary() <= 0) {
             throw new InsufficientInformationException("Insufficient data found in request body");
         }
         Salary checkSalary = salaryRepo.getCurrentSalaryById(employeeID);
@@ -112,22 +115,16 @@ public class SalaryServiceImpl implements SalaryService {
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException("No such company exists");
         }
-        if (salaryUpdate == null || salaryUpdate.getValue() == null || salaryUpdate.getType() == null ||
-            salaryUpdate.getType().isEmpty() || salaryUpdate.getSubType() == null ||
+        if (salaryUpdate == null || salaryUpdate.getValue() == null || salaryUpdate.getSubType() == null ||
             salaryUpdate.getSubType().isEmpty() || salaryUpdate.getValue() == null || salaryUpdate.getValue() <= 0L) {
             throw new EmptyUpdateException("Salary Update info is not valid");
         }
-        if (salaryUpdate.getType().equals("1") && salaryUpdate.getDepartmentId() == null) {
-            throw new EmptyUpdateException("Please provide the department id");
-        }
-        if (salaryUpdate.getType().equals("0")) {
+        if (salaryUpdate.getDepartmentId() == null) {
             return updateCompanySalary(companyId, salaryUpdate, userId);
 
-        } else if (salaryUpdate.getType().equals("1")) {
+        } else {
             return updateDepartmentSalary(companyId, salaryUpdate, userId);
-
         }
-        throw new InsufficientInformationException("Type not valid");
     }
 
     @Override

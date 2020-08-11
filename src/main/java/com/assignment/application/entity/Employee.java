@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "employee")
-public class Employee implements Serializable {
+public class Employee extends CommonEntity implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -51,18 +51,6 @@ public class Employee implements Serializable {
     @Column(name = "is_active")
     private Long isActive;
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "created_by")
-    private String createdBy = "0";
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
-
-    @Column(name = "updated_by")
-    private String updatedBy;
-
     @OneToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
     @NotFound(action = NotFoundAction.IGNORE)
@@ -74,7 +62,7 @@ public class Employee implements Serializable {
 
     public Employee(Long id, String name, String dob, String permanentAddress, String currentAddress,
                     String uniqueId, String employeeType, Long departmentId, String employeeId, String roleName,
-                    Long isActive, Date createdAt, String createdBy, Date updatedAt, String updatedBy) {
+                    Long isActive) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -86,10 +74,6 @@ public class Employee implements Serializable {
         this.employeeId = employeeId;
         this.roleName = roleName;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
     }
 
     public Long getId() {
@@ -180,38 +164,6 @@ public class Employee implements Serializable {
         this.isActive = isActive;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     @Override
     public String toString() {
         return "Employee{" +
@@ -226,10 +178,6 @@ public class Employee implements Serializable {
                ", employeeId='" + employeeId + '\'' +
                ", roleName='" + roleName + '\'' +
                ", isActive=" + isActive +
-               ", createdAt=" + createdAt +
-               ", createdBy='" + createdBy + '\'' +
-               ", updatedAt=" + updatedAt +
-               ", updatedBy='" + updatedBy + '\'' +
                '}';
     }
 }

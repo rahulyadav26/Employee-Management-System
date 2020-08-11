@@ -1,9 +1,7 @@
 package com.assignment.application.service;
 
 import com.assignment.application.constants.StringConstant;
-import com.assignment.application.entity.Company;
-import com.assignment.application.entity.CompleteInfo;
-import com.assignment.application.entity.Employee;
+import com.assignment.application.entity.*;
 import com.assignment.application.exception.DuplicateDataException;
 import com.assignment.application.exception.EmptyUpdateException;
 import com.assignment.application.exception.InsufficientInformationException;
@@ -20,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -33,6 +32,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     private EmployeeRepo employeeRepo;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public Company createNewCompany(Company company) {
@@ -56,8 +58,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
         company.setCreatedBy("0");
         company.setCreatedAt(new Date());
-        companyRepo.save(company);
-        return company;
+        return companyRepo.save(company);
     }
 
     @Override
@@ -71,6 +72,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException(StringConstant.NO_SUCH_COMPANY_EXISTS);
         }
+        String str = redisService.getKeyValue("companyCompleteInfo::"+companyId);
         return cachingInfo.getCompanyCompleteInfo(company.getId(), pageable);
 
     }
@@ -113,12 +115,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public String verifyUser(String username) {
+    public AccessToken verifyUser(String username) {
+        AccessToken accessTokenVal = new AccessToken();
         if (username.equalsIgnoreCase("superadmin")) {
             String accessToken = UUID.randomUUID().toString();
             cachingInfo.tokenGenerate(accessToken, username);
             cachingInfo.updateTokenStatus(username);
-            return accessToken;
+            accessTokenVal.setAccessToken(accessToken);
+            return accessTokenVal;
         }
         Employee employee = employeeRepo.getEmployee(username);
         String[] employeeId = employee.getEmployeeId().split("-");
@@ -126,6 +130,7 @@ public class CompanyServiceImpl implements CompanyService {
                 employeeId[0] + "-" + UUID.randomUUID().toString() + "-" + employeeId[employeeId.length - 1];
         cachingInfo.tokenGenerate(accessToken, username);
         cachingInfo.updateTokenStatus(username);
-        return accessToken;
+        accessTokenVal.setAccessToken(accessToken);
+        return accessTokenVal;
     }
 }

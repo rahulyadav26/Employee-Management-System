@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepartmentList implements Serializable {
+public class DepartmentList extends CommonEntity implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -21,23 +21,7 @@ public class DepartmentList implements Serializable {
     @Column(name = "department_name")
     private String departmentName;
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
-
-    @Column(name = "created_by")
-    private String createdBy = "0";
-
-    @Column(name = "updated_by")
-    private String updatedBy;
-
-    public DepartmentList(String departmentName, Date createdAt, Date updatedAt, String createdBy, String updatedBy) {
+    public DepartmentList(String departmentName) {
         this.departmentName = departmentName;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
     }
 }

@@ -22,7 +22,7 @@ public class EmployeeUtil {
     public EmployeeDTO convertToDTO(Employee employee) {
         EmployeeDTO employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
         String dob = new String(Base64.getDecoder().decode(employee.getDob()));
-        employeeDTO.setDob(LocalDate.parse(dob));
+        employeeDTO.setDob(dob);
         return employeeDTO;
     }
 

@@ -14,14 +14,18 @@ import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.service.interfaces.EmployeeService;
 import com.assignment.application.update.EmployeeInfoUpdate;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -45,12 +49,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private DepartmentRepo departmentRepo;
 
-    @Autowired
-    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
-
-    @Autowired
-    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
-
     @SneakyThrows
     @Override
     public Employee addEmployee(Long companyId, Employee employee, String userId) {
@@ -69,7 +67,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         boolean isValid = Pattern.matches("\\d{12}", employee.getUniqueId());
         if (!isValid) {
-            throw new InsufficientInformationException("Phone number not valid");
+            throw new InsufficientInformationException("Aadhar number not valid");
+        }
+        isValid = Pattern.matches("\\d{4}-\\d{2}-\\d{2}",employee.getDob());
+        if(!isValid){
+            throw new InsufficientInformationException("DOB not valid");
         }
         Department department = null;
         if (employee.getEmployeeType().equals("0")) {
@@ -85,12 +87,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date empDOB = formatter.parse(employee.getDob());
+        if(!formatter.format(empDOB).equals(employee.getDob())){
+            throw new InsufficientInformationException("DOB is not valid");
+        }
         long diff = (new Date().getTime() - empDOB.getTime());
         diff = TimeUnit.MILLISECONDS.toDays(diff) / 365L;
         if (diff < 18) {
             throw new InsufficientInformationException("Child labour is a crime. You are not 18 yet.");
         }
-        kafkaTemplateEmployee.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employee);
         return cachingInfo.addEmployee(companyId, employee, userId);
     }
 
@@ -101,8 +105,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new NotExistsException("No such company exists");
         }
         List<Long> departmentList = departmentRepo.getDepartmentOfCompany(companyId);
-        cachingInfo.getEmployeeOfComp(departmentList, companyId);
-        return employeeRepo.getEmployeesOfCompany(departmentList, pageable);
+        return cachingInfo.getEmployeeOfComp(departmentList, companyId,pageable);
     }
 
     @Override
@@ -122,7 +125,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeInfoUpdate.getPermanentAddress().isEmpty()))) {
             throw new EmptyUpdateException("Check Employee Update information");
         }
-        //kafkaTemplateEmployeeUpdate.send(EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
         return cachingInfo.updateEmployeeInfo(employeeId, companyId, employeeInfoUpdate, userId);
     }
 

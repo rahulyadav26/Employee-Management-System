@@ -54,27 +54,6 @@ public class KafkaConsumerConfig {
         return containerFactory;
     }
 
-//    @Bean
-//    public ConsumerFactory<String, EmployeeDTO> consumerEmpFactory() {
-//        Map<String, Object> map = new HashMap<>();
-//        map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringConstant.HOSTNAME);
-//        map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-//        map.put(ConsumerConfig.GROUP_ID_CONFIG, "employee");
-//        ErrorHandlingDeserializer<EmployeeDTO> errorHandlingDeserializer =
-//                new ErrorHandlingDeserializer<>(new JsonDeserializer<>(EmployeeDTO.class));
-//
-//        return new DefaultKafkaConsumerFactory<>(map, new StringDeserializer(), errorHandlingDeserializer);
-//    }
-//
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, EmployeeDTO> concurrentEmpKafkaListenerContainerFactory() {
-//        ConcurrentKafkaListenerContainerFactory containerFactory = new ConcurrentKafkaListenerContainerFactory();
-//        containerFactory.setConsumerFactory(consumerFactory());
-//        //containerFactory.setErrorHandler(new KafkaErrorHandler());
-//        return containerFactory;
-//    }
-
     public class KafkaErrorHandler implements ErrorHandler, KafkaListenerErrorHandler {
         @Override
         public Object handleError(Message<?> message, ListenerExecutionFailedException e) {

@@ -14,6 +14,8 @@ import com.assignment.application.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Pattern;
+
 @Component
 public class VerifyUsers {
 
@@ -52,7 +54,7 @@ public class VerifyUsers {
         }
         Company company = null;
         if (employee.getDepartmentId()!=0) {
-            companyRepo.findById(department.getCompanyId()).orElse(null);
+            company = companyRepo.findById(department.getCompanyId()).orElse(null);
         }
         if (employee.getDepartmentId() != 0 && (company == null || company.getIsActive() == 0)) {
             throw new NotExistsException("Not a valid user");
@@ -77,6 +79,10 @@ public class VerifyUsers {
                 throw new UnauthorisedException("Not allowed to access");
             }
             if (url.equals("/company") || url.equals("/department") || url.equals("/salary")) {
+                throw new UnauthorisedException("Not allowed to access");
+            }
+            boolean isValid = Pattern.matches("company/\\d+",url);
+            if(isValid){
                 throw new UnauthorisedException("Not allowed to access");
             }
             Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);

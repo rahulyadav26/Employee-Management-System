@@ -16,9 +16,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class SalaryUpdate implements Serializable {
 
-    @JsonProperty(value = "type")
-    private String type;
-
     @JsonProperty(value = "subtype")
     private String subType;
 

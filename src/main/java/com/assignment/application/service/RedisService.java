@@ -1,6 +1,7 @@
 package com.assignment.application.service;
 
 import com.assignment.application.constants.StringConstant;
+import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.exception.NotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;

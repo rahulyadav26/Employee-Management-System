@@ -26,8 +26,12 @@ public class SalaryDTO implements Serializable {
     @NotNull
     private Double salary;
 
-    @JsonProperty(value = "created_at")
+    @JsonProperty(value = "from_date")
     @JsonFormat(timezone = "Asia/Kolkata")
     private Date createdAt;
+
+    @JsonProperty(value = "to_date")
+    @JsonFormat(timezone = "Asia/Kolkata")
+    private Date updatedAt;
 
 }

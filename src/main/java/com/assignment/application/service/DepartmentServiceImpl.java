@@ -12,6 +12,7 @@ import com.assignment.application.service.interfaces.DepartmentService;
 import com.assignment.application.update.DepartmentUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
-                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId"),
+                      @CacheEvict(value = "companyDepartmentList", key = "#companyId")})
     public Department addDepartment(Long companyId, Department department, String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         if (company == null || company.getIsActive() == 0) {
@@ -79,6 +81,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (company == null || company.getIsActive() == 0) {
             throw new NotExistsException("No such company exists");
         }
+        cachingInfo.companyDepartmentList(companyId);
         return departmentRepo.getDepartmentOfCompany(companyId, pageable);
     }
 
@@ -136,7 +139,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
-                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId"),
+                      @CacheEvict(value = "companyDepartmentList", key = "#companyId")})
     public String deleteDepartmentOfCompany(Long departmentId, Long companyId, String userId) {
         Company company = companyRepo.findById(companyId).orElse(null);
         Department department = departmentRepo.findById(departmentId).orElse(null);
@@ -150,6 +154,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         department.setUpdatedAt(new Date());
         department.setUpdatedBy(userId);
         departmentRepo.save(department);
+
         return StringConstant.DELETION_SUCCESSFUL;
     }
 }

@@ -16,11 +16,13 @@ import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.management.relation.Role;
@@ -44,14 +46,23 @@ public class CachingInfo {
     @Autowired
     private SalaryRepo salaryRepo;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Autowired
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
     @Cacheable(value = "companyCompleteInfo", key = "#companyId", condition = "#result==null")
     public Page<CompleteInfo> getCompanyCompleteInfo(Long companyId, Pageable pageable) {
         return companyRepo.getCompanyCompleteInfo(companyId, pageable);
     }
 
     @Cacheable(value = "companyEmployeeList", key = "#companyId", condition = "#result==null")
-    public List<Employee> getEmployeeOfComp(List<Long> departments, Long companyId) {
-        return employeeRepo.getEmployeesOfCompany(departments);
+    public Page<Employee> getEmployeeOfComp(List<Long> departments, Long companyId,Pageable pageable) {
+        return employeeRepo.getEmployeesOfCompany(departments,pageable);
     }
 
     @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
@@ -81,6 +92,7 @@ public class CachingInfo {
         employee.setUpdatedAt(new Date());
         employee.setUpdatedBy(userId);
         employeeRepo.save(employee);
+        kafkaTemplateEmployeeUpdate.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
@@ -97,7 +109,7 @@ public class CachingInfo {
             checkEmployee.setUpdatedAt(new Date());
             checkEmployee.setUpdatedBy(userId);
             checkEmployee.setDepartmentId(employee.getDepartmentId());
-            checkEmployee.setRoleName(employee.getRoleName());
+            checkEmployee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
             if(employee.getEmployeeType().equals("0")) {
                 employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
             }
@@ -120,6 +132,7 @@ public class CachingInfo {
         employee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
         employee.setDob(Base64.getEncoder().encodeToString(employee.getDob().getBytes()));
         employee.setCreatedAt(new Date());
+        kafkaTemplateEmployee.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employee);
         return employeeRepo.save(employee);
     }
 
@@ -148,6 +161,12 @@ public class CachingInfo {
         employee.setUpdatedBy(userId);
         employeeRepo.save(employee);
         return StringConstant.DELETION_SUCCESSFUL;
+    }
+
+    @Cacheable(value = "companyDepartmentList", key = "#companyId", condition = "#result==null")
+    public String companyDepartmentList(Long companyId){
+        List<Long> departmentList = departmentRepo.getDepartmentOfCompany(companyId);
+        return departmentList.toString();
     }
 
 }

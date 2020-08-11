@@ -88,7 +88,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             companyId = Long.parseLong(urlInfo[1]);
             return true;
         }
-        return false;
+        throw new NotExistsException("No such company exists");
     }
 
     public boolean tokenAlreadyGenerated(String accessToken) {

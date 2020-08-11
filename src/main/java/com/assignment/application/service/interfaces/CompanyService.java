@@ -1,5 +1,6 @@
 package com.assignment.application.service.interfaces;
 
+import com.assignment.application.entity.AccessToken;
 import com.assignment.application.entity.Company;
 import com.assignment.application.entity.CompleteInfo;
 import com.assignment.application.update.CompanyInfoUpdate;
@@ -20,6 +21,6 @@ public interface CompanyService {
 
     String deleteCompany(Long id);
 
-    String verifyUser(String username);
+    AccessToken verifyUser(String username);
 
 }

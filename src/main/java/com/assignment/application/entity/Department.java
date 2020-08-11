@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "department")
-public class Department implements Serializable {
+public class Department extends CommonEntity implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -22,18 +22,6 @@ public class Department implements Serializable {
     @Column(name = "head")
     private String head;
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
-
-    @Column(name = "created_by")
-    private String createdBy = "0";
-
-    @Column(name = "updated_by")
-    private String updatedBy;
-
     @Column(name = "is_active")
     private Long isActive = 1L;
 
@@ -48,28 +36,18 @@ public class Department implements Serializable {
     public Department() {
     }
 
-    public Department(Long companyId, Long departmentId, String head, Date createdAt, Date updatedAt, String createdBy,
-                      String updatedBy, Long isActive) {
+    public Department(Long companyId, Long departmentId, String head, Long isActive) {
         this.companyId = companyId;
         this.departmentId = departmentId;
         this.head = head;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
         this.isActive = isActive;
     }
 
-    public Department(Long id, Long companyId, Long departmentId, String head, Date createdAt, Date updatedAt,
-                      String createdBy, String updatedBy, Long isActive) {
+    public Department(Long id, Long companyId, Long departmentId, String head, Long isActive) {
         this.id = id;
         this.companyId = companyId;
         this.departmentId = departmentId;
         this.head = head;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
         this.isActive = isActive;
     }
 
@@ -103,38 +81,6 @@ public class Department implements Serializable {
 
     public void setHead(String head) {
         this.head = head;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
     }
 
     public Long getIsActive() {

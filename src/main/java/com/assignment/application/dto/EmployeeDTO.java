@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,7 +30,7 @@ public class EmployeeDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty(value = "dob")
-    private LocalDate dob;
+    private String dob;
 
     @JsonProperty(value = "permanent_address")
     private String permanentAddress;
@@ -57,5 +58,4 @@ public class EmployeeDTO {
     @NotEmpty(message = "Salary cannot be empty")
     @JsonProperty(value = "role_name")
     private String roleName;
-
 }
