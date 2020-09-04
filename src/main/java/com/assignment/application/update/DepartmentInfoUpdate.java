@@ -3,57 +3,26 @@ package com.assignment.application.update;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DepartmentInfoUpdate {
+public class DepartmentInfoUpdate implements Serializable {
 
-    @JsonProperty(value="head")
-    private String head;
+    @JsonProperty(value = "department_name")
+    private String departmentName;
 
-    @JsonProperty(value="employee_count")
-    private String employeeCount;
-
-    @JsonProperty(value="ongoing_project")
-    private String ongoingProject;
-
-    @JsonProperty(value="completed_project")
-    private String completedProject;
-
-    public String getHead() {
-        return head;
+    public DepartmentInfoUpdate() {
     }
 
-    public void setHead(String head) {
-        this.head = head;
+    public DepartmentInfoUpdate(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    public String getEmployeeCount() {
-        return employeeCount;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setEmployeeCount(String employeeCount) {
-        this.employeeCount = employeeCount;
-    }
-
-    public String getOngoingProject() {
-        return ongoingProject;
-    }
-
-    public void setOngoingProject(String ongoingProject) {
-        this.ongoingProject = ongoingProject;
-    }
-
-    public String getCompletedProject() {
-        return completedProject;
-    }
-
-    public void setCompletedProject(String completedProject) {
-        this.completedProject = completedProject;
-    }
-
-    public DepartmentInfoUpdate(String head, String employeeCount, String ongoingProject, String completedProject) {
-        this.head = head;
-        this.employeeCount = employeeCount;
-        this.ongoingProject = ongoingProject;
-        this.completedProject = completedProject;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }

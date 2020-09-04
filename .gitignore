@@ -18,6 +18,12 @@ target/
 *.iws
 *.iml
 *.ipr
+.DS_Store
+*.log
+app-info-2020-07-28.log
+app-info-2020-07-29.log
+app-info-2020-07-30.log
+app-info.log
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,3 +37,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/src/main/java/com/assignment/application/repo/

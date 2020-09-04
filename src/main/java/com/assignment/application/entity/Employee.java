@@ -1,57 +1,79 @@
 package com.assignment.application.entity;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="employee")
-public class Employee implements Serializable {
+@Table(name = "employee")
+public class Employee extends CommonEntity implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
+
+    @Column(name = "name")
     private String name;
-    @Column(name="dob")
+
+    @Column(name = "dob")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private String dob;
-    @Column(name="permanent_add")
-    private String permanentAdd;
-    @Column(name="current_add")
-    private String currentAdd;
-    @Column(name="phone_number")
-    private String phoneNumber;
-    @Column(name="position")
-    private String position;
-    @Column(name="dept_id")
+
+    @Column(name = "permanent_address")
+    private String permanentAddress;
+
+    @Column(name = "current_address")
+    private String currentAddress;
+
+    @Column(name = "unique_id")
+    private String uniqueId;
+
+    @Column(name = "employee_type")
+    private String employeeType;
+
+    @Column(name = "department_id")
     private Long departmentId;
-    @Column(name="project_id")
-    private Long projectId;
-    @Column(name="comp_id")
-    private Long companyId;
-    @Column(name="emp_id" , columnDefinition = "text")
+
+    @Column(name = "employee_id")
     private String employeeId;
+
+    @Column(name = "role_name")
+    private String roleName;
+
+    @Column(name = "is_active")
+    private Long isActive;
+
     @OneToOne
-    @JoinColumn(name="dept_id", referencedColumnName = "id",insertable=false, updatable=false)
+    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Department department;
 
-    public Employee(){
+    public Employee() {
 
     }
 
-    public Employee(String name, String dob, String permanentAdd, String currentAdd, String phoneNumber, String position, Long departmentId, Long projectId, Long companyId, String employeeId) {
+    public Employee(Long id, String name, String dob, String permanentAddress, String currentAddress,
+                    String uniqueId, String employeeType, Long departmentId, String employeeId, String roleName,
+                    Long isActive) {
+        this.id = id;
         this.name = name;
         this.dob = dob;
-        this.permanentAdd = permanentAdd;
-        this.currentAdd = currentAdd;
-        this.phoneNumber = phoneNumber;
-        this.position = position;
+        this.permanentAddress = permanentAddress;
+        this.currentAddress = currentAddress;
+        this.uniqueId = uniqueId;
+        this.employeeType = employeeType;
         this.departmentId = departmentId;
-        this.projectId = projectId;
-        this.companyId = companyId;
         this.employeeId = employeeId;
+        this.roleName = roleName;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -78,36 +100,36 @@ public class Employee implements Serializable {
         this.dob = dob;
     }
 
-    public String getPermanentAdd() {
-        return permanentAdd;
+    public String getPermanentAddress() {
+        return permanentAddress;
     }
 
-    public void setPermanentAdd(String permanentAdd) {
-        this.permanentAdd = permanentAdd;
+    public void setPermanentAddress(String permanentAddress) {
+        this.permanentAddress = permanentAddress;
     }
 
-    public String getCurrentAdd() {
-        return currentAdd;
+    public String getCurrentAddress() {
+        return currentAddress;
     }
 
-    public void setCurrentAdd(String currentAdd) {
-        this.currentAdd = currentAdd;
+    public void setCurrentAddress(String currentAddress) {
+        this.currentAddress = currentAddress;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
-    public String getPosition() {
-        return position;
+    public String getEmployeeType() {
+        return employeeType;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setEmployeeType(String employeeType) {
+        this.employeeType = employeeType;
     }
 
     public Long getDepartmentId() {
@@ -118,27 +140,44 @@ public class Employee implements Serializable {
         this.departmentId = departmentId;
     }
 
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
     public String getEmployeeId() {
         return employeeId;
     }
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Long getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Long isActive) {
+        this.isActive = isActive;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", dob='" + dob + '\'' +
+               ", permanentAddress='" + permanentAddress + '\'' +
+               ", currentAddress='" + currentAddress + '\'' +
+               ", uniqueId='" + uniqueId + '\'' +
+               ", employeeType='" + employeeType + '\'' +
+               ", departmentId=" + departmentId +
+               ", employeeId='" + employeeId + '\'' +
+               ", roleName='" + roleName + '\'' +
+               ", isActive=" + isActive +
+               '}';
     }
 }

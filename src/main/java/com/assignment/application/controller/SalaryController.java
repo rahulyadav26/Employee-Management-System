@@ -1,105 +1,92 @@
 package com.assignment.application.controller;
 
-
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.authenticator.VerifyUsers;
+import com.assignment.application.constants.StringConstant;
+import com.assignment.application.dto.SalaryDTO;
 import com.assignment.application.entity.Salary;
-import com.assignment.application.authenticator.VerifyUser;
-import com.assignment.application.service.interfaces.SalaryServiceI;
+import com.assignment.application.service.interfaces.SalaryService;
+import com.assignment.application.update.SalaryEmployeeUpdate;
 import com.assignment.application.update.SalaryUpdate;
+import com.assignment.application.util.SalaryUtil;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class SalaryController {
 
     @Autowired
-    private SalaryServiceI salaryServiceI;
-
+    private SalaryService salaryService;
 
     @Autowired
-    private VerifyUser verifyUser;
+    private VerifyUsers verifyUsers;
 
+    @Autowired
+    private SalaryUtil salaryUtil;
 
+    @PostMapping(value = "{company_id}/{emp_id}/salary")
+    public ResponseEntity<SalaryDTO> addSalaryInfo(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+                                                   @PathVariable("emp_id") @NonNull String employeeId,
+                                                   @RequestBody @Valid SalaryDTO salaryDTO,
+                                                   @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
 
-    @PostMapping(value = "{comp_id}/{emp_id}/salary")
-    public ResponseEntity<Salary> addSalaryInfo(@PathVariable("comp_id") Long companyId,
-                                                @PathVariable("emp_id") String employeeId,
-                                                @RequestBody Salary salary,
-                                                @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password) {
-        try {
-            if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-                Salary salaryToBeAdded = salaryServiceI.addSalary(companyId, employeeId, salary);
-                if (salary == null) {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-                return new ResponseEntity<>(salaryToBeAdded, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        String userId = verifyUsers.authorizeUser(token, companyId + "/" + employeeId + StringConstant.SALARY,
+                                                  StringConstant.POST);
+        Salary salary = salaryUtil.convertToEntity(salaryDTO);
+        salary = salaryService.addSalary(companyId, employeeId, salary, userId);
+        return new ResponseEntity<>(salaryUtil.convertToDTO(salary), HttpStatus.OK);
     }
 
-    @GetMapping(value = "{comp_id}/{emp_id}/salary")
-    public ResponseEntity<Salary> getSalaryInfo(@PathVariable("comp_id") Long companyId,
-                                                @PathVariable("emp_id") String employeeId,
-                                                @RequestHeader("username") String username,
-                                                @RequestHeader("password") String password) {
-        try {
-            if (verifyUser.authorizeUser(username, password) == 1 || (verifyUser.authorizeEmployee(username, password) == 1 && employeeId.equalsIgnoreCase(username))) {
-                Salary salary = salaryServiceI.getSalary(companyId, employeeId);
-                if (salary == null) {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-                return new ResponseEntity<>(salary, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping(value = "{company_id}/{emp_id}/salary")
+    public ResponseEntity<List<SalaryDTO>> getSalaryInfo(
+            @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+            @PathVariable("emp_id") @NonNull String employeeId,
+            @RequestHeader(StringConstant.ACCESS_TOKEN) String token,
+            Pageable pageable) {
+        verifyUsers.authorizeUser(token, companyId + "/" + employeeId + StringConstant.SALARY, StringConstant.GET);
+        Page<Salary> salary = salaryService.getSalary(companyId, employeeId, pageable);
+        return new ResponseEntity<>(
+                salary.stream().map(salaryEntity -> salaryUtil.convertToDTO(salaryEntity)).collect(Collectors.toList()),
+                HttpStatus.OK);
     }
 
     @GetMapping(value = "/salary")
-    public ResponseEntity<List<Salary>> getSalaryList(@RequestHeader("username") String username,
-                                                      @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            List<Salary> salaryList = salaryServiceI.getSalaryList();
-            if (salaryList == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(salaryList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<List<SalaryDTO>> getSalaryList(@RequestHeader(StringConstant.ACCESS_TOKEN) String token,
+                                                         Pageable pageable) {
+        verifyUsers.authorizeUser(token, StringConstant.SALARY, StringConstant.GET);
+        Page<Salary> salaryList = salaryService.getSalaryList(pageable);
+        return new ResponseEntity<>(
+                salaryList.stream().map(salary -> salaryUtil.convertToDTO(salary)).collect(Collectors.toList()),
+                HttpStatus.OK);
     }
 
-    @PatchMapping(value = "{comp_id}/salary-update")
-    public ResponseEntity<String> updateSalary(@PathVariable("comp_id") Long companyId,
-                                               @RequestBody SalaryUpdate salaryUpdate,
-                                               @RequestHeader("username") String username,
-                                               @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            if (salaryServiceI.updateSalary(companyId, salaryUpdate).equalsIgnoreCase(StringConstant.UPDATE_SUCCESSFUL)) {
-                return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    @PatchMapping(value = "{company_id}/salary-update")
+    public ResponseEntity<String> updateSalary(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+                                               @RequestBody @Valid SalaryUpdate salaryUpdate,
+                                               @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId = verifyUsers.authorizeUser(token, companyId + "/salary-update", StringConstant.PATCH);
+        salaryService.updateSalary(companyId, salaryUpdate, userId);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
+
+    @PatchMapping(value = "{company_id}/{emp_id}/update-salary")
+    public ResponseEntity<String> updateSalaryOfEmployee(
+            @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+            @PathVariable("emp_id") @NonNull String employeeId,
+            @RequestBody @Valid SalaryEmployeeUpdate salaryEmployeeUpdate,
+            @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId =
+                verifyUsers.authorizeUser(token, companyId + "/" + employeeId + "/update-salary", StringConstant.PATCH);
+        salaryService.updateSalaryOfEmployee(companyId, employeeId, salaryEmployeeUpdate, userId);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
+    }
+
 }

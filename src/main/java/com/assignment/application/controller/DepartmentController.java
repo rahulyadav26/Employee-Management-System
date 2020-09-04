@@ -1,119 +1,103 @@
 package com.assignment.application.controller;
 
-import com.assignment.application.Constants.StringConstant;
+import com.assignment.application.authenticator.VerifyUsers;
+import com.assignment.application.constants.StringConstant;
+import com.assignment.application.dto.DepartmentDTO;
 import com.assignment.application.entity.Department;
-import com.assignment.application.authenticator.VerifyUser;
-import com.assignment.application.service.interfaces.DepartmentServiceI;
-import com.assignment.application.update.DepartmentInfoUpdate;
+import com.assignment.application.service.interfaces.DepartmentService;
+import com.assignment.application.update.DepartmentUpdate;
+import com.assignment.application.util.DepartmentUtil;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class DepartmentController {
 
     @Autowired
-    private DepartmentServiceI departmentServiceI;
+    private DepartmentService departmentService;
 
     @Autowired
-    private VerifyUser verifyUser;
+    private VerifyUsers verifyUser;
+
+    @Autowired
+    private DepartmentUtil departmentUtil;
 
     @PostMapping(value = "/{company_id}/department")
-    public ResponseEntity<Department> addDepartment(@PathVariable("company_id") Long companyId,
-                                                    @RequestBody Department department,
-                                                    @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            Department departmentToBeAdded = departmentServiceI.addDepartment(companyId, department);
-            if (departmentToBeAdded == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(departmentToBeAdded, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<DepartmentDTO> addDepartment(@PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+                                                       @RequestBody @Valid DepartmentDTO departmentDTO,
+                                                       @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId = verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT, StringConstant.POST);
+        Department department = departmentUtil.convertToEntity(departmentDTO);
+        department = departmentService.addDepartment(companyId, department, userId);
+        return new ResponseEntity<>(departmentUtil.convertToDTO(department), HttpStatus.OK);
     }
 
     @GetMapping(value = "/department")
-    public ResponseEntity<List<Department>> getDepartments(@RequestHeader("username") String username,
-                                                           @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            return new ResponseEntity<>(departmentServiceI.getDepartments(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<List<DepartmentDTO>> getDepartments(@RequestHeader(StringConstant.ACCESS_TOKEN) String token,
+                                                              Pageable pageable) {
+        verifyUser.authorizeUser(token, StringConstant.DEPARTMENT, StringConstant.GET);
+        Page<Department> departmentList = departmentService.getDepartments(pageable);
+        List<DepartmentDTO> departmentDTOS =
+                departmentList.stream()
+                              .map(department -> departmentUtil.convertToDTO(department))
+                              .collect(Collectors.toList());
+        return new ResponseEntity<>(departmentDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{company_id}/department")
+    public ResponseEntity<List<DepartmentDTO>> getDepartmentOfCompany(
+            @RequestHeader(StringConstant.ACCESS_TOKEN) String token,
+            @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+            Pageable pageable) {
+        verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT, StringConstant.GET);
+        Page<Department> departmentList = departmentService.getDepartmentsOfCompany(companyId, pageable);
+        List<DepartmentDTO> departmentDTOS =
+                departmentList.stream()
+                              .map(department -> departmentUtil.convertToDTO(department))
+                              .collect(Collectors.toList());
+        return new ResponseEntity<>(departmentDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{company_id}/department/{id}")
-    public ResponseEntity<Department> getDepartment(@PathVariable("id") Long id,
-                                                    @PathVariable("company_id") Long companyId,
-                                                    @RequestHeader("username") String username,
-                                                    @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            Department department = departmentServiceI.getDepartment(companyId, id);
-            if (department == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(department, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable("id") @NonNull Long id,
+                                                       @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+                                                       @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT + "/" + id, StringConstant.GET);
+        Department department = departmentService.getDepartment(companyId, id);
+        return new ResponseEntity<>(departmentUtil.convertToDTO(department), HttpStatus.OK);
     }
 
     @PatchMapping(value = "/{company_id}/department/{id}/update-department")
-    public ResponseEntity<String> updateDepartmentInfo(@PathVariable("id") Long id,
-                                                       @PathVariable("company_id") Long companyId,
-                                                       @RequestBody DepartmentInfoUpdate departmentInfoUpdate,
-                                                       @RequestHeader("username") String username,
-                                                       @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            if (departmentServiceI.updateDepartmentInfo(companyId, id, departmentInfoUpdate).equals(StringConstant.UPDATE_SUCCESSFUL)) {
-                return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> updateDepartmentInfo(@PathVariable("id") @NonNull Long departmentId,
+                                                       @PathVariable(StringConstant.COMPANY_ID) @NonNull Long companyId,
+                                                       @RequestBody @Valid DepartmentUpdate departmentUpdate,
+                                                       @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId = verifyUser.authorizeUser(token,
+                                                 companyId + StringConstant.DEPARTMENT + "/" + departmentId +
+                                                 "/update-department",
+                                                 StringConstant.PATCH);
+        departmentService.updateDepartmentInfo(companyId, departmentId, departmentUpdate, userId);
+        return new ResponseEntity<>(StringConstant.UPDATE_SUCCESSFUL, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{company_id}/department/{id}")
-    public ResponseEntity<String> deleteDepartmentOfCompany(@PathVariable("id") Long id,
-                                                            @PathVariable("company_id") Long companyId,
-                                                            @RequestHeader("username") String username,
-                                                            @RequestHeader("password") String password) {
-        try {
-            int status = verifyUser.authorizeUser(username, password);
-            if (status == 0) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-            if (departmentServiceI.deleteDepartmentOfCompany(id, companyId).equalsIgnoreCase(StringConstant.DELETION_SUCCESSFUL)) {
-                return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(StringConstant.INVALID_CREDENTIALS, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteDepartmentOfCompany(@PathVariable("id") @NonNull Long id,
+                                                            @PathVariable(StringConstant.COMPANY_ID)
+                                                            @NonNull Long companyId,
+                                                            @RequestHeader(StringConstant.ACCESS_TOKEN) String token) {
+        String userId = verifyUser.authorizeUser(token, companyId + StringConstant.DEPARTMENT + "/" + id,
+                                                 StringConstant.DELETE);
+        departmentService.deleteDepartmentOfCompany(id, companyId, userId);
+        return new ResponseEntity<>(StringConstant.DELETION_SUCCESSFUL, HttpStatus.OK);
     }
 
 }

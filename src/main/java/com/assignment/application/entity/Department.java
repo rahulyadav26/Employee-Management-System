@@ -2,49 +2,53 @@ package com.assignment.application.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="department")
-public class Department implements Serializable {
+@Table(name = "department")
+public class Department extends CommonEntity implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
-    private String name;
-    @Column(name="comp_id")
+
+    @Column(name = "company_id")
     private Long companyId;
-    @Column(name="employee_count")
-    private Long employeeCount;
-    @Column(name="ongoing_project")
-    private Long ongoingProject;
-    @Column(name="completed_project")
-    private Long completedProject;
-    @Column(name="head")
+
+    @Column(name = "department_id")
+    private Long departmentId;
+
+    @Column(name = "head")
     private String head;
 
-    public Department(){
+    @Column(name = "is_active")
+    private Long isActive = 1L;
 
+    @OneToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Company company;
+
+    @OneToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private DepartmentList departmentList;
+
+    public Department() {
     }
 
-    public Department(Long id, String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
+    public Department(Long companyId, Long departmentId, String head, Long isActive) {
+        this.companyId = companyId;
+        this.departmentId = departmentId;
+        this.head = head;
+        this.isActive = isActive;
+    }
+
+    public Department(Long id, Long companyId, Long departmentId, String head, Long isActive) {
         this.id = id;
-        this.name = name;
         this.companyId = companyId;
-        this.employeeCount = employeeCount;
-        this.ongoingProject = ongoingProject;
-        this.completedProject = completedProject;
+        this.departmentId = departmentId;
         this.head = head;
-    }
-
-    public Department(String name, Long companyId, Long employeeCount, Long ongoingProject, Long completedProject, String head) {
-        this.name = name;
-        this.companyId = companyId;
-        this.employeeCount = employeeCount;
-        this.ongoingProject = ongoingProject;
-        this.completedProject = completedProject;
-        this.head = head;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -55,14 +59,6 @@ public class Department implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Long getCompanyId() {
         return companyId;
     }
@@ -71,28 +67,12 @@ public class Department implements Serializable {
         this.companyId = companyId;
     }
 
-    public Long getEmployeeCount() {
-        return employeeCount;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setEmployeeCount(Long employeeCount) {
-        this.employeeCount = employeeCount;
-    }
-
-    public Long getOngoingProject() {
-        return ongoingProject;
-    }
-
-    public void setOngoingProject(Long ongoingProject) {
-        this.ongoingProject = ongoingProject;
-    }
-
-    public Long getCompletedProject() {
-        return completedProject;
-    }
-
-    public void setCompletedProject(Long completedProject) {
-        this.completedProject = completedProject;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
     public String getHead() {
@@ -101,5 +81,13 @@ public class Department implements Serializable {
 
     public void setHead(String head) {
         this.head = head;
+    }
+
+    public Long getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Long isActive) {
+        this.isActive = isActive;
     }
 }

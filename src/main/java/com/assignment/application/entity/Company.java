@@ -1,104 +1,43 @@
 package com.assignment.application.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="company_info")
-public class Company {
+@Table(name = "company_info")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Company extends CommonEntity implements Serializable{
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="name")
+
+    @Column(name = "name")
     private String name;
-    @Column(name="industry_type")
+
+    @Column(name = "industry_type")
     private String industryType;
-    @Column(name="employee_count")
-    private Long employeeCount;
-    @Column(name="head_office")
+
+    @Column(name = "head_office")
     private String headOffice;
-    @Column(name="founder")
+
+    @Column(name = "founder")
     private String founder;
 
-    public Company(){
+    @Column(name = "is_active")
+    private Long isActive = 1L;
 
-    }
-
-    public Company(Long id, String name, String industryType, Long employeeCount, String headOffice, String founder) {
-        this.id = id;
+    public Company(String name, String industryType, String headOffice, String founder, Long isActive) {
         this.name = name;
         this.industryType = industryType;
-        this.employeeCount = employeeCount;
         this.headOffice = headOffice;
         this.founder = founder;
-    }
-
-    public Company(String name, String industryType, Long employeeCount, String headOffice, String founder) {
-        this.name = name;
-        this.industryType = industryType;
-        this.employeeCount = employeeCount;
-        this.headOffice = headOffice;
-        this.founder = founder;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIndustryType() {
-        return industryType;
-    }
-
-    public void setIndustryType(String industryType) {
-        this.industryType = industryType;
-    }
-
-    public Long getEmployeeCount() {
-        return employeeCount;
-    }
-
-    public void setEmployeeCount(Long employeeCount) {
-        this.employeeCount = employeeCount;
-    }
-
-    public String getHeadOffice() {
-        return headOffice;
-    }
-
-    public void setHeadOffice(String headOffice) {
-        this.headOffice = headOffice;
-    }
-
-    public String getFounder() {
-        return founder;
-    }
-
-    public void setFounder(String founder) {
-        this.founder = founder;
-    }
-
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", industryType='" + industryType + '\'' +
-                ", employeeCount=" + employeeCount +
-                ", headOffice='" + headOffice + '\'' +
-                ", founder='" + founder + '\'' +
-                '}';
+        this.isActive = isActive;
     }
 }

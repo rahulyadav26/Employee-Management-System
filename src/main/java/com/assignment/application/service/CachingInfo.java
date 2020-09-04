@@ -1,20 +1,35 @@
 package com.assignment.application.service;
 
-import com.assignment.application.Constants.StringConstant;
-import com.assignment.application.entity.CompleteCompInfo;
+import com.assignment.application.constants.StringConstant;
+import com.assignment.application.entity.CompleteInfo;
+import com.assignment.application.entity.Department;
 import com.assignment.application.entity.Employee;
 import com.assignment.application.entity.Salary;
+import com.assignment.application.enums.EmployeeType;
+import com.assignment.application.enums.RoleName;
+import com.assignment.application.exception.DataMismatchException;
+import com.assignment.application.exception.DuplicateDataException;
+import com.assignment.application.exception.NotExistsException;
 import com.assignment.application.repo.CompanyRepo;
+import com.assignment.application.repo.DepartmentRepo;
 import com.assignment.application.repo.EmployeeRepo;
 import com.assignment.application.repo.SalaryRepo;
 import com.assignment.application.update.EmployeeInfoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.management.relation.Role;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class CachingInfo {
@@ -26,50 +41,132 @@ public class CachingInfo {
     private EmployeeRepo employeeRepo;
 
     @Autowired
+    private DepartmentRepo departmentRepo;
+
+    @Autowired
     private SalaryRepo salaryRepo;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private KafkaTemplate<String, EmployeeInfoUpdate> kafkaTemplateEmployeeUpdate;
+
+    @Autowired
+    private KafkaTemplate<String, Employee> kafkaTemplateEmployee;
+
     @Cacheable(value = "companyCompleteInfo", key = "#companyId", condition = "#result==null")
-    public List<CompleteCompInfo> getCompanyCompleteInfo(Long companyId) {
-        List<CompleteCompInfo> companyInfoList = companyRepo.getCompanyCompleteInfo(companyId);
-        return companyInfoList;
+    public Page<CompleteInfo> getCompanyCompleteInfo(Long companyId, Pageable pageable) {
+        return companyRepo.getCompanyCompleteInfo(companyId, pageable);
     }
 
     @Cacheable(value = "companyEmployeeList", key = "#companyId", condition = "#result==null")
-    public List<Employee> getEmployeeOfComp(Long companyId) {
-        List<Employee> employeesList = employeeRepo.getAllEmpByCompId(companyId);
-        return employeesList;
+    public Page<Employee> getEmployeeOfComp(List<Long> departments, Long companyId,Pageable pageable) {
+        return employeeRepo.getEmployeesOfCompany(departments,pageable);
     }
 
-    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
-    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public String updateEmployeeInfo(String employeeId, Long companyId, EmployeeInfoUpdate employeeInfoUpdate,
+                                     String userId) {
         Employee employee = employeeRepo.getEmployee(employeeId);
-        if (employee == null || !employee.getCompanyId().equals(companyId)) {
-            return StringConstant.INVALID_CREDENTIALS;
+        if (employee == null || employee.getIsActive() == 0) {
+            throw new NotExistsException("No such employee exists");
         }
-        if (!employeeInfoUpdate.getCurrentAddress().isEmpty()) {
-            employee.setCurrentAdd(employeeInfoUpdate.getCurrentAddress());
+        if((employee.getDepartmentId()==0 && companyId!=0) || (employee.getDepartmentId()!=0 && companyId==0)){
+            throw new DataMismatchException("Company Id not valid for employee");
         }
-        if (!employeeInfoUpdate.getPermanentAddress().isEmpty()) {
-            employee.setPermanentAdd(employeeInfoUpdate.getPermanentAddress());
+        Department department = departmentRepo.findById(employee.getDepartmentId()).orElse(null);
+        if (employee.getDepartmentId()!=0 && (department == null || department.getIsActive() == 0)) {
+            throw new NotExistsException("No such department exists");
         }
-        if (!employeeInfoUpdate.getPosition().isEmpty()) {
-            employee.setPosition(employeeInfoUpdate.getPosition());
+        if (companyId!=0 && (!department.getCompanyId().equals(companyId))) {
+            throw new DataMismatchException("Company Id is not valid for the given employee");
         }
-        if (!employeeInfoUpdate.getPhoneNumber().isEmpty()) {
-            employee.setPhoneNumber(employeeInfoUpdate.getPhoneNumber());
+        if (employeeInfoUpdate.getCurrentAddress() != null && !employeeInfoUpdate.getCurrentAddress().isEmpty()) {
+            employee.setCurrentAddress(employeeInfoUpdate.getCurrentAddress());
         }
+        if (employeeInfoUpdate.getPermanentAddress() != null && !employeeInfoUpdate.getPermanentAddress().isEmpty()) {
+            employee.setPermanentAddress(employeeInfoUpdate.getPermanentAddress());
+        }
+        employee.setUpdatedAt(new Date());
+        employee.setUpdatedBy(userId);
         employeeRepo.save(employee);
+        kafkaTemplateEmployeeUpdate.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employeeInfoUpdate);
         return StringConstant.UPDATE_SUCCESSFUL;
     }
 
-    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"), @CacheEvict(value = "companyCompleteInfo", key = "#employee.companyId")})
-    public Employee addEmployee(Employee employee, Long companyId) {
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public Employee addEmployee(Long companyId, Employee employee, String userId) {
+        Employee checkEmployee =
+                employeeRepo.getEmployeeByUniqueId(employee.getUniqueId());
+        if (checkEmployee != null && checkEmployee.getIsActive() == 1) {
+            throw new DuplicateDataException("Data Already Exists in database");
+        }
+        if (checkEmployee != null) {
+            checkEmployee.setIsActive(1L);
+            checkEmployee.setUpdatedAt(new Date());
+            checkEmployee.setUpdatedBy(userId);
+            checkEmployee.setDepartmentId(employee.getDepartmentId());
+            checkEmployee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+            if(employee.getEmployeeType().equals("0")) {
+                employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+            }
+            else{
+                employee.setRoleName(RoleName.EMPLOYEE.toString());
+            }
+            checkEmployee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
+            employeeRepo.save(checkEmployee);
+            return checkEmployee;
+        }
+        employee.setEmployeeId(UUID.randomUUID().toString());
+        employee.setCreatedBy(userId);
+        employee.setIsActive(1L);
+        if(employee.getEmployeeType().equals("0")) {
+            employee.setRoleName(RoleName.getRoleName(employee.getRoleName()));
+        }
+        else{
+            employee.setRoleName(RoleName.EMPLOYEE.toString());
+        }
+        employee.setEmployeeType(EmployeeType.getEmployeeType(employee.getEmployeeType()));
+        employee.setDob(Base64.getEncoder().encodeToString(employee.getDob().getBytes()));
+        employee.setCreatedAt(new Date());
+        kafkaTemplateEmployee.send(StringConstant.EMPLOYEE_INFORMATION_TOPIC, employee);
         return employeeRepo.save(employee);
     }
 
-    @CacheEvict(value = "companyCompleteInfo", key = "#companyId")
-    public void updateSalary(List<Salary> salaryList, Long companyId) {
-        salaryRepo.saveAll(salaryList);
+    @Cacheable(value = "accessToken", key = "#token")
+    public String tokenGenerate(String token, String username) {
+        if (username.equalsIgnoreCase("superadmin")) {
+            String str = "superadmin";
+            return str;
+        }
+        Employee employee = employeeRepo.getEmployee(username);
+        String str = employee.toString();
+        return str;
+    }
+
+    @Cacheable(value = "generated", key = "#employeeId")
+    public String updateTokenStatus(String employeeId) {
+        return "true";
+    }
+
+    @Caching(evict = {@CacheEvict(value = "companyEmployeeList", key = "#companyId"),
+                      @CacheEvict(value = "companyCompleteInfo", key = "#companyId")})
+    public String deleteEmployee(Long companyId, String employeeId, String userId) {
+        Employee employee = employeeRepo.getEmployee(employeeId);
+        employee.setIsActive(0L);
+        employee.setUpdatedAt(new Date());
+        employee.setUpdatedBy(userId);
+        employeeRepo.save(employee);
+        return StringConstant.DELETION_SUCCESSFUL;
+    }
+
+    @Cacheable(value = "companyDepartmentList", key = "#companyId", condition = "#result==null")
+    public String companyDepartmentList(Long companyId){
+        List<Long> departmentList = departmentRepo.getDepartmentOfCompany(companyId);
+        return departmentList.toString();
     }
 
 }

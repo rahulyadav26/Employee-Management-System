@@ -1,54 +1,36 @@
 package com.assignment.application.entity;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
-@Table(name="salary")
-public class Salary implements Serializable{
+@Table(name = "salary")
+public class Salary extends CommonEntity implements Serializable {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name="emp_id" , columnDefinition = "text")
+
+    @Column(name = "employee_id", columnDefinition = "text")
     private String employeeId;
-    @Column(name="emp_name")
-    private String employeeName;
-    @Column(name="salary")
+
+    @Column(name = "salary")
     private Double salary;
-    @Column(name="acc_no")
-    private String accountNo;
-    @Column(name="comp_id")
-    private Long companyId;
-    @Column(name="dept_id")
-    private Long departmentId;
+
     @OneToOne
-    @JoinColumn(name="emp_id", referencedColumnName = "emp_id" , insertable=false, updatable=false)
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
     private Employee employee;
 
-    public Salary(){
+    public Salary() {
 
     }
 
-    public Salary(Long id, String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
+    public Salary(Long id, String employeeId, Double salary) {
         this.id = id;
         this.employeeId = employeeId;
-        this.employeeName = employeeName;
         this.salary = salary;
-        this.accountNo = accountNo;
-        this.companyId = companyId;
-        this.departmentId = departmentId;
-    }
-
-    public Salary(String employeeId, String employeeName, Double salary, String accountNo, Long companyId, Long departmentId) {
-        this.employeeId = employeeId;
-        this.employeeName = employeeName;
-        this.salary = salary;
-        this.accountNo = accountNo;
-        this.companyId = companyId;
-        this.departmentId = departmentId;
     }
 
     public Long getId() {
@@ -67,14 +49,6 @@ public class Salary implements Serializable{
         this.employeeId = employeeId;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
     public Double getSalary() {
         return salary;
     }
@@ -83,27 +57,4 @@ public class Salary implements Serializable{
         this.salary = salary;
     }
 
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
 }
